@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "absolute_carnage",
+  "version": "${version}",
+  "name": "AbsoluteCarnage",
+  "description": "Just some random things compiled into a mod",
+  "authors": [
+    "Absolutelyaya"
+  ],
+  "contact": {
+    "repo": "soon"
+  },
+  "license": "MIT",
+  "icon": "assets/AbsoluteCarnage/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "yaya.absolutecarnage.client.AbsoluteCarnageClient"
+    ],
+    "main": [
+      "yaya.absolutecarnage.AbsoluteCarnage"
+    ]
+  },
+  "mixins": [
+    "AbsoluteCarnage.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.8",
+    "fabric": "*",
+    "minecraft": "1.19"
+  }
+}
