@@ -1,4 +1,4 @@
-package yaya.absolutecarnage.entities;
+package yaya.absolutecarnage.registries;
 
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
@@ -8,7 +8,7 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.entities.custom.ChompyEntity;
+import yaya.absolutecarnage.entities.ChompyEntity;
 
 public class EntityRegistry
 {

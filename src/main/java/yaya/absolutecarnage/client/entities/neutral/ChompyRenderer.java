@@ -4,7 +4,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.entities.custom.ChompyEntity;
+import yaya.absolutecarnage.entities.ChompyEntity;
 
 public class ChompyRenderer extends GeoEntityRenderer<ChompyEntity>
 {

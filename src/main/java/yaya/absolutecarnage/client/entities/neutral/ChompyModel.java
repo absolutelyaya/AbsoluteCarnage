@@ -6,7 +6,7 @@ import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.entities.custom.ChompyEntity;
+import yaya.absolutecarnage.entities.ChompyEntity;
 
 public class ChompyModel extends AnimatedGeoModel<ChompyEntity>
 {

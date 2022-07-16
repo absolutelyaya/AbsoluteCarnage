@@ -4,7 +4,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import yaya.absolutecarnage.entities.EntityRegistry;
+import yaya.absolutecarnage.registries.EntityRegistry;
 import yaya.absolutecarnage.client.entities.neutral.ChompyRenderer;
 
 @Environment(EnvType.CLIENT)
