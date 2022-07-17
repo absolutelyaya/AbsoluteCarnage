@@ -8,15 +8,16 @@ import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.EntityDamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.passive.AnimalEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.NbtByte;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -30,7 +31,6 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 
 public class ChomperEntity extends HostileEntity implements IAnimatable
@@ -56,9 +56,12 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	@Override
 	protected void initGoals()
 	{
-		//goalSelector.add(0, new LookAtEntityGoal(this, LivingEntity.class, 12f));
+		goalSelector.add(0, new LookAtEntityGoal(this, LivingEntity.class, 12f));
 		goalSelector.add(1, new JumpscareGoal(this));
-		targetSelector.add(0, new ActiveTargetGoal<>(this, LivingEntity.class, false));
+		//Snap
+		//Spit
+		targetSelector.add(0, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
+		targetSelector.add(1, new ActiveTargetGoal<>(this, AnimalEntity.class, false));
 	}
 	
 	@Override
@@ -121,12 +124,6 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	
 	}
 	
-	void damage(LivingEntity target)
-	{
-		target.damage(DamageSource.mob(this), 6.0F);
-		target.addVelocity(0D, 1D, 0D);
-	}
-	
 	@Override
 	public AnimationFactory getFactory()
 	{
@@ -172,6 +169,13 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	}
 	
 	@Override
+	public boolean collides()
+	{
+		byte anim = dataTracker.get(ANIMATION);
+		return super.collides() && (anim == ANIMATION_IDLE);
+	}
+	
+	@Override
 	protected void pushAway(Entity entity)
 	{
 		byte anim = dataTracker.get(ANIMATION);
@@ -183,7 +187,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	{
 		private final ChomperEntity mob;
 		private LivingEntity target;
-		private boolean isBurrowed = false, isEmerging = false;
+		private boolean isBurrowed, isEmerging, shouldContinue;
 		private int animDuration;
 		
 		public JumpscareGoal(ChomperEntity mob)
@@ -202,7 +206,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		@Override
 		public boolean shouldContinue()
 		{
-			return (target != null && target.isAlive()) || animDuration > 0;
+			return shouldContinue;
 		}
 		
 		@Override
@@ -220,22 +224,23 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		@Override
 		public void tick()
 		{
+			if(!shouldContinue)
+				shouldContinue = true;
 			this.animDuration = Math.max(this.animDuration - 1, 0);
-			if(target == null)
-				return;
-			this.mob.getLookControl().lookAt(this.target, 30.0F, 30.0F);
+			if(!((target != null && target.isAlive()) || animDuration > 0) && !isEmerging)
+				isEmerging = true;
 			
-			if(mob.distanceTo(target) < 1f || isEmerging)
+			if((target != null && mob.distanceTo(target) < 1f) || isEmerging)
 			{
 				//Emerge
 				if(isBurrowed)
 				{
 					mob.getDataTracker().set(ANIMATION, ANIMATION_EMERGE);
-					animDuration = 25;
+					animDuration = 23;
 					isBurrowed = false;
 					isEmerging = true;
 				}
-				if(animDuration == 15)
+				if(animDuration == 12)
 				{
 					List<LivingEntity> list = mob.world.getNonSpectatingEntities(LivingEntity.class,
 							mob.getBoundingBox().expand(0.5D, 0.0D, 0.5D));
@@ -249,7 +254,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 					}
 				}
 				if(animDuration == 0)
-					stop();
+					shouldContinue = false;
 			}
 			else
 			{

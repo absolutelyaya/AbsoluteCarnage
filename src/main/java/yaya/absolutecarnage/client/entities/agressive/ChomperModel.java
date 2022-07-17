@@ -19,7 +19,7 @@ public class ChomperModel extends AnimatedGeoModel<ChomperEntity>
 	@Override
 	public Identifier getTextureResource(ChomperEntity object)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/chomper.png");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/chomper_rare.png");
 	}
 	
 	@Override
