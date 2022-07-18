@@ -63,11 +63,11 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	{
 		goalSelector.add(1, new SpitGoal(this));
 		//Snap
-		goalSelector.add(1, new JumpscareGoal(this));
+		goalSelector.add(2, new JumpscareGoal(this));
 		goalSelector.add(5, new LookAtEntityGoal(this, HostileEntity.class, 30f));
 		goalSelector.add(6, new LookAroundGoal(this));
-		targetSelector.add(0, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
-		targetSelector.add(1, new ActiveTargetGoal<>(this, AnimalEntity.class, false));
+		targetSelector.add(0, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+		targetSelector.add(1, new ActiveTargetGoal<>(this, AnimalEntity.class, true));
 	}
 	
 	@Override
@@ -192,7 +192,6 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		double g = target.getZ() - this.getZ();
 		double h = Math.sqrt(e * e + g * g) * 0.20000000298023224D;
 		projectile.setVelocity(e, f + h, g, 1.6F, 6.0F);
-		this.playSound(SoundEvents.ENTITY_LLAMA_SPIT, 1.0F, 0.6F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
 		this.world.spawnEntity(projectile);
 	}
 	
@@ -223,6 +222,9 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 			super.pushAway(entity);
 	}
 	
+	@Override
+	public void takeKnockback(double strength, double x, double z) { }
+	
 	private static class JumpscareGoal extends Goal
 	{
 		private final ChomperEntity mob;
@@ -240,13 +242,19 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		public boolean canStart()
 		{
 			target = mob.getTarget();
-			return target != null && target.isAlive();
+			return target != null && target.isAlive() && mob.distanceTo(target) > 10f;
 		}
 		
 		@Override
 		public boolean shouldContinue()
 		{
-			return isEmerging && animDuration == 0;
+			return !(isEmerging && animDuration == 0);
+		}
+		
+		@Override
+		public boolean canStop()
+		{
+			return !shouldContinue;
 		}
 		
 		@Override
@@ -317,7 +325,6 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	{
 		private final ChomperEntity mob;
 		private LivingEntity target;
-		int count;
 		int cooldown;
 		
 		public SpitGoal(ChomperEntity mob)
@@ -330,19 +337,24 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		public boolean canStart()
 		{
 			target = mob.getTarget();
-			return target != null && mob.distanceTo(target) < 20f && mob.canSee(target) && mob.random.nextInt(1) == 0; // this last thing don't work
+			return target != null && mob.distanceTo(target) < 10f && mob.canSee(target);
 		}
 		
 		@Override
 		public boolean shouldContinue()
 		{
-			return count < 3 && target != null && mob.distanceTo(target) > 20f &&  target.isAlive() && mob.canSee(target);
+			return target != null && mob.distanceTo(target) < 10f &&  target.isAlive() && mob.canSee(target);
+		}
+		
+		@Override
+		public boolean canStop()
+		{
+			return !shouldContinue();
 		}
 		
 		@Override
 		public void stop()
 		{
-			count = 0;
 			mob.getDataTracker().set(ANIMATION, ANIMATION_IDLE);
 		}
 		
@@ -353,7 +365,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 			LivingEntity livingEntity = this.mob.getTarget();
 			if(livingEntity == null)
 				return;
-			this.mob.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
+			this.mob.getLookControl().lookAt(livingEntity);
 			
 			if(cooldown == 0)
 			{
@@ -364,7 +376,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 			{
 				for (int i = 0; i < 3; i++)
 					mob.spit(target);
-				count++;
+				mob.playSound(SoundEvents.ENTITY_LLAMA_SPIT, 1.0F, 0.6F / (mob.getRandom().nextFloat() * 0.4F + 0.8F));
 			}
 			if(cooldown == 3)
 				mob.PlayAnimation(ANIMATION_IDLE);
