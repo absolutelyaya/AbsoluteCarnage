@@ -18,6 +18,7 @@ import net.minecraft.nbt.NbtByte;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -29,6 +30,7 @@ import software.bernie.geckolib3.core.event.ParticleKeyFrameEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import yaya.absolutecarnage.client.entities.projectile.ToxicSpit;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -40,11 +42,14 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	private static final AnimationBuilder BURROW_ANIM = new AnimationBuilder().addAnimation("animation.chomper.burrow", false);
 	private static final AnimationBuilder BURROWED_ANIM = new AnimationBuilder().addAnimation("animation.chomper.burrowed", true);
 	private static final AnimationBuilder EMERGE_ANIM = new AnimationBuilder().addAnimation("animation.chomper.emerge", false);
+	private static final AnimationBuilder SPIT_ANIM = new AnimationBuilder().addAnimation("animation.chomper.spit", false);
 	protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(ChomperEntity.class, TrackedDataHandlerRegistry.BYTE);
+	public static final TrackedData<Boolean> RARE = DataTracker.registerData(ChomperEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	private static final byte ANIMATION_IDLE = 0;
 	private static final byte ANIMATION_BURROW = 1;
 	private static final byte ANIMATION_BURROWED = 2;
 	private static final byte ANIMATION_EMERGE = 3;
+	private static final byte ANIMATION_SPIT = 4;
 	
 	public ChomperEntity(EntityType<? extends HostileEntity> entityType, World world)
 	{
@@ -56,10 +61,11 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	@Override
 	protected void initGoals()
 	{
-		goalSelector.add(0, new LookAtEntityGoal(this, LivingEntity.class, 12f));
-		goalSelector.add(1, new JumpscareGoal(this));
+		goalSelector.add(1, new SpitGoal(this));
 		//Snap
-		//Spit
+		goalSelector.add(1, new JumpscareGoal(this));
+		goalSelector.add(5, new LookAtEntityGoal(this, HostileEntity.class, 30f));
+		goalSelector.add(6, new LookAroundGoal(this));
 		targetSelector.add(0, new ActiveTargetGoal<>(this, PlayerEntity.class, false));
 		targetSelector.add(1, new ActiveTargetGoal<>(this, AnimalEntity.class, false));
 	}
@@ -69,6 +75,21 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	{
 		super.initDataTracker();
 		this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
+		this.dataTracker.startTracking(RARE, random.nextInt(2) == 0);
+	}
+	
+	@Override
+	public boolean saveNbt(NbtCompound nbt)
+	{
+		nbt.put("rare_variant", NbtByte.of(dataTracker.get(RARE)));
+		return super.saveNbt(nbt);
+	}
+	
+	@Override
+	public void readNbt(NbtCompound nbt)
+	{
+		super.readNbt(nbt);
+		dataTracker.set(RARE, nbt.getBoolean("rare_variant"));
 	}
 	
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
@@ -81,8 +102,14 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 			case ANIMATION_BURROW -> event.getController().setAnimation(BURROW_ANIM);
 			case ANIMATION_BURROWED -> event.getController().setAnimation(BURROWED_ANIM);
 			case ANIMATION_EMERGE -> event.getController().setAnimation(EMERGE_ANIM);
+			case ANIMATION_SPIT -> event.getController().setAnimation(SPIT_ANIM);
 		}
 		return PlayState.CONTINUE;
+	}
+	
+	public void PlayAnimation(byte anim)
+	{
+		getDataTracker().set(ANIMATION, anim);
 	}
 	
 	@Override
@@ -156,6 +183,19 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		}
 	}
 	
+	public void spit(LivingEntity target)
+	{
+		ToxicSpit projectile = ToxicSpit.spawn(this, world);
+		double d = target.getEyeY() - 2;
+		double e = target.getX() - this.getX();
+		double f = d - projectile.getY();
+		double g = target.getZ() - this.getZ();
+		double h = Math.sqrt(e * e + g * g) * 0.20000000298023224D;
+		projectile.setVelocity(e, f + h, g, 1.6F, 6.0F);
+		this.playSound(SoundEvents.ENTITY_LLAMA_SPIT, 1.0F, 0.6F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
+		this.world.spawnEntity(projectile);
+	}
+	
 	public boolean isLookingAround()
 	{
 		byte anim = dataTracker.get(ANIMATION);
@@ -187,7 +227,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	{
 		private final ChomperEntity mob;
 		private LivingEntity target;
-		private boolean isBurrowed, isEmerging, shouldContinue;
+		private boolean isBurrowed, isEmerging, shouldContinue = true;
 		private int animDuration;
 		
 		public JumpscareGoal(ChomperEntity mob)
@@ -200,19 +240,18 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		public boolean canStart()
 		{
 			target = mob.getTarget();
-			return target != null && target.isAlive() && !mob.isInAttackRange(target);
+			return target != null && target.isAlive();
 		}
 		
 		@Override
 		public boolean shouldContinue()
 		{
-			return shouldContinue;
+			return isEmerging && animDuration == 0;
 		}
 		
 		@Override
 		public void stop()
 		{
-			target = null;
 			mob.getNavigation().stop();
 			animDuration = 0;
 			isBurrowed = false;
@@ -253,8 +292,6 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 						}
 					}
 				}
-				if(animDuration == 0)
-					shouldContinue = false;
 			}
 			else
 			{
@@ -273,6 +310,64 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 				if (animDuration == 1)
 					isBurrowed = true;
 			}
+		}
+	}
+	
+	private static class SpitGoal extends Goal
+	{
+		private final ChomperEntity mob;
+		private LivingEntity target;
+		int count;
+		int cooldown;
+		
+		public SpitGoal(ChomperEntity mob)
+		{
+			this.mob = mob;
+			this.setControls(EnumSet.of(Control.LOOK));
+		}
+		
+		@Override
+		public boolean canStart()
+		{
+			target = mob.getTarget();
+			return target != null && mob.distanceTo(target) < 20f && mob.canSee(target) && mob.random.nextInt(1) == 0; // this last thing don't work
+		}
+		
+		@Override
+		public boolean shouldContinue()
+		{
+			return count < 3 && target != null && mob.distanceTo(target) > 20f &&  target.isAlive() && mob.canSee(target);
+		}
+		
+		@Override
+		public void stop()
+		{
+			count = 0;
+			mob.getDataTracker().set(ANIMATION, ANIMATION_IDLE);
+		}
+		
+		@Override
+		public void tick()
+		{
+			cooldown = Math.max(cooldown - 1, 0);
+			LivingEntity livingEntity = this.mob.getTarget();
+			if(livingEntity == null)
+				return;
+			this.mob.getLookControl().lookAt(livingEntity, 30.0F, 30.0F);
+			
+			if(cooldown == 0)
+			{
+				mob.PlayAnimation(ANIMATION_SPIT);
+				cooldown = 10;
+			}
+			if(cooldown == 7)
+			{
+				for (int i = 0; i < 3; i++)
+					mob.spit(target);
+				count++;
+			}
+			if(cooldown == 3)
+				mob.PlayAnimation(ANIMATION_IDLE);
 		}
 	}
 }

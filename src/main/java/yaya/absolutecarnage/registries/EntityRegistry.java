@@ -6,6 +6,7 @@ import net.minecraft.entity.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.client.entities.projectile.ToxicSpit;
 import yaya.absolutecarnage.entities.ChomperEntity;
 import yaya.absolutecarnage.entities.ChompyEntity;
 
@@ -19,6 +20,11 @@ public class EntityRegistry
 			new Identifier(AbsoluteCarnage.MOD_ID, "chomper"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, ChomperEntity::new)
 					.dimensions(EntityDimensions.fixed(1.75f, 2f)).build());
+	public static final EntityType<ToxicSpit> TOXIC_SPIT = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(AbsoluteCarnage.MOD_ID, "toxic_spit"),
+			FabricEntityTypeBuilder.create(SpawnGroup.MISC, ToxicSpit::new)
+					.dimensions(EntityDimensions.fixed(0.25F, 0.25F))
+					.trackRangeBlocks(4).trackedUpdateRate(10).build());
 	
 	public static void registerAttributes()
 	{
