@@ -43,6 +43,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	private static final AnimationBuilder BURROWED_ANIM = new AnimationBuilder().addAnimation("animation.chomper.burrowed", true);
 	private static final AnimationBuilder EMERGE_ANIM = new AnimationBuilder().addAnimation("animation.chomper.emerge", false);
 	private static final AnimationBuilder SPIT_ANIM = new AnimationBuilder().addAnimation("animation.chomper.spit", false);
+	private static final AnimationBuilder BITE_ANIM = new AnimationBuilder().addAnimation("animation.chomper.bite", false);
 	protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(ChomperEntity.class, TrackedDataHandlerRegistry.BYTE);
 	public static final TrackedData<Boolean> RARE = DataTracker.registerData(ChomperEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 	private static final byte ANIMATION_IDLE = 0;
@@ -50,6 +51,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	private static final byte ANIMATION_BURROWED = 2;
 	private static final byte ANIMATION_EMERGE = 3;
 	private static final byte ANIMATION_SPIT = 4;
+	private static final byte ANIMATION_BITE = 5;
 	
 	public ChomperEntity(EntityType<? extends HostileEntity> entityType, World world)
 	{
@@ -62,12 +64,13 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	protected void initGoals()
 	{
 		goalSelector.add(1, new SpitGoal(this));
-		//Snap
-		goalSelector.add(2, new JumpscareGoal(this));
+		goalSelector.add(2, new BiteGoal(this));
+		goalSelector.add(3, new JumpscareGoal(this));
 		goalSelector.add(5, new LookAtEntityGoal(this, HostileEntity.class, 30f));
 		goalSelector.add(6, new LookAroundGoal(this));
-		targetSelector.add(0, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
-		targetSelector.add(1, new ActiveTargetGoal<>(this, AnimalEntity.class, true));
+		targetSelector.add(0, new RevengeGoal(this, ChomperEntity.class));
+		targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+		targetSelector.add(2, new ActiveTargetGoal<>(this, AnimalEntity.class, true));
 	}
 	
 	@Override
@@ -103,6 +106,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 			case ANIMATION_BURROWED -> event.getController().setAnimation(BURROWED_ANIM);
 			case ANIMATION_EMERGE -> event.getController().setAnimation(EMERGE_ANIM);
 			case ANIMATION_SPIT -> event.getController().setAnimation(SPIT_ANIM);
+			case ANIMATION_BITE -> event.getController().setAnimation(BITE_ANIM);
 		}
 		return PlayState.CONTINUE;
 	}
@@ -211,7 +215,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	public boolean collides()
 	{
 		byte anim = dataTracker.get(ANIMATION);
-		return super.collides() && (anim == ANIMATION_IDLE);
+		return super.collides() && (anim == ANIMATION_IDLE || anim == ANIMATION_BITE || anim == ANIMATION_SPIT);
 	}
 	
 	@Override
@@ -264,6 +268,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 			animDuration = 0;
 			isBurrowed = false;
 			isEmerging = false;
+			target = null;
 			
 			mob.getDataTracker().set(ANIMATION, ANIMATION_IDLE);
 		}
@@ -321,6 +326,64 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		}
 	}
 	
+	private static class BiteGoal extends Goal
+	{
+		private final ChomperEntity mob;
+		private LivingEntity target;
+		int animTime;
+		
+		public BiteGoal(ChomperEntity mob)
+		{
+			this.mob = mob;
+			this.setControls(EnumSet.of(Control.MOVE, Control.LOOK));
+		}
+		
+		@Override
+		public boolean canStart()
+		{
+			target = mob.getTarget();
+			return target != null && mob.distanceTo(target) < 5f && mob.canSee(target) && target.isAlive();
+		}
+		
+		@Override
+		public boolean shouldContinue()
+		{
+			return animTime != 0 && mob.distanceTo(target) < 5f;
+		}
+		
+		@Override
+		public boolean canStop()
+		{
+			return !shouldContinue();
+		}
+		
+		@Override
+		public void stop()
+		{
+			target = null;
+			mob.getDataTracker().set(ANIMATION, ANIMATION_IDLE);
+		}
+		
+		@Override
+		public void tick()
+		{
+			animTime = Math.max(animTime - 1, 0);
+			if(target == null)
+				return;
+			this.mob.getLookControl().lookAt(target);
+			
+			switch (animTime)
+			{
+				case 0 -> {
+					mob.PlayAnimation(ANIMATION_BITE);
+					animTime = 25;
+				}
+				case 8 -> mob.tryAttack(target);
+				case 1 -> mob.PlayAnimation(ANIMATION_IDLE);
+			}
+		}
+	}
+	
 	private static class SpitGoal extends Goal
 	{
 		private final ChomperEntity mob;
@@ -337,13 +400,13 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		public boolean canStart()
 		{
 			target = mob.getTarget();
-			return target != null && mob.distanceTo(target) < 10f && mob.canSee(target);
+			return target != null && mob.distanceTo(target) < 10f && mob.distanceTo(target) > 5f && mob.canSee(target);
 		}
 		
 		@Override
 		public boolean shouldContinue()
 		{
-			return target != null && mob.distanceTo(target) < 10f &&  target.isAlive() && mob.canSee(target);
+			return target != null && mob.distanceTo(target) < 10f && mob.distanceTo(target) > 5f && target.isAlive() && mob.canSee(target);
 		}
 		
 		@Override
@@ -356,30 +419,30 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		public void stop()
 		{
 			mob.getDataTracker().set(ANIMATION, ANIMATION_IDLE);
+			target = null;
 		}
 		
 		@Override
 		public void tick()
 		{
 			cooldown = Math.max(cooldown - 1, 0);
-			LivingEntity livingEntity = this.mob.getTarget();
-			if(livingEntity == null)
+			if(target == null)
 				return;
-			this.mob.getLookControl().lookAt(livingEntity);
+			this.mob.getLookControl().lookAt(target);
 			
-			if(cooldown == 0)
+			switch (cooldown)
 			{
-				mob.PlayAnimation(ANIMATION_SPIT);
-				cooldown = 10;
+				case 0 -> {
+					mob.PlayAnimation(ANIMATION_SPIT);
+					cooldown = 10;
+				}
+				case 7 -> {
+					for (int i = 0; i < 3; i++)
+						mob.spit(target);
+					mob.playSound(SoundEvents.ENTITY_LLAMA_SPIT, 1.0F, 0.6F / (mob.getRandom().nextFloat() * 0.4F + 0.8F));
+				}
+				case 2 -> mob.PlayAnimation(ANIMATION_IDLE);
 			}
-			if(cooldown == 7)
-			{
-				for (int i = 0; i < 3; i++)
-					mob.spit(target);
-				mob.playSound(SoundEvents.ENTITY_LLAMA_SPIT, 1.0F, 0.6F / (mob.getRandom().nextFloat() * 0.4F + 0.8F));
-			}
-			if(cooldown == 3)
-				mob.PlayAnimation(ANIMATION_IDLE);
 		}
 	}
 }
