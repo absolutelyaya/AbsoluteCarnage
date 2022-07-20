@@ -1625,16 +1625,13 @@
 						"1.2": {
 							"vector": [-47.5, 0, 0]
 						},
-						"1.48": {
-							"vector": [-15.93, 0, 0],
-							"easing": "easeOutSine"
-						},
-						"1.88": {
+						"1.72": {
 							"vector": [5, 0, 0],
-							"easing": "easeInOutSine"
+							"easing": "easeOutCirc"
 						},
 						"2.4": {
-							"vector": [-15, 0, 0]
+							"vector": [-15, 0, 0],
+							"easing": "easeInOutSine"
 						}
 					}
 				},
