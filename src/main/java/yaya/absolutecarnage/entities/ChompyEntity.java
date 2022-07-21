@@ -21,6 +21,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -32,6 +33,7 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import yaya.absolutecarnage.AbsoluteCarnage;
 
 import java.util.EnumSet;
 import java.util.function.Predicate;
@@ -76,6 +78,12 @@ public class ChompyEntity extends TameableEntity implements IAnimatable
 	{
 		super.initDataTracker();
 		this.dataTracker.startTracking(ANIMATION, (byte)0);
+	}
+	
+	@Override
+	protected Identifier getLootTableId()
+	{
+		return new Identifier(AbsoluteCarnage.MOD_ID, "entities/chompy");
 	}
 	
 	@Nullable

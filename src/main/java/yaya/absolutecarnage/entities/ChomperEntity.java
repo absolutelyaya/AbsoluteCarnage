@@ -19,6 +19,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -30,6 +31,7 @@ import software.bernie.geckolib3.core.event.ParticleKeyFrameEvent;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.client.entities.projectile.ToxicSpit;
 
 import java.util.EnumSet;
@@ -78,7 +80,14 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	{
 		super.initDataTracker();
 		this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
-		this.dataTracker.startTracking(RARE, random.nextInt(2) == 0);
+		//this.dataTracker.startTracking(RARE, random.nextInt(2) == 0);
+		//TODO: add rare variant
+	}
+	
+	@Override
+	protected Identifier getLootTableId()
+	{
+		return new Identifier(AbsoluteCarnage.MOD_ID, "entities/chomper");
 	}
 	
 	@Override
