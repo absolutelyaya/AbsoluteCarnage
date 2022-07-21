@@ -13,7 +13,7 @@ public class ChompyModel extends AnimatedGeoModel<ChompyEntity>
 	@Override
 	public Identifier getModelResource(ChompyEntity object)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/neutral/chompy.geo.json");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/entities/neutral/chompy.geo.json");
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public class ChompyModel extends AnimatedGeoModel<ChompyEntity>
 	@Override
 	public Identifier getAnimationResource(ChompyEntity animatable)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "animations/neutral/chompy.animation.json");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "animations/entities/neutral/chompy.animation.json");
 	}
 	
 	@SuppressWarnings({"unchecked"})

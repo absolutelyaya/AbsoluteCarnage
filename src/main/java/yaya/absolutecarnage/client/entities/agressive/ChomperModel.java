@@ -13,7 +13,7 @@ public class ChomperModel extends AnimatedGeoModel<ChomperEntity>
 	@Override
 	public Identifier getModelResource(ChomperEntity object)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/aggressive/chomper.geo.json");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/entities/aggressive/chomper.geo.json");
 	}
 	
 	@Override
@@ -25,7 +25,7 @@ public class ChomperModel extends AnimatedGeoModel<ChomperEntity>
 	@Override
 	public Identifier getAnimationResource(ChomperEntity animatable)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "animations/aggressive/chomper.animation.json");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "animations/entities/aggressive/chomper.animation.json");
 	}
 	
 	@SuppressWarnings({"unchecked"})
