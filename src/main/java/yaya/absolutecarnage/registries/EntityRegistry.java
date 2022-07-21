@@ -9,6 +9,7 @@ import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.client.entities.projectile.ToxicSpit;
 import yaya.absolutecarnage.entities.ChomperEntity;
 import yaya.absolutecarnage.entities.ChompyEntity;
+import yaya.absolutecarnage.entities.SwarmCluster;
 
 public class EntityRegistry
 {
@@ -25,10 +26,15 @@ public class EntityRegistry
 			FabricEntityTypeBuilder.create(SpawnGroup.MISC, ToxicSpit::new)
 					.dimensions(EntityDimensions.fixed(0.25F, 0.25F))
 					.trackRangeBlocks(4).trackedUpdateRate(10).build());
+	public static final EntityType<SwarmCluster> SWARM_CLUSTER = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(AbsoluteCarnage.MOD_ID, "swarm_cluster"),
+			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, SwarmCluster::new)
+					.dimensions(EntityDimensions.fixed(0.75f, 1f)).build());
 	
 	public static void registerAttributes()
 	{
 		FabricDefaultAttributeRegistry.register(CHOMPY, ChompyEntity.setAttributes());
 		FabricDefaultAttributeRegistry.register(CHOMPER, ChomperEntity.setAttributes());
+		FabricDefaultAttributeRegistry.register(SWARM_CLUSTER, SwarmCluster.setAttributes());
 	}
 }
