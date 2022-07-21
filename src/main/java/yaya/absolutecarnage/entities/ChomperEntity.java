@@ -60,6 +60,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 		super(entityType, world);
 		this.ignoreCameraFrustum = true;
 		this.stepHeight = 1.0F;
+		dataTracker.set(RARE, random.nextInt(500) == 0);
 	}
 	
 	@Override
@@ -80,8 +81,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	{
 		super.initDataTracker();
 		this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
-		//this.dataTracker.startTracking(RARE, random.nextInt(2) == 0);
-		//TODO: add rare variant
+		this.dataTracker.startTracking(RARE, false);
 	}
 	
 	@Override
@@ -93,7 +93,7 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	@Override
 	public boolean saveNbt(NbtCompound nbt)
 	{
-		nbt.put("rare_variant", NbtByte.of(dataTracker.get(RARE)));
+		nbt.put("Rare", NbtByte.of(dataTracker.get(RARE)));
 		return super.saveNbt(nbt);
 	}
 	
@@ -101,7 +101,8 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	public void readNbt(NbtCompound nbt)
 	{
 		super.readNbt(nbt);
-		dataTracker.set(RARE, nbt.getBoolean("rare_variant"));
+		if(nbt.contains("Rare"))
+			dataTracker.set(RARE, nbt.getBoolean("Rare"));
 	}
 	
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
@@ -237,6 +238,11 @@ public class ChomperEntity extends HostileEntity implements IAnimatable
 	
 	@Override
 	public void takeKnockback(double strength, double x, double z) { }
+	
+	public boolean isRare()
+	{
+		return dataTracker.get(RARE);
+	}
 	
 	private static class JumpscareGoal extends Goal
 	{
