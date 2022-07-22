@@ -32,7 +32,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.client.entities.projectile.ToxicSpit;
+import yaya.absolutecarnage.entities.projectile.ToxicSpit;
 
 import java.util.EnumSet;
 import java.util.List;

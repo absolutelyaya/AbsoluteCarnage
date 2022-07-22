@@ -20,5 +20,6 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		EntityRendererRegistry.register(EntityRegistry.CHOMPER, ChomperRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.TOXIC_SPIT, FlyingItemEntityRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARM_CLUSTER, SwarmClusterRenderer::new);
+		EntityRendererRegistry.register(EntityRegistry.FLAME_PROJECTILE, FlyingItemEntityRenderer::new);
 	}
 }

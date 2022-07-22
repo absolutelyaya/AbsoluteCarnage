@@ -1,4 +1,4 @@
-package yaya.absolutecarnage.client.entities.projectile;
+package yaya.absolutecarnage.entities.projectile;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
