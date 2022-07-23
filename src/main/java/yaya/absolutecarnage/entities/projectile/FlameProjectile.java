@@ -1,10 +1,13 @@
 package yaya.absolutecarnage.entities.projectile;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.hit.BlockHitResult;
@@ -104,8 +107,8 @@ public class FlameProjectile extends ThrownItemEntity
 			kill();
 		
 		if(!world.isClient && world.getGameRules().getBoolean(GameRules.DO_FIRE_TICK) &&
-				   world.getBlockState(getBlockPos()).isAir() && random.nextInt(10) == 0)
-			world.setBlockState(getBlockPos(), Blocks.FIRE.getDefaultState());
+				   world.getBlockState(getBlockPos()).isAir() && random.nextInt(5) == 0)
+			world.setBlockState(getBlockPos(), Block.postProcessState(Blocks.FIRE.getDefaultState(), world, getBlockPos()));
 	}
 	
 	@Override
