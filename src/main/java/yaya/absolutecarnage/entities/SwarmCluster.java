@@ -1,8 +1,7 @@
 package yaya.absolutecarnage.entities;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -14,6 +13,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldView;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
@@ -22,6 +22,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.registries.BlockTagRegistry;
 
 public class SwarmCluster extends MobEntity implements IAnimatable
 {
@@ -159,5 +160,12 @@ public class SwarmCluster extends MobEntity implements IAnimatable
 	public AnimationFactory getFactory()
 	{
 		return factory;
+	}
+	
+	public boolean canSpawn(WorldView world)
+	{
+		return !world.containsFluid(this.getBoundingBox()) && world.doesNotIntersectEntities(this) &&
+				!world.getBlockState(getBlockPos().down()).isIn(BlockTagRegistry.SWARMLING_SPAWNABLE) && !world.isAir(getBlockPos().down()) &&
+					   !world.isSkyVisible(getBlockPos());
 	}
 }

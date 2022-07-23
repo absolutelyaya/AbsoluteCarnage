@@ -19,6 +19,9 @@
     ],
     "main": [
       "yaya.absolutecarnage.AbsoluteCarnage"
+    ],
+    "terrablender": [
+      "yaya.absolutecarnage.AbsoluteCarnage"
     ]
   },
   "mixins": [
