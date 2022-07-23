@@ -17,7 +17,8 @@ import java.util.List;
 public class PlacedFeatureRegistry
 {
 	public static final RegistryEntry<PlacedFeature> INFESTED_CAVERN_SAND;
-	public static final RegistryEntry<PlacedFeature> CEILING_WEBS;
+	public static final RegistryEntry<PlacedFeature> WEB_COLUMN;
+	public static final RegistryEntry<PlacedFeature> HANGING_WEBS;
 	
 	public static RegistryEntry<PlacedFeature> register(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier... modifiers) {
 		return BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, new Identifier(AbsoluteCarnage.MOD_ID, id), new PlacedFeature(RegistryEntry.upcast(registryEntry), List.of(modifiers)));
@@ -34,7 +35,11 @@ public class PlacedFeatureRegistry
 				CountPlacementModifier.of(62), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)), BiomePlacementModifier.of());
-		CEILING_WEBS = register("ceiling_webs", ConfiguredFeatureRegistry.CEILING_WEBS,
+		WEB_COLUMN = register("web_column", ConfiguredFeatureRegistry.WEB_COLUMN,
+				CountPlacementModifier.of(256), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
+				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.SANDSTONE), BlockPredicate.IS_AIR, 24),
+				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)), BiomePlacementModifier.of());
+		HANGING_WEBS = register("hanging_webs", ConfiguredFeatureRegistry.HANGING_WEBS,
 				CountPlacementModifier.of(256), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
 				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.SANDSTONE), BlockPredicate.IS_AIR, 24),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)), BiomePlacementModifier.of());

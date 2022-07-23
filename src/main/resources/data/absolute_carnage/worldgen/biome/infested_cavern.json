@@ -26,7 +26,8 @@
   "features": [
     [
       "absolute_carnage:infested_cavern_sand",
-      "absolute_carnage:ceiling_webs"
+      "absolute_carnage:web_column",
+      "absolute_carnage:hanging_webs"
     ]
   ]
 }

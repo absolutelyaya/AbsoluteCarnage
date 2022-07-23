@@ -2,11 +2,9 @@ package yaya.absolutecarnage.registries;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.block.Block;
-import net.minecraft.block.FallingBlock;
-import net.minecraft.block.Material;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
@@ -18,6 +16,16 @@ public class BlockRegistry
 	public static final Block DUNE = register("dune", new FallingBlock(FabricBlockSettings.of(Material.SOIL)
 					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f)),
 			ItemGroupRegistry.CARNAGE);
+	public static final Block HANGING_WEB = register("hanging_web", new CobwebBlock(FabricBlockSettings.of(Material.COBWEB)
+					.sounds(BlockSoundGroup.STONE).strength(0.5f, 0.8f).noCollision().nonOpaque()),
+			ItemGroupRegistry.CARNAGE, 100, 100);
+	
+	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
+	{
+		FlammableBlockRegistry.getDefaultInstance().add(block, burn, spread);
+		registerItem(name, block, group);
+		return Registry.register(Registry.BLOCK, new Identifier(AbsoluteCarnage.MOD_ID, name), block);
+	}
 	
 	private static Block register(String name, Block block, ItemGroup group)
 	{
@@ -25,14 +33,14 @@ public class BlockRegistry
 		return Registry.register(Registry.BLOCK, new Identifier(AbsoluteCarnage.MOD_ID, name), block);
 	}
 	
-	private static Item registerItem(String name, Block block, ItemGroup group)
+	private static void registerItem(String name, Block block, ItemGroup group)
 	{
-		return Registry.register(Registry.ITEM, new Identifier(AbsoluteCarnage.MOD_ID, name),
+		Registry.register(Registry.ITEM, new Identifier(AbsoluteCarnage.MOD_ID, name),
 				new BlockItem(block, new FabricItemSettings().group(group)));
 	}
 	
 	public static void registerBlocks()
 	{
-	
+		FlammableBlockRegistry.getDefaultInstance().add(Blocks.COBWEB, 100, 100);
 	}
 }
