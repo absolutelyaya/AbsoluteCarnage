@@ -20,6 +20,9 @@ public class BlockRegistry
 			ItemGroupRegistry.CARNAGE, 100, 100);
 	public static final Block HARDENED_SANDSTONE = register("hardened_sandstone", new Block(FabricBlockSettings.of(Material.STONE)
 					.sounds(BlockSoundGroup.DRIPSTONE_BLOCK).strength(1.5f, 3).requiresTool()), ItemGroupRegistry.CARNAGE);
+	public static final Block SWARM_CLUSTER = register("swarm_cluster_block", new MudBlock(FabricBlockSettings.of(Material.SOIL)
+					.sounds(BlockSoundGroup.MUD).strength(1f, 1f).velocityMultiplier(0.8f).luminance(2)),
+			ItemGroupRegistry.CARNAGE);
 	
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
 	{
