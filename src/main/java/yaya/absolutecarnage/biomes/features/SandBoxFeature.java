@@ -9,6 +9,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.VegetationPatchFeature;
 import net.minecraft.world.gen.feature.VegetationPatchFeatureConfig;
+import yaya.absolutecarnage.registries.BlockRegistry;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -40,7 +41,7 @@ public class SandBoxFeature extends VegetationPatchFeature
 		
 		while(BlockPositions.hasNext()) {
 			blockPos = BlockPositions.next();
-			world.setBlockState(blockPos, Blocks.SAND.getDefaultState(), 2);
+			world.setBlockState(blockPos, BlockRegistry.DUNE.getDefaultState(), 2);
 		}
 		
 		return set2;

@@ -6,6 +6,7 @@ import software.bernie.geckolib3.GeckoLib;
 import terrablender.api.SurfaceRuleManager;
 import terrablender.api.TerraBlenderApi;
 import yaya.absolutecarnage.biomes.SurfaceRuleData;
+import yaya.absolutecarnage.registries.BlockRegistry;
 import yaya.absolutecarnage.registries.EntityRegistry;
 import yaya.absolutecarnage.registries.ItemRegistry;
 import yaya.absolutecarnage.registries.PlacedFeatureRegistry;
@@ -20,6 +21,7 @@ public class AbsoluteCarnage implements ModInitializer, TerraBlenderApi
 	{
 		EntityRegistry.registerAttributes();
 		ItemRegistry.registerItems();
+		BlockRegistry.registerBlocks();
 		
 		GeckoLib.initialize();
 		
