@@ -43,7 +43,7 @@ public class ConfiguredFeatureRegistry
 				new SimpleBlockFeatureConfig(createDeadbushFeature()));
 		INFESTED_CAVERN_SAND = ConfiguredFeatures.register("infested_cavern_sand",
 				FeatureRegistry.CAVERN_SAND, new VegetationPatchFeatureConfig(BlockTagRegistry.SANDSTONE,
-						BlockStateProvider.of(Blocks.DRIPSTONE_BLOCK), PlacedFeatures.createEntry(DEADBUSH),
+						BlockStateProvider.of(BlockRegistry.HARDENED_SANDSTONE), PlacedFeatures.createEntry(DEADBUSH),
 						VerticalSurfaceType.FLOOR, ConstantIntProvider.create(3), 0.8F, 5,
 						0.1F, UniformIntProvider.create(4, 7), 0.7F));
 		WEB_COLUMN = ConfiguredFeatures.register("web_column", Feature.BLOCK_COLUMN,

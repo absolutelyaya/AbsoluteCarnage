@@ -14,11 +14,12 @@ import yaya.absolutecarnage.AbsoluteCarnage;
 public class BlockRegistry
 {
 	public static final Block DUNE = register("dune", new FallingBlock(FabricBlockSettings.of(Material.SOIL)
-					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f)),
-			ItemGroupRegistry.CARNAGE);
+					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f)), ItemGroupRegistry.CARNAGE);
 	public static final Block HANGING_WEB = register("hanging_web", new CobwebBlock(FabricBlockSettings.of(Material.COBWEB)
 					.sounds(BlockSoundGroup.STONE).strength(0.5f, 0.8f).noCollision().nonOpaque()),
 			ItemGroupRegistry.CARNAGE, 100, 100);
+	public static final Block HARDENED_SANDSTONE = register("hardened_sandstone", new Block(FabricBlockSettings.of(Material.STONE)
+					.sounds(BlockSoundGroup.DRIPSTONE_BLOCK).strength(1.5f, 3).requiresTool()), ItemGroupRegistry.CARNAGE);
 	
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
 	{
