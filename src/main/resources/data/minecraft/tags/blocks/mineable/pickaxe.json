@@ -1,6 +1,7 @@
 {
   "override": false,
   "values": [
-    "absolute_carnage:hardened_sandstone"
+    "absolute_carnage:hardened_sandstone",
+    "absolute_carnage:nest_block"
   ]
 }

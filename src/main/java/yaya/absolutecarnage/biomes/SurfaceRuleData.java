@@ -10,12 +10,13 @@ import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.registries.BlockRegistry;
 
 public class SurfaceRuleData
 {
 	private static final MaterialRules.MaterialRule PACKED_MUD = makeStateRule(Blocks.PACKED_MUD);
 	private static final MaterialRules.MaterialRule SANDSTONE = makeStateRule(Blocks.SANDSTONE);
-	private static final MaterialRules.MaterialRule DEEPSLATE = makeStateRule(Blocks.RED_SANDSTONE);
+	private static final MaterialRules.MaterialRule DEEPSLATE = makeStateRule(BlockRegistry.NEST_BLOCK);
 	private static final MaterialRules.MaterialRule BEDROCK = makeStateRule(Blocks.BEDROCK);
 	
 	private static final RegistryKey<Biome> INFESTED_CAVERN =

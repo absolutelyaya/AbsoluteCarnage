@@ -23,6 +23,8 @@ public class BlockRegistry
 	public static final Block SWARM_CLUSTER = register("swarm_cluster_block", new MudBlock(FabricBlockSettings.of(Material.SOIL)
 					.sounds(BlockSoundGroup.MUD).strength(1f, 1f).velocityMultiplier(0.8f).luminance(2)),
 			ItemGroupRegistry.CARNAGE);
+	public static final Block NEST_BLOCK = register("nest_block", new Block(FabricBlockSettings.of(Material.STONE)
+					.sounds(BlockSoundGroup.DEEPSLATE).strength(3f, 6f).requiresTool()), ItemGroupRegistry.CARNAGE);
 	
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
 	{
@@ -46,5 +48,6 @@ public class BlockRegistry
 	public static void registerBlocks()
 	{
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.COBWEB, 100, 100);
+		//FlammableBlockRegistry.getDefaultInstance().add(Blocks.AIR, 50000, 50000);
 	}
 }

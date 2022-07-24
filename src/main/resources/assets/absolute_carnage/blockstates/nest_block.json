@@ -1,0 +1,15 @@
+{
+  "variants": {
+    "":
+    [
+      {
+        "model": "absolute_carnage:block/nest_block",
+        "weight": 500
+      },
+      {
+        "model": "absolute_carnage:block/nest_block_sus",
+        "weight": 1
+      }
+    ]
+  }
+}
