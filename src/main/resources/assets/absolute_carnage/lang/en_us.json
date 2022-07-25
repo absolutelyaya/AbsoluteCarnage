@@ -6,6 +6,8 @@
   "block.absolute_carnage.dune": "Dune",
   "block.absolute_carnage.hanging_web": "Hanging Web",
   "block.absolute_carnage.hardened_sandstone": "Hardened Sandstone",
+  "block.absolute_carnage.swarm_cluster_block": "Swarm Cluster Block",
+  "block.absolute_carnage.nest_block": "Nest Block",
 
   "entity.absolute_carnage.chompy": "Chompy",
   "entity.absolute_carnage.chomper": "Chomper",

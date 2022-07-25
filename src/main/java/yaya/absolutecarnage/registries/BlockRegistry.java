@@ -10,6 +10,9 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.blocks.FloorDecal;
+import yaya.absolutecarnage.blocks.NestBlock;
+import yaya.absolutecarnage.blocks.WallDecal;
 
 public class BlockRegistry
 {
@@ -23,19 +26,27 @@ public class BlockRegistry
 	public static final Block SWARM_CLUSTER = register("swarm_cluster_block", new MudBlock(FabricBlockSettings.of(Material.SOIL)
 					.sounds(BlockSoundGroup.MUD).strength(1f, 1f).velocityMultiplier(0.8f).luminance(2)),
 			ItemGroupRegistry.CARNAGE);
-	public static final Block NEST_BLOCK = register("nest_block", new Block(FabricBlockSettings.of(Material.STONE)
+	public static final Block NEST_BLOCK = register("nest_block", new NestBlock(FabricBlockSettings.of(Material.STONE)
 					.sounds(BlockSoundGroup.DEEPSLATE).strength(3f, 6f).requiresTool()), ItemGroupRegistry.CARNAGE);
+	public static final Block FLOOR_WEB_DECAL = register("floor_web_decal", new FloorDecal(FabricBlockSettings.of(Material.REPLACEABLE_PLANT)
+					.strength(0.5f, 0f).sounds(BlockSoundGroup.WOOL).noCollision().nonOpaque().jumpVelocityMultiplier(0.8f)
+					.drops(new Identifier(AbsoluteCarnage.MOD_ID, "blocks/web_decal"))),
+			null, 100, 100);
+	public static final Block WALL_WEB_DECAL = register("wall_web_decal", new WallDecal(FabricBlockSettings.copy(FLOOR_WEB_DECAL)),
+			null, 100, 100); //TODO: Add wall web decal feature
 	
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
 	{
 		FlammableBlockRegistry.getDefaultInstance().add(block, burn, spread);
-		registerItem(name, block, group);
+		if(group != null)
+			registerItem(name, block, group);
 		return Registry.register(Registry.BLOCK, new Identifier(AbsoluteCarnage.MOD_ID, name), block);
 	}
 	
 	private static Block register(String name, Block block, ItemGroup group)
 	{
-		registerItem(name, block, group);
+		if(group != null)
+			registerItem(name, block, group);
 		return Registry.register(Registry.BLOCK, new Identifier(AbsoluteCarnage.MOD_ID, name), block);
 	}
 	
@@ -48,6 +59,5 @@ public class BlockRegistry
 	public static void registerBlocks()
 	{
 		FlammableBlockRegistry.getDefaultInstance().add(Blocks.COBWEB, 100, 100);
-		//FlammableBlockRegistry.getDefaultInstance().add(Blocks.AIR, 50000, 50000);
 	}
 }

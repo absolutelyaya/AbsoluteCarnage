@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "absolute_carnage:block/wall_web_decal",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "absolute_carnage:block/wall_web_decal"
+    },
+    "facing=south": {
+      "model": "absolute_carnage:block/wall_web_decal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "absolute_carnage:block/wall_web_decal",
+      "y": 270
+    }
+  }
+}
