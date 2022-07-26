@@ -24,6 +24,7 @@ public class PlacedFeatureRegistry
 	public static final RegistryEntry<PlacedFeature> WEB_DECAL;
 	public static final RegistryEntry<PlacedFeature> NEST_HOLES;
 	public static final RegistryEntry<PlacedFeature> DANGLING_EGG;
+	public static final RegistryEntry<PlacedFeature> SKULLS;
 	
 	public static RegistryEntry<PlacedFeature> register(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier... modifiers) {
 		return BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, new Identifier(AbsoluteCarnage.MOD_ID, id), new PlacedFeature(RegistryEntry.upcast(registryEntry), List.of(modifiers)));
@@ -67,5 +68,10 @@ public class PlacedFeatureRegistry
 				CountPlacementModifier.of(200), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
 				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 24),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)), BiomePlacementModifier.of());
+		SKULLS = register("skulls", ConfiguredFeatureRegistry.SKULLS,
+				CountPlacementModifier.of(1), SquarePlacementModifier.of(),
+				HeightRangePlacementModifier.uniform(YOffset.BOTTOM, YOffset.fixed(0)),
+				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
+				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)), BiomePlacementModifier.of());
 	}
 }

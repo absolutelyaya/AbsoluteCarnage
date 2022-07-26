@@ -30,6 +30,7 @@ public class ConfiguredFeatureRegistry
 	public static final RegistryEntry<ConfiguredFeature<DecalFeatureConfig, ?>> WEB_DECAL;
 	public static final RegistryEntry<ConfiguredFeature<VegetationPatchFeatureConfig, ?>> SWARM_CLUSTER_PATCH;
 	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> NEST_HOLES;
+	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> SKULLS;
 	
 	private static BlockStateProvider deadbushFeature()
 	{
@@ -98,5 +99,7 @@ public class ConfiguredFeatureRegistry
 						0.1F, UniformIntProvider.create(2, 5), 0.7F));
 		NEST_HOLES = ConfiguredFeatures.register("nest_holes", Feature.SIMPLE_BLOCK,
 				new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockRegistry.NEST_BLOCK.getDefaultState().with(NestBlock.HOLES, true))));
+		SKULLS = ConfiguredFeatures.register("skulls", FeatureRegistry.SKULLS,
+				new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.SKELETON_SKULL.getDefaultState())));
 	}
 }
