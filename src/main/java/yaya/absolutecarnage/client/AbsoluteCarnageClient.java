@@ -4,14 +4,17 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
 import yaya.absolutecarnage.client.entities.other.SwarmClusterRenderer;
+import yaya.absolutecarnage.particles.FliesParticle;
 import yaya.absolutecarnage.registries.BlockRegistry;
 import yaya.absolutecarnage.registries.EntityRegistry;
 import yaya.absolutecarnage.client.entities.neutral.ChompyRenderer;
+import yaya.absolutecarnage.registries.ParticleRegistry;
 
 @Environment(EnvType.CLIENT)
 public class AbsoluteCarnageClient implements ClientModInitializer
@@ -29,5 +32,8 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.FLOOR_WEB_DECAL);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.WALL_WEB_DECAL);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.DANGLING_EGG);
+		
+		ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
+		registry.register(ParticleRegistry.FLIES, FliesParticle.FliesParticleFactory::new);
 	}
 }
