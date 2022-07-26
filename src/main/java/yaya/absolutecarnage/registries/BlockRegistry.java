@@ -10,6 +10,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.blocks.DanglingEggBlock;
 import yaya.absolutecarnage.blocks.FloorDecal;
 import yaya.absolutecarnage.blocks.NestBlock;
 import yaya.absolutecarnage.blocks.WallDecal;
@@ -33,6 +34,9 @@ public class BlockRegistry
 					.drops(new Identifier(AbsoluteCarnage.MOD_ID, "blocks/web_decal"))),
 			null, 100, 100);
 	public static final Block WALL_WEB_DECAL = register("wall_web_decal", new WallDecal(FabricBlockSettings.copyOf(FLOOR_WEB_DECAL).dropsLike(FLOOR_WEB_DECAL)),
+			null, 100, 100);
+	public static final Block DANGLING_EGG = register("dangling_egg", new DanglingEggBlock(FabricBlockSettings.of(Material.COBWEB)
+					.luminance(DanglingEggBlock.getLuminanceSupplier(10)).nonOpaque().noCollision().sounds(BlockSoundGroup.MUD)),
 			null, 100, 100);
 	
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)

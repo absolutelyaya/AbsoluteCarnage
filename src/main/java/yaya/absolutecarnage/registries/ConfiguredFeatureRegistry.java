@@ -15,6 +15,7 @@ import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 import yaya.absolutecarnage.biomes.features.DecalFeatureConfig;
+import yaya.absolutecarnage.blocks.DanglingEggBlock;
 import yaya.absolutecarnage.blocks.NestBlock;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class ConfiguredFeatureRegistry
 	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> DEADBUSH;
 	public static final RegistryEntry<ConfiguredFeature<BlockColumnFeatureConfig, ?>> WEB_COLUMN;
 	public static final RegistryEntry<ConfiguredFeature<BlockColumnFeatureConfig, ?>> HANGING_WEBS;
+	public static final RegistryEntry<ConfiguredFeature<BlockColumnFeatureConfig, ?>> DANGLING_EGG;
 	public static final RegistryEntry<ConfiguredFeature<DecalFeatureConfig, ?>> WEB_DECAL;
 	public static final RegistryEntry<ConfiguredFeature<VegetationPatchFeatureConfig, ?>> SWARM_CLUSTER_PATCH;
 	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> NEST_HOLES;
@@ -52,6 +54,11 @@ public class ConfiguredFeatureRegistry
 		return new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(DataPool.<BlockState>builder()
 				.add((hanging ? BlockRegistry.HANGING_WEB : Blocks.COBWEB).getDefaultState(), 1).build())).toPlace();
 	}
+	private static BlockStateProvider danglingEggFeature(int part)
+	{
+		return new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(DataPool.<BlockState>builder()
+				.add(BlockRegistry.DANGLING_EGG.getDefaultState().with(DanglingEggBlock.PART, part), 1).build())).toPlace();
+	}
 	
 	static
 	{
@@ -73,6 +80,15 @@ public class ConfiguredFeatureRegistry
 						new WeightedListIntProvider(DataPool.<IntProvider>builder()
 								.add(UniformIntProvider.create(1, 1), 1).build()), ceilingWebFeature(true))), Direction.DOWN,
 						BlockPredicate.IS_AIR, true));
+		DANGLING_EGG = ConfiguredFeatures.register("dangling_egg", Feature.BLOCK_COLUMN,
+				new BlockColumnFeatureConfig(List.of(
+						BlockColumnFeatureConfig.createLayer(new WeightedListIntProvider(DataPool.<IntProvider>builder()
+								.add(UniformIntProvider.create(1, 1), 1).build()), danglingEggFeature(1)),
+						BlockColumnFeatureConfig.createLayer(new WeightedListIntProvider(DataPool.<IntProvider>builder()
+								.add(UniformIntProvider.create(1, 7), 1).build()), danglingEggFeature(2)),
+						BlockColumnFeatureConfig.createLayer(new WeightedListIntProvider(DataPool.<IntProvider>builder()
+								.add(UniformIntProvider.create(1, 1), 1).build()), danglingEggFeature(3))
+						), Direction.DOWN, BlockPredicate.IS_AIR, true));
 		WEB_DECAL = ConfiguredFeatures.register("web_decal", FeatureRegistry.DECAL,
 				new DecalFeatureConfig(floorWebDecalFeature(), wallWebDecalFeature()));
 		SWARM_CLUSTER_PATCH = ConfiguredFeatures.register("swarm_cluster_patch", Feature.VEGETATION_PATCH,

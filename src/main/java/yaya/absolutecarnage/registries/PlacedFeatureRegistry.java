@@ -23,6 +23,7 @@ public class PlacedFeatureRegistry
 	public static final RegistryEntry<PlacedFeature> SWARM_CLUSTER_PATCH;
 	public static final RegistryEntry<PlacedFeature> WEB_DECAL;
 	public static final RegistryEntry<PlacedFeature> NEST_HOLES;
+	public static final RegistryEntry<PlacedFeature> DANGLING_EGG;
 	
 	public static RegistryEntry<PlacedFeature> register(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier... modifiers) {
 		return BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, new Identifier(AbsoluteCarnage.MOD_ID, id), new PlacedFeature(RegistryEntry.upcast(registryEntry), List.of(modifiers)));
@@ -62,5 +63,9 @@ public class PlacedFeatureRegistry
 				HeightRangePlacementModifier.uniform(YOffset.getBottom(), YOffset.fixed(8)),
 				BlockFilterPlacementModifier.of(BlockPredicate.matchingBlocks(BlockRegistry.NEST_BLOCK)),
 				BiomePlacementModifier.of());
+		DANGLING_EGG = register("dangling_egg", ConfiguredFeatureRegistry.DANGLING_EGG,
+				CountPlacementModifier.of(200), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
+				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 24),
+				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)), BiomePlacementModifier.of());
 	}
 }
