@@ -14,6 +14,7 @@ import yaya.absolutecarnage.particles.FliesParticle;
 import yaya.absolutecarnage.registries.BlockRegistry;
 import yaya.absolutecarnage.registries.EntityRegistry;
 import yaya.absolutecarnage.client.entities.neutral.ChompyRenderer;
+import yaya.absolutecarnage.registries.ModelPredicateRegistry;
 import yaya.absolutecarnage.registries.ParticleRegistry;
 
 @Environment(EnvType.CLIENT)
@@ -35,5 +36,7 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		
 		ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
 		registry.register(ParticleRegistry.FLIES, FliesParticle.FliesParticleFactory::new);
+		
+		ModelPredicateRegistry.registerModels();
 	}
 }

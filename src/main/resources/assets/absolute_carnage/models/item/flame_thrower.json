@@ -19,8 +19,8 @@
 			"to": [6, 6, -1],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 0, 0]},
 			"faces": {
-				"east": {"uv": [0, 7.5, 2, 9.5], "texture": "#0"},
-				"west": {"uv": [2, 7.5, 0, 9.5], "texture": "#0"}
+				"east": {"uv": [0, 9.5, 2, 7.5], "texture": "#0"},
+				"west": {"uv": [2, 9.5, 0, 7.5], "texture": "#0"}
 			}
 		},
 		{
@@ -179,5 +179,23 @@
 			"translation": [1, 2.25, 0],
 			"scale": [0.75, 0.75, 0.75]
 		}
-	}
+	},
+	"overrides": [
+		{
+			"predicate": {"minecraft:cooldown": 1},
+			"model": "absolute_carnage:item/flame_thrower_using2"
+		},
+		{
+			"predicate": {"minecraft:using": 1},
+			"model": "absolute_carnage:item/flame_thrower_using0"
+		},
+		{
+			"predicate": {"minecraft:using": 1, "minecraft:use_time": 0.25},
+			"model": "absolute_carnage:item/flame_thrower_using1"
+		},
+		{
+			"predicate": {"minecraft:using": 1, "minecraft:use_time": 0.5},
+			"model": "absolute_carnage:item/flame_thrower_using2"
+		}
+	]
 }
