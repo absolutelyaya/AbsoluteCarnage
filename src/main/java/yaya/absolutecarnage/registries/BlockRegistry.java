@@ -32,8 +32,8 @@ public class BlockRegistry
 					.strength(0.5f, 0f).sounds(BlockSoundGroup.WOOL).noCollision().nonOpaque().jumpVelocityMultiplier(0.8f)
 					.drops(new Identifier(AbsoluteCarnage.MOD_ID, "blocks/web_decal"))),
 			null, 100, 100);
-	public static final Block WALL_WEB_DECAL = register("wall_web_decal", new WallDecal(FabricBlockSettings.copy(FLOOR_WEB_DECAL)),
-			null, 100, 100); //TODO: Add wall web decal feature
+	public static final Block WALL_WEB_DECAL = register("wall_web_decal", new WallDecal(FabricBlockSettings.copyOf(FLOOR_WEB_DECAL).dropsLike(FLOOR_WEB_DECAL)),
+			null, 100, 100);
 	
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
 	{

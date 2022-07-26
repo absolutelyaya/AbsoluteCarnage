@@ -2,8 +2,6 @@ package yaya.absolutecarnage.registries;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Waterloggable;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.VerticalSurfaceType;
@@ -16,9 +14,9 @@ import net.minecraft.world.gen.blockpredicate.BlockPredicate;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
+import yaya.absolutecarnage.biomes.features.DecalFeatureConfig;
 import yaya.absolutecarnage.blocks.NestBlock;
 
-import javax.swing.*;
 import java.util.List;
 
 public class ConfiguredFeatureRegistry
@@ -27,7 +25,7 @@ public class ConfiguredFeatureRegistry
 	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> DEADBUSH;
 	public static final RegistryEntry<ConfiguredFeature<BlockColumnFeatureConfig, ?>> WEB_COLUMN;
 	public static final RegistryEntry<ConfiguredFeature<BlockColumnFeatureConfig, ?>> HANGING_WEBS;
-	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> WEB_DECAL;
+	public static final RegistryEntry<ConfiguredFeature<DecalFeatureConfig, ?>> WEB_DECAL;
 	public static final RegistryEntry<ConfiguredFeature<VegetationPatchFeatureConfig, ?>> SWARM_CLUSTER_PATCH;
 	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> NEST_HOLES;
 	
@@ -37,11 +35,16 @@ public class ConfiguredFeatureRegistry
 								.add(Blocks.DEAD_BUSH.getDefaultState(), 1).build())).toPlace();
 	}
 	
-	private static BlockStateProvider webDecalFeature()
+	private static BlockStateProvider floorWebDecalFeature()
 	{
 		return new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(DataPool.<BlockState>builder()
-				.add(BlockRegistry.FLOOR_WEB_DECAL.getDefaultState(), 2)
-				/*.add(BlockRegistry.WALL_WEB_DECAL.getDefaultState(), 1)*/.build())).toPlace();
+				.add(BlockRegistry.FLOOR_WEB_DECAL.getDefaultState(), 2).build())).toPlace();
+	}
+	
+	private static BlockStateProvider wallWebDecalFeature()
+	{
+		return new SimpleBlockFeatureConfig(new WeightedBlockStateProvider(DataPool.<BlockState>builder()
+				.add(BlockRegistry.WALL_WEB_DECAL.getDefaultState(), 2).build())).toPlace();
 	}
 	
 	private static BlockStateProvider ceilingWebFeature(boolean hanging)
@@ -70,8 +73,8 @@ public class ConfiguredFeatureRegistry
 						new WeightedListIntProvider(DataPool.<IntProvider>builder()
 								.add(UniformIntProvider.create(1, 1), 1).build()), ceilingWebFeature(true))), Direction.DOWN,
 						BlockPredicate.IS_AIR, true));
-		WEB_DECAL = ConfiguredFeatures.register("web_decal", Feature.SIMPLE_BLOCK,
-				new SimpleBlockFeatureConfig(webDecalFeature()));
+		WEB_DECAL = ConfiguredFeatures.register("web_decal", FeatureRegistry.DECAL,
+				new DecalFeatureConfig(floorWebDecalFeature(), wallWebDecalFeature()));
 		SWARM_CLUSTER_PATCH = ConfiguredFeatures.register("swarm_cluster_patch", Feature.VEGETATION_PATCH,
 				new VegetationPatchFeatureConfig(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE,
 						BlockStateProvider.of(BlockRegistry.SWARM_CLUSTER), PlacedFeatures.createEntry(WEB_DECAL),
