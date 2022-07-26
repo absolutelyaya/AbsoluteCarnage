@@ -55,7 +55,7 @@ public class FlameThrower extends RangedWeaponItem
 			Vec3d pos = user.getPos();
 			world.playSound(pos.x, pos.y, pos.z, SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS, 1f,
 					0.5f + user.getRandom().nextFloat() * 0.25f, true);
-			return TypedActionResult.success(itemStack);
+			return TypedActionResult.success(itemStack, false);
 		}
 	}
 }
