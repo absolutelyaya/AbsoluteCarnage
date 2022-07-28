@@ -2,17 +2,20 @@ package yaya.absolutecarnage.particles;
 
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.*;
 
+import java.util.List;
 import java.util.Random;
 
 //This class is a modified version of my Snowflake particle in the WeatherEffects mod. That's why some variable names are weird
 public class FliesParticle extends SpriteBillboardParticle
 {
+	private static final double MAX_SQUARED_COLLISION_CHECK_DISTANCE = MathHelper.square(100.0D);
 	boolean disappearing;
 	float groundTime, maxGroundTime, startScale, meltSpeed, ageOffset;
 	Vec2f wind = new Vec2f(0, 0);
@@ -67,6 +70,36 @@ public class FliesParticle extends SpriteBillboardParticle
 		}
 		velocityX = MathHelper.lerp(0.02D, velocityX, wind.x * 0.5);
 		velocityZ = MathHelper.lerp(0.02D, velocityZ, wind.y * 0.5);
+	}
+	
+	@Override
+	public void move(double dx, double dy, double dz)
+	{
+		double d = dx;
+		double e = dz;
+		if (this.collidesWithWorld && (dx != 0.0D || dy != 0.0D || dz != 0.0D) && dx * dx + dy * dy + dz * dz < MAX_SQUARED_COLLISION_CHECK_DISTANCE)
+		{
+			Vec3d vec3d = Entity.adjustMovementForCollisions(null, new Vec3d(dx, dy, dz), this.getBoundingBox(), this.world, List.of());
+			dx = vec3d.x;
+			dy = vec3d.y;
+			dz = vec3d.z;
+		}
+		
+		if (dx != 0.0D || dy != 0.0D || dz != 0.0D)
+		{
+			this.setBoundingBox(this.getBoundingBox().offset(dx, dy, dz));
+			this.repositionFromBoundingBox();
+		}
+		
+		if (d != dx)
+		{
+			this.velocityX = 0.0D;
+		}
+		
+		if (e != dz)
+		{
+			this.velocityZ = 0.0D;
+		}
 	}
 	
 	@Override
