@@ -3,10 +3,16 @@ package yaya.absolutecarnage.blocks;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.ShapeContext;
+import net.minecraft.client.util.telemetry.TelemetrySender;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.SimpleVoxelShape;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 import yaya.absolutecarnage.registries.BlockRegistry;
@@ -66,5 +72,15 @@ public class DanglingEggBlock extends Block
 	
 	public static ToIntFunction<BlockState> getLuminanceSupplier(int luminance) {
 		return (state) -> state.get(PART) == 3 ? luminance : 0;
+	}
+	
+	@Override
+	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
+	{
+		if(state.get(PART) == 2)
+			return Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 16.0, 10.0);
+		else if(state.get(PART) == 3)
+			return Block.createCuboidShape(2.0, 0.0, 2.0, 14.0, 16.0, 14.0);
+		return super.getOutlineShape(state, world, pos, context);
 	}
 }
