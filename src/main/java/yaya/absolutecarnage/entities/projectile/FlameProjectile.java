@@ -6,10 +6,14 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
@@ -80,6 +84,18 @@ public class FlameProjectile extends ThrownItemEntity
 		else if(side.getZ() != 0)
 			v = v.multiply(1, 1, 0);
 		setVelocity(v);
+	}
+	
+	@Override
+	public boolean updateMovementInFluid(TagKey<Fluid> tag, double speed)
+	{
+		boolean b = super.updateMovementInFluid(tag, speed);
+		if(b && tag.equals(FluidTags.WATER))
+		{
+			world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getX(), getY(), getZ(), 0, 0.1, 0);
+			kill();
+		}
+		return b;
 	}
 	
 	double randomParticleOffset(double offset)
