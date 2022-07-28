@@ -10,10 +10,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.blocks.DanglingEggBlock;
-import yaya.absolutecarnage.blocks.FloorDecal;
-import yaya.absolutecarnage.blocks.NestBlock;
-import yaya.absolutecarnage.blocks.WallDecal;
+import yaya.absolutecarnage.blocks.*;
 
 public class BlockRegistry
 {
@@ -38,6 +35,9 @@ public class BlockRegistry
 	public static final Block DANGLING_EGG = register("dangling_egg", new DanglingEggBlock(FabricBlockSettings.of(Material.COBWEB)
 					.luminance(DanglingEggBlock.getLuminanceSupplier(10)).nonOpaque().noCollision().sounds(BlockSoundGroup.MUD)),
 			null, 100, 100);
+	public static final Block INFESTED_CHEST = register("infested_chest", new InfestedChestBlock(FabricBlockSettings.of(Material.WOOD)
+					.nonOpaque()),
+			null);
 	
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
 	{

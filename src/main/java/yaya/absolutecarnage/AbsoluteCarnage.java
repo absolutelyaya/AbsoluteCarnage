@@ -2,7 +2,6 @@ package yaya.absolutecarnage;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.tinyremapper.extension.mixin.common.Logger;
-import net.minecraft.particle.ParticleType;
 import software.bernie.geckolib3.GeckoLib;
 import terrablender.api.SurfaceRuleManager;
 import terrablender.api.TerraBlenderApi;
@@ -20,6 +19,7 @@ public class AbsoluteCarnage implements ModInitializer, TerraBlenderApi
 		EntityRegistry.registerAttributes();
 		ItemRegistry.registerItems();
 		BlockRegistry.registerBlocks();
+		BlockEntityRegistry.registerBlockEntities();
 		ParticleRegistry.registerParticles();
 		
 		GeckoLib.initialize();

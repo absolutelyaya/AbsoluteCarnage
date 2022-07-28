@@ -1,9 +1,7 @@
 package yaya.absolutecarnage.particles;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleTypes;
@@ -16,7 +14,7 @@ import java.util.Random;
 public class FliesParticle extends SpriteBillboardParticle
 {
 	boolean disappearing;
-	float groundTime, maxGroundTime, startScale, meltSpeed;
+	float groundTime, maxGroundTime, startScale, meltSpeed, ageOffset;
 	Vec2f wind = new Vec2f(0, 0);
 	
 	protected FliesParticle(ClientWorld world, double x, double y, double z)
@@ -25,6 +23,7 @@ public class FliesParticle extends SpriteBillboardParticle
 		gravityStrength = 0f;
 		startScale = 0.05f + random.nextFloat() * 0.1f;
 		meltSpeed = 1f;
+		ageOffset = random.nextInt() * 9;
 	}
 	
 	@Override
@@ -56,7 +55,7 @@ public class FliesParticle extends SpriteBillboardParticle
 		}
 		else
 			setAlpha(alpha);
-		velocityY = Math.sin(age / 3f) * Math.sin(age / 20f) * 0.1f;
+		velocityY = MathHelper.lerp(0.02D, velocityY, Math.sin((age + ageOffset) / 3f) * Math.sin((age + ageOffset) / 20f));
 		wind();
 	}
 	
@@ -92,6 +91,7 @@ public class FliesParticle extends SpriteBillboardParticle
 			fly.setMaxGroundTime(10 + r.nextInt(15));
 			fly.setMaxAge(200);
 			fly.setAlpha(0f);
+			fly.setVelocity(velocityX, velocityY, velocityZ);
 			return fly;
 		}
 	}
