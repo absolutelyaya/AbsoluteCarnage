@@ -12,12 +12,6 @@ public record DecalFeatureConfig(BlockStateProvider floor, BlockStateProvider wa
 					BlockStateProvider.TYPE_CODEC.fieldOf("wall").forGetter((config -> config.wall)))
 					.apply(instance, DecalFeatureConfig::new));
 	
-	public DecalFeatureConfig(BlockStateProvider floor, BlockStateProvider wall)
-	{
-		this.floor = floor;
-		this.wall = wall;
-	}
-	
 	public BlockStateProvider floor()
 	{
 		return this.floor;

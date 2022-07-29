@@ -10,6 +10,7 @@ public class ParticleRegistry
 {
 	public static final DefaultParticleType FLIES = register("flies", FabricParticleTypes.simple());
 	
+	@SuppressWarnings("SameParameterValue")
 	static DefaultParticleType register(String name, DefaultParticleType type)
 	{
 		return Registry.register(Registry.PARTICLE_TYPE, new Identifier(AbsoluteCarnage.MOD_ID, name), type);

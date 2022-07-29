@@ -10,7 +10,6 @@ import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.noise.NoiseParametersKeys;
 import net.minecraft.world.gen.surfacebuilder.MaterialRules;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.blocks.NestBlock;
 import yaya.absolutecarnage.registries.BlockRegistry;
 
 public class SurfaceRuleData
@@ -18,8 +17,6 @@ public class SurfaceRuleData
 	private static final MaterialRules.MaterialRule PACKED_MUD = makeStateRule(Blocks.PACKED_MUD);
 	private static final MaterialRules.MaterialRule SANDSTONE = makeStateRule(Blocks.SANDSTONE);
 	private static final MaterialRules.MaterialRule NEST = makeStateRule(BlockRegistry.NEST_BLOCK);
-	private static final MaterialRules.MaterialRule NEST_HOLES =
-			MaterialRules.block(BlockRegistry.NEST_BLOCK.getDefaultState().with(NestBlock.HOLES, true));
 	private static final MaterialRules.MaterialRule BEDROCK = makeStateRule(Blocks.BEDROCK);
 	
 	private static final RegistryKey<Biome> INFESTED_CAVERN =

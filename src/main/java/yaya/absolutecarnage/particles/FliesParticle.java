@@ -52,31 +52,29 @@ public class FliesParticle extends SpriteBillboardParticle
 			setAlpha(alpha - groundTime / maxGroundTime);
 			scale = startScale * Math.max(alpha - groundTime / maxGroundTime, 0);
 			if ((groundTime += meltSpeed) > maxGroundTime)
-			{
 				markDead();
-			}
 		}
 		else
 			setAlpha(alpha);
-		velocityY = MathHelper.lerp(0.02D, velocityY, Math.sin((age + ageOffset) / 3f) * Math.sin((age + ageOffset) / 20f));
 		wind();
 	}
 	
 	void wind()
 	{
 		if(age % 20 == 1)
-		{
 			wind = new Vec2f((random.nextFloat() - 0.5f) * 2f, (random.nextFloat() - 0.5f) * 2f);
-		}
 		velocityX = MathHelper.lerp(0.02D, velocityX, wind.x * 0.5);
+		velocityY = MathHelper.lerp(0.02D, velocityY, Math.sin((age + ageOffset) / 3f) * Math.sin((age + ageOffset) / 20f));
 		velocityZ = MathHelper.lerp(0.02D, velocityZ, wind.y * 0.5);
+		//TODO: improve movement to look more erratic/insect like
 	}
 	
 	@Override
 	public void move(double dx, double dy, double dz)
 	{
-		double d = dx;
-		double e = dz;
+		double x = dx;
+		double y = dy;
+		double z = dz;
 		if (this.collidesWithWorld && (dx != 0.0D || dy != 0.0D || dz != 0.0D) && dx * dx + dy * dy + dz * dz < MAX_SQUARED_COLLISION_CHECK_DISTANCE)
 		{
 			Vec3d vec3d = Entity.adjustMovementForCollisions(null, new Vec3d(dx, dy, dz), this.getBoundingBox(), this.world, List.of());
@@ -91,15 +89,12 @@ public class FliesParticle extends SpriteBillboardParticle
 			this.repositionFromBoundingBox();
 		}
 		
-		if (d != dx)
-		{
+		if (x != dx)
 			this.velocityX = 0.0D;
-		}
-		
-		if (e != dz)
-		{
+		if (y != dy)
+			this.velocityY = 0.0D;
+		if (z != dz)
 			this.velocityZ = 0.0D;
-		}
 	}
 	
 	@Override

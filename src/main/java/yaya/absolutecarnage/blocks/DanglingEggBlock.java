@@ -4,14 +4,11 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShapeContext;
-import net.minecraft.client.util.telemetry.TelemetrySender;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.SimpleVoxelShape;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
@@ -19,6 +16,7 @@ import yaya.absolutecarnage.registries.BlockRegistry;
 
 import java.util.function.ToIntFunction;
 
+@SuppressWarnings("deprecation")
 public class DanglingEggBlock extends Block
 {
 	public static final IntProperty PART = IntProperty.of("part", 1, 3);

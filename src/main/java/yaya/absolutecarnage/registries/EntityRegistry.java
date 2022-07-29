@@ -40,6 +40,7 @@ public class EntityRegistry
 					.dimensions(EntityDimensions.changing(0.25F, 0.25F))
 					.trackRangeBlocks(4).trackedUpdateRate(10).build());
 	
+	@SuppressWarnings("ConstantConditions")
 	public static void registerAttributes()
 	{
 		FabricDefaultAttributeRegistry.register(CHOMPY, ChompyEntity.setAttributes());

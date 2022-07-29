@@ -14,6 +14,7 @@ import net.minecraft.world.WorldView;
 
 import java.util.Map;
 
+@SuppressWarnings("deprecation")
 public class WallDecal extends Block
 {
 	public static final DirectionProperty FACING = HorizontalFacingBlock.FACING;

@@ -5,7 +5,6 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LidOpenable;
 import net.minecraft.client.util.math.Vector3d;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -26,7 +25,6 @@ public class InfestedChestBlockEntity extends ChestBlockEntity implements IAnima
 	private static final AnimationBuilder OPEN_ANIM = new AnimationBuilder().addAnimation("open", false);
 	private static final AnimationBuilder OPENLOOP_ANIM = new AnimationBuilder().addAnimation("openloop", true);
 	private static final AnimationBuilder CLOSE_ANIM = new AnimationBuilder().addAnimation("close", false);
-	
 	protected byte animation = ANIMATION_IDLE;
 	private static final byte ANIMATION_IDLE = 0;
 	private static final byte ANIMATION_OPEN = 1;

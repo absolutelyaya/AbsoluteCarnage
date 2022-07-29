@@ -11,6 +11,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
 
+@SuppressWarnings("deprecation")
 public class FloorDecal extends Block
 {
 	public FloorDecal(Settings settings)

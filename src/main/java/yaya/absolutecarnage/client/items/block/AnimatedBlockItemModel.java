@@ -3,7 +3,6 @@ package yaya.absolutecarnage.client.items.block;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.entities.blocks.InfestedChestBlockEntity;
 import yaya.absolutecarnage.items.AnimatedBlockItem;
 
 public class AnimatedBlockItemModel extends AnimatedGeoModel<AnimatedBlockItem>

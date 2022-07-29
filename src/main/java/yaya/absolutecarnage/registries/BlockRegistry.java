@@ -39,6 +39,7 @@ public class BlockRegistry
 					.nonOpaque()),
 			null);
 	
+	@SuppressWarnings("SameParameterValue")
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
 	{
 		FlammableBlockRegistry.getDefaultInstance().add(block, burn, spread);

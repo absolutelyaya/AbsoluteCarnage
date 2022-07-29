@@ -11,7 +11,7 @@ import yaya.absolutecarnage.entities.blocks.InfestedChestBlockEntity;
 
 public class InfestedChestRenderer extends GeoBlockRenderer<InfestedChestBlockEntity>
 {
-	public InfestedChestRenderer(BlockEntityRendererFactory.Context ctx)
+	public InfestedChestRenderer(BlockEntityRendererFactory.Context ignored)
 	{
 		super(new InfestedChestModel());
 	}

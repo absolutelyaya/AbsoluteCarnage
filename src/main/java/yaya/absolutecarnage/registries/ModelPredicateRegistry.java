@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
+@SuppressWarnings("deprecation")
 public class ModelPredicateRegistry
 {
 	public static void registerModels()
@@ -12,6 +13,7 @@ public class ModelPredicateRegistry
 		registerHoldUsageItem(ItemRegistry.FLAME_THROWER);
 	}
 	
+	@SuppressWarnings("SameParameterValue")
 	private static void registerHoldUsageItem(Item item)
 	{
 		FabricModelPredicateProviderRegistry.register(item, new Identifier("use_time"),
