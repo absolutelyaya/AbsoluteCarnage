@@ -10,8 +10,12 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import software.bernie.geckolib3.core.IAnimatable;
@@ -162,10 +166,7 @@ public class SwarmCluster extends MobEntity implements IAnimatable
 		return factory;
 	}
 	
-	public boolean canSpawn(WorldView world)
-	{
-		return !world.containsFluid(this.getBoundingBox()) && world.doesNotIntersectEntities(this) &&
-				!world.getBlockState(getBlockPos().down()).isIn(BlockTagRegistry.SWARMLING_SPAWNABLE) && !world.isAir(getBlockPos().down()) &&
-					   !world.isSkyVisible(getBlockPos());
+	public static boolean canSpawn(EntityType<? extends LivingEntity> type, ServerWorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
+		return world.getBlockState(pos.down()).isIn(BlockTagRegistry.SWARMLING_SPAWNABLE) && !world.isSkyVisible(pos);
 	}
 }

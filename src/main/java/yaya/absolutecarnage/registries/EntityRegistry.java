@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.Heightmap;
 import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.entities.projectile.FlameProjectile;
 import yaya.absolutecarnage.entities.projectile.ToxicSpit;
@@ -29,8 +30,9 @@ public class EntityRegistry
 					.trackRangeBlocks(4).trackedUpdateRate(10).build());
 	public static final EntityType<SwarmCluster> SWARM_CLUSTER = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(AbsoluteCarnage.MOD_ID, "swarm_cluster"),
-			FabricEntityTypeBuilder.create(SpawnGroup.MONSTER, SwarmCluster::new)
+			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.MONSTER).entityFactory(SwarmCluster::new)
 					.dimensions(EntityDimensions.fixed(0.75f, 1f))
+					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmCluster::canSpawn)
 					.build());
 	public static final EntityType<FlameProjectile> FLAME_PROJECTILE = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(AbsoluteCarnage.MOD_ID, "flame_projectile"),
