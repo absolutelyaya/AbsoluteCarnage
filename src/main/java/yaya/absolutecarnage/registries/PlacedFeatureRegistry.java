@@ -25,6 +25,7 @@ public class PlacedFeatureRegistry
 	public static final RegistryEntry<PlacedFeature> NEST_HOLES;
 	public static final RegistryEntry<PlacedFeature> DANGLING_EGG;
 	public static final RegistryEntry<PlacedFeature> SKULLS;
+	public static final RegistryEntry<PlacedFeature> SWARM_HILL;
 	
 	public static RegistryEntry<PlacedFeature> register(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier... modifiers) {
 		return BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, new Identifier(AbsoluteCarnage.MOD_ID, id), new PlacedFeature(RegistryEntry.upcast(registryEntry), List.of(modifiers)));
@@ -73,5 +74,7 @@ public class PlacedFeatureRegistry
 				HeightRangePlacementModifier.uniform(YOffset.BOTTOM, YOffset.fixed(0)),
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)), BiomePlacementModifier.of());
+		SWARM_HILL = register("swarm_hill", ConfiguredFeatureRegistry.SWARM_HILL, CountPlacementModifier.of(1),
+				PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, SquarePlacementModifier.of(), RarityFilterPlacementModifier.of(60));
 	}
 }

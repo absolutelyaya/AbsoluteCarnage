@@ -15,6 +15,7 @@ import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.stateprovider.BlockStateProvider;
 import net.minecraft.world.gen.stateprovider.WeightedBlockStateProvider;
 import yaya.absolutecarnage.biomes.features.DecalFeatureConfig;
+import yaya.absolutecarnage.biomes.features.SwarmHillFeatureConfig;
 import yaya.absolutecarnage.blocks.DanglingEggBlock;
 import yaya.absolutecarnage.blocks.NestBlock;
 
@@ -31,6 +32,7 @@ public class ConfiguredFeatureRegistry
 	public static final RegistryEntry<ConfiguredFeature<VegetationPatchFeatureConfig, ?>> SWARM_CLUSTER_PATCH;
 	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> NEST_HOLES;
 	public static final RegistryEntry<ConfiguredFeature<SimpleBlockFeatureConfig, ?>> SKULLS;
+	public static final RegistryEntry<ConfiguredFeature<SwarmHillFeatureConfig, ?>> SWARM_HILL;
 	
 	private static BlockStateProvider deadbushFeature()
 	{
@@ -101,5 +103,8 @@ public class ConfiguredFeatureRegistry
 				new SimpleBlockFeatureConfig(BlockStateProvider.of(BlockRegistry.NEST_BLOCK.getDefaultState().with(NestBlock.HOLES, true))));
 		SKULLS = ConfiguredFeatures.register("skulls", FeatureRegistry.SKULLS,
 				new SimpleBlockFeatureConfig(BlockStateProvider.of(Blocks.SKELETON_SKULL.getDefaultState())));
+		SWARM_HILL = ConfiguredFeatures.register("swarm_hill", FeatureRegistry.SWARM_HILL,
+				new SwarmHillFeatureConfig(BlockRegistry.DUNE.getDefaultState(), BlockRegistry.HARDENED_SANDSTONE.getDefaultState(),
+						ConstantIntProvider.create(5), UniformIntProvider.create(3, 8), ConstantIntProvider.create(6)));
 	}
 }
