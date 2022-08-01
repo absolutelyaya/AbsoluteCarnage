@@ -8,6 +8,7 @@ import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.items.FlameThrower;
 import yaya.absolutecarnage.items.JungleSeeds;
+import yaya.absolutecarnage.items.trinkets.WingTrinketItem;
 
 public class ItemRegistry
 {
@@ -15,6 +16,9 @@ public class ItemRegistry
 			new JungleSeeds(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE).rarity(Rarity.RARE)));
 	public static final Item FLAME_THROWER = registerItem("flame_thrower",
 			new FlameThrower(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE).maxCount(1)));
+	
+	public static final Item CUTICLE_WINGS = registerItem("cuticle_wings",
+			new WingTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1), 0.25f));
 	
 	public static Item registerItem(String name, Item item)
 	{

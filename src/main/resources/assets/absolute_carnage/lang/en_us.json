@@ -2,11 +2,18 @@
   "item.absolute_carnage.jungle_seeds": "Jungle Seeds",
   "item.absolute_carnage.jungle_seeds.desc1": "Maybe planting them into a smaller space ",
   "item.absolute_carnage.jungle_seeds.desc2": "will keep them from overgrowing...",
+  "item.absolute_carnage.cuticle_wings": "Cuticle Wings",
 
   "entity.absolute_carnage.chompy": "Chompy",
   "entity.absolute_carnage.chomper": "Chomper",
   "entity.absolute_carnage.swarm_cluster": "Swarm Cluster",
   "entity.absolute_carnage.swarmling_spawn": "Swarmling Spawn",
 
-  "itemGroup.absolute_carnage.carnage_main": "Absolute Carnage"
+  "itemGroup.absolute_carnage.carnage_main": "Absolute Carnage",
+
+  "key.category.absolute_carnage": "Absolute Carnage",
+
+  "key.absolute_carnage.directional_dash": "Directional Dash",
+
+  "msg.absolute_carnage.wings_cooldown": "§cWings on cooldown!"
 }
