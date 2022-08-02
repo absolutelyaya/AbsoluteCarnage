@@ -76,8 +76,8 @@ public class PlacedFeatureRegistry
 				HeightRangePlacementModifier.uniform(YOffset.BOTTOM, YOffset.fixed(0)),
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)), BiomePlacementModifier.of());
-		//TODO: fix placement
 		SWARM_HILL = register("swarm_hill", ConfiguredFeatureRegistry.SWARM_HILL, CountPlacementModifier.of(1),
-				PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, SquarePlacementModifier.of(), RarityFilterPlacementModifier.of(60));
+				HeightRangePlacementModifier.uniform(YOffset.aboveBottom(32), YOffset.fixed(45)), SquarePlacementModifier.of(), RarityFilterPlacementModifier.of(20),
+				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.IS_AIR, BlockPredicate.solid(), 32));
 	}
 }

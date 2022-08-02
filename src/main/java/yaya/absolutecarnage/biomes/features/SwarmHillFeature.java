@@ -5,13 +5,17 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.StructureWorldAccess;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.util.FeatureContext;
+import yaya.absolutecarnage.registries.BiomeRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class SwarmHillFeature extends Feature<SwarmHillFeatureConfig>
 {
@@ -24,7 +28,7 @@ public class SwarmHillFeature extends Feature<SwarmHillFeatureConfig>
 	public boolean generate(FeatureContext context)
 	{
 		Random random = context.getRandom();
-		BlockPos origin = context.getOrigin()/*.add(8, 0, 8)*/;
+		BlockPos origin = context.getOrigin();
 		SwarmHillFeatureConfig config = (SwarmHillFeatureConfig)context.getConfig();
 		int radius = config.radius().get(random);
 		int maxHeight = config.height().getMax();
@@ -33,8 +37,14 @@ public class SwarmHillFeature extends Feature<SwarmHillFeatureConfig>
 		StructureWorldAccess world = context.getWorld();
 		BlockState wall = config.wall();
 		BlockState floor = config.floor();
-		int bottom = world.getBottomY() + 20;
+		int bottom = Math.max(origin.getY() - (random.nextInt(10) + 15), world.getBottomY() + 20);
 		Map<BlockPos, Byte> blocks = new HashMap<>();
+		
+		origin = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, origin);
+		
+		Optional<RegistryKey<Biome>> b = world.getBiome(origin).getKey();
+		if(b.isPresent() && !b.get().equals(BiomeRegistry.CRAWLING_SANDS))
+			return false;
 		
 		for (int degrees = 0; degrees < 360; degrees += 45)
 		{
@@ -48,7 +58,7 @@ public class SwarmHillFeature extends Feature<SwarmHillFeatureConfig>
 			{
 				for(int y = -patchRadius; y < patchRadius; y++)
 				{
-					BlockPos pos2 = world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, pos.add(x, 0, y)).down();
+					BlockPos pos2 = world.getTopPosition(Heightmap.Type.WORLD_SURFACE, pos.add(x, 0, y)).down();
 					if(random.nextDouble() > pos2.getSquaredDistance(pos) / (patchRadius * patchRadius))
 					{
 						if(!world.getBlockState(pos2.down()).isSolidBlock(world, pos2.down()))
