@@ -27,6 +27,8 @@ public class PlacedFeatureRegistry
 	public static final RegistryEntry<PlacedFeature> SKULLS;
 	public static final RegistryEntry<PlacedFeature> SWARM_HILL;
 	
+	static final PlacementModifier UNDERGROUND_RANGE = HeightRangePlacementModifier.uniform(YOffset.BOTTOM, YOffset.fixed(50));
+	
 	public static RegistryEntry<PlacedFeature> register(String id, RegistryEntry<? extends ConfiguredFeature<?, ?>> registryEntry, PlacementModifier... modifiers) {
 		return BuiltinRegistries.add(BuiltinRegistries.PLACED_FEATURE, new Identifier(AbsoluteCarnage.MOD_ID, id), new PlacedFeature(RegistryEntry.upcast(registryEntry), List.of(modifiers)));
 	}
@@ -44,12 +46,12 @@ public class PlacedFeatureRegistry
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)), BiomePlacementModifier.of());
 		WEB_COLUMN = register("web_column", ConfiguredFeatureRegistry.WEB_COLUMN,
-				CountPlacementModifier.of(256), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
-				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 24),
+				CountPlacementModifier.of(256), SquarePlacementModifier.of(), UNDERGROUND_RANGE,
+				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 6),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)), BiomePlacementModifier.of());
 		HANGING_WEBS = register("hanging_webs", ConfiguredFeatureRegistry.HANGING_WEBS,
-				CountPlacementModifier.of(256), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
-				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 24),
+				CountPlacementModifier.of(256), SquarePlacementModifier.of(), UNDERGROUND_RANGE,
+				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 6),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)), BiomePlacementModifier.of());
 		SWARM_CLUSTER_PATCH = register("swarm_cluster_patch", ConfiguredFeatureRegistry.SWARM_CLUSTER_PATCH,
 				CountPlacementModifier.of(3), SquarePlacementModifier.of(),
@@ -57,7 +59,7 @@ public class PlacedFeatureRegistry
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)), BiomePlacementModifier.of());
 		WEB_DECAL = register("web_decal", ConfiguredFeatureRegistry.WEB_DECAL,
-				CountPlacementModifier.of(256), CountPlacementModifier.of(5), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
+				CountPlacementModifier.of(256), CountPlacementModifier.of(5), SquarePlacementModifier.of(), UNDERGROUND_RANGE,
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 12),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)), BiomePlacementModifier.of());
 		NEST_HOLES = register("nest_holes", ConfiguredFeatureRegistry.NEST_HOLES,
@@ -66,14 +68,15 @@ public class PlacedFeatureRegistry
 				BlockFilterPlacementModifier.of(BlockPredicate.matchingBlocks(BlockRegistry.NEST_BLOCK)),
 				BiomePlacementModifier.of());
 		DANGLING_EGG = register("dangling_egg", ConfiguredFeatureRegistry.DANGLING_EGG,
-				CountPlacementModifier.of(200), SquarePlacementModifier.of(), PlacedFeatures.BOTTOM_TO_120_RANGE,
-				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 24),
+				CountPlacementModifier.of(200), SquarePlacementModifier.of(), UNDERGROUND_RANGE,
+				EnvironmentScanPlacementModifier.of(Direction.UP, BlockPredicate.matchingBlockTag(BlockTagRegistry.INFESTED_CAVERN_REPLACEABLE), BlockPredicate.IS_AIR, 6),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(-1)), BiomePlacementModifier.of());
 		SKULLS = register("skulls", ConfiguredFeatureRegistry.SKULLS,
 				CountPlacementModifier.of(1), SquarePlacementModifier.of(),
 				HeightRangePlacementModifier.uniform(YOffset.BOTTOM, YOffset.fixed(0)),
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.solid(), BlockPredicate.IS_AIR, 12),
 				RandomOffsetPlacementModifier.vertically(ConstantIntProvider.create(1)), BiomePlacementModifier.of());
+		//TODO: fix placement
 		SWARM_HILL = register("swarm_hill", ConfiguredFeatureRegistry.SWARM_HILL, CountPlacementModifier.of(1),
 				PlacedFeatures.MOTION_BLOCKING_HEIGHTMAP, SquarePlacementModifier.of(), RarityFilterPlacementModifier.of(60));
 	}
