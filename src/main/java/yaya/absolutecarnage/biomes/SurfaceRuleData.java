@@ -16,11 +16,12 @@ public class SurfaceRuleData
 {
 	private static final MaterialRules.MaterialRule PACKED_MUD = makeStateRule(Blocks.PACKED_MUD);
 	private static final MaterialRules.MaterialRule SANDSTONE = makeStateRule(Blocks.SANDSTONE);
+	private static final MaterialRules.MaterialRule SAND = makeStateRule(Blocks.SAND);
 	private static final MaterialRules.MaterialRule NEST = makeStateRule(BlockRegistry.NEST_BLOCK);
 	private static final MaterialRules.MaterialRule BEDROCK = makeStateRule(Blocks.BEDROCK);
 	
 	private static final RegistryKey<Biome> INFESTED_CAVERN =
-			RegistryKey.of(Registry.BIOME_KEY, new Identifier(AbsoluteCarnage.MOD_ID, "infested_cavern"));
+			RegistryKey.of(Registry.BIOME_KEY, new Identifier(AbsoluteCarnage.MOD_ID, "crawling_sands"));
 	
 	public static MaterialRules.MaterialRule makeRules()
 	{
@@ -28,6 +29,10 @@ public class SurfaceRuleData
 		return MaterialRules.sequence(
 				MaterialRules.condition(MaterialRules.verticalGradient("bedrock_floor", YOffset.getBottom(), YOffset.aboveBottom(5)), BEDROCK),
 				MaterialRules.condition(MaterialRules.verticalGradient("deepslate", YOffset.fixed(0), YOffset.fixed(8)), NEST),
+				MaterialRules.sequence(MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR_WITH_SURFACE_DEPTH,
+						MaterialRules.sequence(MaterialRules.condition(MaterialRules.STONE_DEPTH_CEILING, SANDSTONE)))),
+				MaterialRules.condition(MaterialRules.biome(INFESTED_CAVERN), MaterialRules.condition(MaterialRules.surface(),
+						MaterialRules.condition(MaterialRules.STONE_DEPTH_FLOOR_WITH_SURFACE_DEPTH, SAND))),
 				MaterialRules.condition(MaterialRules.biome(INFESTED_CAVERN), MaterialRules.condition(noise, SANDSTONE)),
 				MaterialRules.condition(MaterialRules.biome(INFESTED_CAVERN), PACKED_MUD)
 		);
