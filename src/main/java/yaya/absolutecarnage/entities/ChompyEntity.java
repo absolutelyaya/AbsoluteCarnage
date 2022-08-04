@@ -22,7 +22,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import software.bernie.geckolib3.core.AnimationState;
@@ -176,7 +175,8 @@ public class ChompyEntity extends TameableEntity implements IAnimatable
 						itemStack.decrement(1);
 					}
 					
-					this.heal((float)item.getFoodComponent().getHunger());
+					if(item.getFoodComponent()!= null)
+						this.heal((float)item.getFoodComponent().getHunger());
 					return ActionResult.SUCCESS;
 				}
 			}
@@ -237,7 +237,7 @@ public class ChompyEntity extends TameableEntity implements IAnimatable
 	public boolean isBreedingItem(ItemStack stack)
 	{
 		Item item = stack.getItem();
-		return item.isFood() && item.getFoodComponent().isMeat();
+		return item.isFood() && item.getFoodComponent() != null && item.getFoodComponent().isMeat();
 	}
 	
 	boolean isLifeFood(LivingEntity entity)

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "part=1": {"model": "absolute_carnage:block/dangling_egg1"},
+    "part=2": {"model": "absolute_carnage:block/dangling_egg2"},
+    "part=3": {"model": "absolute_carnage:block/dangling_egg3"}
+  }
+}

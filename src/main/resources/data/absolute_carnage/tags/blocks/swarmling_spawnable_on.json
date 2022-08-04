@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:packed_mud",
+    "minecraft:sandstone",
+    "minecraft:sand",
+    "absolute_carnage:hardened_sandstone",
+    "absolute_carnage:nest_block",
+    "absolute_carnage:swarm_cluster_block",
+    "absolute_carnage:dune"
+  ]
+}

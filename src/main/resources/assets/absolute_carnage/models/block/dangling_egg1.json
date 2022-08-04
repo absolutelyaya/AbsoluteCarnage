@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "absolute_carnage:block/dangling_egg1"
+  }
+}

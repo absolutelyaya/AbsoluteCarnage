@@ -1,0 +1,9 @@
+{
+  "variants": {
+    "":
+    [
+      { "model": "absolute_carnage:block/floor_web_decal", "weight": 5 },
+      { "model": "absolute_carnage:block/floor_web_decal1", "weight": 1 }
+    ]
+  }
+}

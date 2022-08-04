@@ -1,0 +1,18 @@
+{
+  "parent": "absolute_carnage:item/flame_thrower",
+  "textures": {
+    "0": "absolute_carnage:item/flame_thrower3"
+  },
+  "display": {
+    "firstperson_righthand": {
+      "rotation": [25, 19, 9.16],
+      "translation": [3, 4, 3.75],
+      "scale": [0.8, 0.8, 0.8]
+    },
+    "firstperson_lefthand": {
+      "rotation": [25, -10, 9.16],
+      "translation": [3, 4, 3.75],
+      "scale": [0.8, 0.8, 0.8]
+    }
+  }
+}

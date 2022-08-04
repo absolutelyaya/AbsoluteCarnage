@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "holes=false":
+    [
+      { "model": "absolute_carnage:block/nest_block", "weight": 125 },
+      { "model": "absolute_carnage:block/nest_block", "y": 90, "weight": 125 },
+      { "model": "absolute_carnage:block/nest_block", "y": 180, "weight": 125 },
+      { "model": "absolute_carnage:block/nest_block", "y": 270, "weight": 125 },
+      { "model": "absolute_carnage:block/nest_block_sus", "weight": 1 }
+    ],
+    "holes=true":
+    [
+      { "model": "absolute_carnage:block/nest_block1" },
+      { "model": "absolute_carnage:block/nest_block1", "y": 90 },
+      { "model": "absolute_carnage:block/nest_block1", "y": 180 },
+      { "model": "absolute_carnage:block/nest_block1", "y": 270 }
+    ]
+  }
+}

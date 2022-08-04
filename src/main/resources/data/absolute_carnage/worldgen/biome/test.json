@@ -1,0 +1,22 @@
+{
+  "temperature": 2,
+  "downfall": 0,
+  "precipitation": "none",
+  "creature_spawn_probability": 1,
+  "effects": {
+    "sky_color": 6307117,
+    "fog_color": 13808270,
+    "water_color": 13016431,
+    "water_fog_color": 9329218,
+    "grass_color": 12552018,
+    "foliage_color": 12552018
+  },
+  "spawners": {},
+  "spawn_costs": {},
+  "carvers": {},
+  "features": [
+    [
+      "absolute_carnage:swarm_hill"
+    ]
+  ]
+}
