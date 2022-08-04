@@ -79,10 +79,8 @@ public class PlacedFeatureRegistry
 		SWARM_HILL = register("swarm_hill", ConfiguredFeatureRegistry.SWARM_HILL, CountPlacementModifier.of(1),
 				HeightRangePlacementModifier.uniform(YOffset.aboveBottom(32), YOffset.fixed(45)), SquarePlacementModifier.of(), RarityFilterPlacementModifier.of(20),
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.IS_AIR, BlockPredicate.solid(), 32));
-		//TODO: add surface features
 		DESERT_BOULDER = register("desert_boulder", ConfiguredFeatureRegistry.DESERT_BOULDER, CountPlacementModifier.of(1),
 				SquarePlacementModifier.of(), HeightmapPlacementModifier.of(Heightmap.Type.WORLD_SURFACE_WG),
 				BiomePlacementModifier.of(), RarityFilterPlacementModifier.of(4));
-		//TODO: add surface skeletal remains
 	}
 }
