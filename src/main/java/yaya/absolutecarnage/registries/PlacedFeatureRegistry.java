@@ -5,11 +5,10 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.gen.YOffset;
 import net.minecraft.world.gen.blockpredicate.BlockPredicate;
-import net.minecraft.world.gen.feature.ConfiguredFeature;
-import net.minecraft.world.gen.feature.PlacedFeature;
-import net.minecraft.world.gen.feature.PlacedFeatures;
+import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.placementmodifier.*;
 import yaya.absolutecarnage.AbsoluteCarnage;
 
@@ -26,6 +25,7 @@ public class PlacedFeatureRegistry
 	public static final RegistryEntry<PlacedFeature> DANGLING_EGG;
 	public static final RegistryEntry<PlacedFeature> SKULLS;
 	public static final RegistryEntry<PlacedFeature> SWARM_HILL;
+	public static final RegistryEntry<PlacedFeature> DESERT_BOULDER;
 	
 	static final PlacementModifier UNDERGROUND_RANGE = HeightRangePlacementModifier.uniform(YOffset.BOTTOM, YOffset.fixed(50));
 	
@@ -79,5 +79,10 @@ public class PlacedFeatureRegistry
 		SWARM_HILL = register("swarm_hill", ConfiguredFeatureRegistry.SWARM_HILL, CountPlacementModifier.of(1),
 				HeightRangePlacementModifier.uniform(YOffset.aboveBottom(32), YOffset.fixed(45)), SquarePlacementModifier.of(), RarityFilterPlacementModifier.of(20),
 				EnvironmentScanPlacementModifier.of(Direction.DOWN, BlockPredicate.IS_AIR, BlockPredicate.solid(), 32));
+		//TODO: add surface features
+		DESERT_BOULDER = register("desert_boulder", ConfiguredFeatureRegistry.DESERT_BOULDER, CountPlacementModifier.of(1),
+				SquarePlacementModifier.of(), HeightmapPlacementModifier.of(Heightmap.Type.WORLD_SURFACE_WG),
+				BiomePlacementModifier.of(), RarityFilterPlacementModifier.of(4));
+		//TODO: add surface skeletal remains
 	}
 }
