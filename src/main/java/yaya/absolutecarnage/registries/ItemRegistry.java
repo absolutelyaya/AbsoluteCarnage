@@ -6,6 +6,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.items.AnimatedBlockItem;
 import yaya.absolutecarnage.items.FlameThrower;
 import yaya.absolutecarnage.items.JungleSeeds;
 import yaya.absolutecarnage.items.trinkets.WingTrinketItem;
@@ -19,6 +20,9 @@ public class ItemRegistry
 	
 	public static final Item CUTICLE_WINGS = registerItem("cuticle_wings",
 			new WingTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1), 0.25f));
+	
+	public static final Item INFESTED_CHEST = registerItem("infested_chest",
+			new AnimatedBlockItem(BlockRegistry.INFESTED_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
 	
 	public static Item registerItem(String name, Item item)
 	{

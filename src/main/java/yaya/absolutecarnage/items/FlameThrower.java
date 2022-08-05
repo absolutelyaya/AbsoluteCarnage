@@ -1,12 +1,14 @@
 package yaya.absolutecarnage.items;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.UseAction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import yaya.absolutecarnage.entities.projectile.FlameProjectile;
@@ -32,7 +34,7 @@ public class FlameThrower extends RangedWeaponItem
 		return 10;
 	}
 	
-	void fire(PlayerEntity user)
+	void fire(LivingEntity user)
 	{
 		FlameProjectile projectile = FlameProjectile.spawn(user, user.world);
 		Vec3d dir = user.getRotationVector();
@@ -49,13 +51,47 @@ public class FlameThrower extends RangedWeaponItem
 		}
 		else
 		{
-			//user.getItemCooldownManager().set(this, 1);
+			user.setCurrentHand(hand);
+			return TypedActionResult.success(itemStack, false);
+		}
+	}
+	
+	@Override
+	public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks)
+	{
+		if(remainingUseTicks % (remainingUseTicks < getMaxUseTime(stack) / 2 ? 3 : 6) == 0)
+		{
 			for (int i = 0; i < 5; i++)
 				fire(user);
 			Vec3d pos = user.getPos();
 			world.playSound(pos.x, pos.y, pos.z, SoundEvents.ITEM_FIRECHARGE_USE, SoundCategory.PLAYERS, 1f,
 					0.5f + user.getRandom().nextFloat() * 0.25f, true);
-			return TypedActionResult.success(itemStack);
 		}
+		if(user instanceof PlayerEntity)
+		{
+			if (remainingUseTicks == 1)
+			{
+				((PlayerEntity)user).getItemCooldownManager().set(this, 300);
+				((PlayerEntity)user).sendMessage(Text.translatable("msg.absolute_carnage.flamethrower.overheat"), true);
+			}
+		}
+	}
+	
+	@Override
+	public void onStoppedUsing(ItemStack stack, World world, LivingEntity user, int remainingUseTicks)
+	{
+		if(user instanceof PlayerEntity && remainingUseTicks > 0)
+			((PlayerEntity)user).getItemCooldownManager().set(this, 10);
+		user.clearActiveItem();
+	}
+	
+	public UseAction getUseAction(ItemStack stack) {
+		return UseAction.BOW;
+	}
+	
+	@Override
+	public int getMaxUseTime(ItemStack stack)
+	{
+		return 150;
 	}
 }

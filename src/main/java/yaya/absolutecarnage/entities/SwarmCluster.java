@@ -1,8 +1,7 @@
 package yaya.absolutecarnage.entities;
 
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
@@ -12,7 +11,10 @@ import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -22,6 +24,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.registries.BlockTagRegistry;
 
 public class SwarmCluster extends MobEntity implements IAnimatable
 {
@@ -159,5 +162,10 @@ public class SwarmCluster extends MobEntity implements IAnimatable
 	public AnimationFactory getFactory()
 	{
 		return factory;
+	}
+	
+	@SuppressWarnings("unused")
+	public static boolean canSpawn(EntityType<? extends LivingEntity> type, ServerWorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
+		return world.getBlockState(pos.down()).isIn(BlockTagRegistry.SWARMLING_SPAWNABLE) && !world.isSkyVisible(pos);
 	}
 }

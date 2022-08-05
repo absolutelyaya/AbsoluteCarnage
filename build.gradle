@@ -21,6 +21,7 @@ repositories {
         name = "Ladysnake Libs"
         url = "https://ladysnake.jfrog.io/artifactory/mods"
     }
+    maven { url = 'https://maven.minecraftforge.net/' }
 }
 
 dependencies {
@@ -34,6 +35,9 @@ dependencies {
 
     //Geckolib
     modImplementation 'software.bernie.geckolib:geckolib-fabric-1.19:3.1.5'
+
+    //TerraBlender
+    modImplementation 'com.github.glitchfiend:TerraBlender-fabric:1.19-2.0.0.120'
 
     //Trinkets
     modImplementation "dev.emi:trinkets:3.4.0"

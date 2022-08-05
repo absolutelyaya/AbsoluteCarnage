@@ -1,15 +1,18 @@
 package yaya.absolutecarnage.entities.projectile;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
@@ -58,7 +61,7 @@ public class FlameProjectile extends ThrownItemEntity
 	{
 		if(!isOwner(target))
 		{
-			target.damage(DamageSource.mobProjectile(this, (LivingEntity)getOwner()), 2f);
+			target.damage(DamageSource.mobProjectile(this, (LivingEntity)getOwner()), 4f);
 			if(target instanceof LivingEntity entity)
 				entity.setFireTicks(200);
 		}
@@ -77,6 +80,18 @@ public class FlameProjectile extends ThrownItemEntity
 		else if(side.getZ() != 0)
 			v = v.multiply(1, 1, 0);
 		setVelocity(v);
+	}
+	
+	@Override
+	public boolean updateMovementInFluid(TagKey<Fluid> tag, double speed)
+	{
+		boolean b = super.updateMovementInFluid(tag, speed);
+		if(b && tag.equals(FluidTags.WATER))
+		{
+			world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, getX(), getY(), getZ(), 0, 0.1, 0);
+			kill();
+		}
+		return b;
 	}
 	
 	double randomParticleOffset(double offset)
@@ -104,8 +119,8 @@ public class FlameProjectile extends ThrownItemEntity
 			kill();
 		
 		if(!world.isClient && world.getGameRules().getBoolean(GameRules.DO_FIRE_TICK) &&
-				   world.getBlockState(getBlockPos()).isAir() && random.nextInt(10) == 0)
-			world.setBlockState(getBlockPos(), Blocks.FIRE.getDefaultState());
+				   world.getBlockState(getBlockPos()).isAir() && random.nextInt(5) == 0)
+			world.setBlockState(getBlockPos(), Block.postProcessState(Blocks.FIRE.getDefaultState(), world, getBlockPos()));
 	}
 	
 	@Override
