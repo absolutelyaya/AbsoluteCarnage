@@ -28,6 +28,15 @@
         "projection": "rigid",
         "processors": "minecraft:empty"
       }
+    },
+    {
+      "weight": 1,
+      "element": {
+        "element_type": "minecraft:single_pool_element",
+        "location": "absolute_carnage:skeletal/desert4",
+        "projection": "terrain_matching",
+        "processors": "minecraft:empty"
+      }
     }
   ]
 }
