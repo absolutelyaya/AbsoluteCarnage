@@ -50,6 +50,7 @@ public class DashC2SPacket
 						case 2 -> dir = dir.rotateY((float)Math.toRadians(90));
 					}
 					float power = wing.get().getPower();
+					wing.get().onUse();
 					responseSender.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), dir.multiply(power).add(0, 0.25, 0)));
 					player.getItemCooldownManager().set(wing.get(), 60);
 				}

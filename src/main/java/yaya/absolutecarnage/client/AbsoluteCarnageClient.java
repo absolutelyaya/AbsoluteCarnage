@@ -9,7 +9,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
-import net.minecraft.network.packet.c2s.play.PlayerInputC2SPacket;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
 import yaya.absolutecarnage.client.entities.block.InfestedChestRenderer;

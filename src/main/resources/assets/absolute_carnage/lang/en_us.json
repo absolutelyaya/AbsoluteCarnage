@@ -2,8 +2,9 @@
   "item.absolute_carnage.jungle_seeds": "Jungle Seeds",
   "item.absolute_carnage.jungle_seeds.desc1": "Maybe planting them into a smaller space ",
   "item.absolute_carnage.jungle_seeds.desc2": "will keep them from overgrowing...",
-  "item.absolute_carnage.cuticle_wings": "Cuticle Wings",
   "item.absolute_carnage.flame_thrower": "Flamethrower",
+  "item.absolute_carnage.cuticle_wings": "Cuticle Wings",
+  "item.absolute_carnage.wings.desc": "§7Dodge Power: §9%s",
 
   "block.absolute_carnage.dune": "Dune",
   "block.absolute_carnage.hanging_web": "Hanging Web",
@@ -25,6 +26,5 @@
   "key.absolute_carnage.directional_dash": "Directional Dash",
 
   "msg.absolute_carnage.wings_cooldown": "§cWings on cooldown!",
-
   "msg.absolute_carnage.flamethrower.overheat": "§cThe Flamethrower overheated!"
 }
