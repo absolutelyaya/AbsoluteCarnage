@@ -17,9 +17,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Quaternion;
-import net.minecraft.util.math.Vec2f;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import yaya.absolutecarnage.AbsoluteCarnage;
@@ -33,7 +31,7 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 	final int wingCount;
 	final Vec2f pos, size, texSize;
 	
-	int tick, flapAnim;
+	int tick, flapAnim, lastDir;
 	float lastWingRot;
 	final float power;
 	
@@ -55,18 +53,30 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 	
 	float getDestRot(float delta)
 	{
-		return MathHelper.lerp(delta, lastWingRot, flapAnim - tick > 0 ? 0.25f : (-0.5f - (float)Math.sin(tick / 20f) * 0.25f));
+		float animRot = lastDir == 0 ? -1f : 0.25f;
+		int animTick = flapAnim - tick;
+		if(animTick <= 0 && animTick > -60)
+			delta /= 10;
+		return MathHelper.lerp(delta, lastWingRot, animTick > 0 ? animRot : (-0.5f - (float)Math.sin(tick / 20f) * 0.25f));
 	}
 	
-	public void onUse()
+	public void onUse(int dir)
 	{
-		flapAnim = tick + 40;
+		flapAnim = tick + 30;
+		lastDir = dir;
 	}
 	
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context)
 	{
+		
 		tooltip.add(Text.of(I18n.translate("item.absolute_carnage.wings.desc", getPower())));
+	}
+	
+	@Override
+	public void tick(ItemStack stack, SlotReference slot, LivingEntity entity)
+	{
+		tick++;
 	}
 	
 	@Override
@@ -76,22 +86,24 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 		if(entity instanceof AbstractClientPlayerEntity player)
 		{
 			lastWingRot = getDestRot(tickDelta);
-			tick++;
 			VertexConsumer consumer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucentCull(texture));
 			matrices.push();
 			
 			TrinketRenderer.translateToChest(matrices, (PlayerEntityModel<AbstractClientPlayerEntity>)contextModel, player);
-			matrices.translate(0, -9.5 / 16, 0.2);
+			matrices.translate(0, -9.5 / 16, 0.3);
+			matrices.multiply(Quaternion.fromEulerYxz(0, -0.2f, 0));
 			
 			for (int i = 0; i < wingCount; i++)
 			{
-				//Todo: slightly rotate on Z axis per pair of wings
-				matrices.push();
+				int pair = i / 2;
+				if(wingCount > 2)
+					pair--;
 				int d = i % 2 == 0 ? -1 : 1;
+				matrices.push();
 				matrices.translate(d / 16f, 0, 0);
-				ModelPart left = new ModelPart(List.of(new ModelPart.Cuboid(0, 0, d * pos.x, pos.y, 0,
-						d * size.x, size.y, 0, 0, 0, 0, false, texSize.x, texSize.y)), Map.of());
-				matrices.multiply(Quaternion.fromEulerYxz(d * lastWingRot, 0.25f, 0));
+				ModelPart left = new ModelPart(List.of(new ModelPart.Cuboid(0, (-pair - 2) * (int)(texSize.y / (wingCount / 2)), d * pos.x, pos.y, 0,
+						d * size.x, size.y, 0, 0, 0, 0, false, texSize.x,  texSize.y)), Map.of());
+				matrices.multiply(Quaternion.fromEulerYxz(d * lastWingRot + (pair * d * 0.1f), 0.25f, pair * d * -0.45f));
 				left.render(matrices, consumer, light, 1);
 				matrices.pop();
 			}

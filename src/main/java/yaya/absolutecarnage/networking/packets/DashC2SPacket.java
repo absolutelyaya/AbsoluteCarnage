@@ -8,6 +8,8 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
@@ -50,9 +52,11 @@ public class DashC2SPacket
 						case 2 -> dir = dir.rotateY((float)Math.toRadians(90));
 					}
 					float power = wing.get().getPower();
-					wing.get().onUse();
+					wing.get().onUse(direction);
 					responseSender.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), dir.multiply(power).add(0, 0.25, 0)));
 					player.getItemCooldownManager().set(wing.get(), 60);
+					Vec3d pos = player.getPos();
+					player.world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1, 1.25f, true);
 				}
 			}
 		}

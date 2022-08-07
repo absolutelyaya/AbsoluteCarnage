@@ -21,6 +21,9 @@ public class ItemRegistry
 	public static final Item FLAME_THROWER = registerItem("flame_thrower",
 			new FlameThrower(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE).maxCount(1)));
 	
+	public static final Item TEST_WINGS = registerItem("test_wings",
+			new WingTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1).rarity(Rarity.EPIC),
+					1f, "test_wings", 10, new Vec2f(0, 2.5f), new Vec2f(13, 7), new Vec2f(26, 35)));
 	public static final Item CUTICLE_WINGS = registerItem("cuticle_wings",
 			new WingTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1), 0.5f,
 					"cuticle_wings", 2, new Vec2f(1, 3.5f), new Vec2f(13, 7), new Vec2f(26, 7)));
