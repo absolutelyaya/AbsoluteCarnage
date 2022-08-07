@@ -10,6 +10,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -48,13 +49,13 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 	
 	public void onUse()
 	{
-		flapAnim = tick;
+		flapAnim = tick + 40;
 	}
 	
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context)
 	{
-		tooltip.add(Text.translatable("item.absolute_carnage.wings.desc", getPower()));
+		tooltip.add(Text.of(I18n.translate("item.absolute_carnage.wings.desc", getPower())));
 	}
 	
 	@Override
@@ -73,19 +74,19 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 			matrices.push();
 			matrices.translate(1 / 16f, 0, 0);
 			ModelPart left = new ModelPart(List.of(new ModelPart.Cuboid(0, 0, 1, 3.5f, 0, 13, 7, 0,
-					0, 0, 0, false, 32, 32)), Map.of());
+					0, 0, 0, false, 26, 7)), Map.of());
 			matrices.multiply(Quaternion.fromEulerYxz(lastWingRot, 0.25f, 0));
 			left.render(matrices, vertexConsumers.getBuffer(
-					RenderLayer.getEntityTranslucentCull(new Identifier(AbsoluteCarnage.MOD_ID, "textures/item/trinkets/r_cuticle_wings.png"))), light, 1);
+					RenderLayer.getEntityTranslucentCull(new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/trinket/cuticle_wings.png"))), light, 1);
 			matrices.pop();
 			
 			matrices.push();
 			matrices.translate(-1 / 16f, 0, 0);
-			ModelPart right = new ModelPart(List.of(new ModelPart.Cuboid(-6, 0, -1, 3.5f, 0, -13, 7, 0,
-					0, 0, 0, false, 32, 32)), Map.of());
+			ModelPart right = new ModelPart(List.of(new ModelPart.Cuboid(0, 0, -1, 3.5f, 0, -13, 7, 0,
+					0, 0, 0, false, 26, 7)), Map.of());
 			matrices.multiply(Quaternion.fromEulerYxz(-lastWingRot, 0.25f, 0));
 			right.render(matrices, vertexConsumers.getBuffer(
-					RenderLayer.getEntityTranslucentCull(new Identifier(AbsoluteCarnage.MOD_ID, "textures/item/trinkets/r_cuticle_wings.png"))), light, 1);
+					RenderLayer.getEntityTranslucentCull(new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/trinket/cuticle_wings.png"))), light, 1);
 			matrices.pop();
 			matrices.pop();
 		}
