@@ -55,8 +55,7 @@ public class DashC2SPacket
 					wing.get().onUse(direction);
 					responseSender.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), dir.multiply(power).add(0, 0.25, 0)));
 					player.getItemCooldownManager().set(wing.get(), 60);
-					Vec3d pos = player.getPos();
-					player.world.playSound(pos.x, pos.y, pos.z, SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1, 1.25f, true);
+					player.world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1, 1.25f);
 				}
 			}
 		}

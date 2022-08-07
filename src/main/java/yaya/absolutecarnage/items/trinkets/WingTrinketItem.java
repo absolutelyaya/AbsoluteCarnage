@@ -15,9 +15,11 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import yaya.absolutecarnage.AbsoluteCarnage;
@@ -77,6 +79,14 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 	public void tick(ItemStack stack, SlotReference slot, LivingEntity entity)
 	{
 		tick++;
+		if(flapAnim - tick > 0 && !entity.isOnGround())
+		{
+			Vec3d pos = entity.getPos();
+			Vec3d mov = entity.getVelocity().normalize().multiply(0.25);
+			Random random = entity.getRandom();
+			pos = pos.add(random.nextFloat() * 0.5 - 0.25, random.nextFloat() * 2, random.nextFloat() * 0.5 - 0.25);
+			entity.world.addParticle(ParticleTypes.CLOUD, pos.x - mov.x, pos.y, pos.z - mov.z, -mov.x, 0, -mov.z);
+		}
 	}
 	
 	@Override
