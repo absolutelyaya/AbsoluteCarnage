@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.items.AnimatedBlockItem;
@@ -21,7 +22,8 @@ public class ItemRegistry
 			new FlameThrower(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE).maxCount(1)));
 	
 	public static final Item CUTICLE_WINGS = registerItem("cuticle_wings",
-			new WingTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1), 0.5f));
+			new WingTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1), 0.5f,
+					"cuticle_wings", 2, new Vec2f(1, 3.5f), new Vec2f(13, 7), new Vec2f(26, 7)));
 	
 	public static final Item INFESTED_CHEST = registerItem("infested_chest",
 			new AnimatedBlockItem(BlockRegistry.INFESTED_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
