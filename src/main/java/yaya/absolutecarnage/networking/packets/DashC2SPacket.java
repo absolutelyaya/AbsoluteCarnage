@@ -12,11 +12,10 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 import yaya.absolutecarnage.items.trinkets.WingTrinketItem;
+import yaya.absolutecarnage.registries.StatRegistry;
 
 import java.util.Optional;
-import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -52,9 +51,10 @@ public class DashC2SPacket
 						case 2 -> dir = dir.rotateY((float)Math.toRadians(90));
 					}
 					float power = wing.get().getPower();
-					wing.get().onUse(direction);
+					wing.get().onUse(player, direction);
 					responseSender.sendPacket(new EntityVelocityUpdateS2CPacket(player.getId(), dir.multiply(power).add(0, 0.25, 0)));
 					player.getItemCooldownManager().set(wing.get(), 60);
+					player.incrementStat(StatRegistry.DODGE);
 					player.world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_ENDER_DRAGON_FLAP, SoundCategory.PLAYERS, 1, 1.25f);
 				}
 			}

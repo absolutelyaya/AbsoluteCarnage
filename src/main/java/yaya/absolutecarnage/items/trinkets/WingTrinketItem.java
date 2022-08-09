@@ -3,9 +3,11 @@ package yaya.absolutecarnage.items.trinkets;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.client.TrinketRenderer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -14,8 +16,13 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.stat.ServerStatHandler;
+import net.minecraft.stat.StatFormatter;
+import net.minecraft.stat.StatHandler;
+import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
@@ -23,6 +30,9 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.client.tutorial.CarnageTutorialManager;
+import yaya.absolutecarnage.client.tutorial.CarnageTutorialToast;
+import yaya.absolutecarnage.registries.StatRegistry;
 
 import java.util.List;
 import java.util.Map;
@@ -62,10 +72,11 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 		return MathHelper.lerp(delta, lastWingRot, animTick > 0 ? animRot : (-0.5f - (float)Math.sin(tick / 20f) * 0.25f));
 	}
 	
-	public void onUse(int dir)
+	public void onUse(PlayerEntity user, int dir)
 	{
 		flapAnim = tick + 30;
 		lastDir = dir;
+		CarnageTutorialManager.getInstance().addProgress("wings");
 	}
 	
 	@Override
@@ -86,6 +97,21 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 			Random random = entity.getRandom();
 			pos = pos.add(random.nextFloat() * 0.5 - 0.25, random.nextFloat() * 2, random.nextFloat() * 0.5 - 0.25);
 			entity.world.addParticle(ParticleTypes.CLOUD, pos.x - mov.x, pos.y, pos.z - mov.z, -mov.x, 0, -mov.z);
+		}
+	}
+	
+	@Override
+	public void onEquip(ItemStack stack, SlotReference slot, LivingEntity entity)
+	{
+		if(entity instanceof PlayerEntity)
+		{
+			ClientPlayerEntity player = MinecraftClient.getInstance().player;
+			if(player != null)
+			{
+				StatHandler handler = player.getStatHandler();
+				if(handler.getStat(Stats.CUSTOM.getOrCreateStat(StatRegistry.DODGE)) == 0)
+					CarnageTutorialManager.getInstance().startTutorial("wings");
+			}
 		}
 	}
 	

@@ -28,5 +28,12 @@
   "key.absolute_carnage.directional_dash": "Directional Dash",
 
   "msg.absolute_carnage.wings_cooldown": "§cWings on cooldown!",
-  "msg.absolute_carnage.flamethrower.overheat": "§cThe Flamethrower overheated!"
+  "msg.absolute_carnage.flamethrower.overheat": "§cThe Flamethrower overheated!",
+
+  "tutorial.absolute_carnage.finished.title": "Tutorial Finished!",
+  "tutorial.absolute_carnage.finished.desc": "Well done!",
+  "tutorial.absolute_carnage.wings.title": "Aquired Wings!",
+  "tutorial.absolute_carnage.wings.desc": "Press %s to dodge",
+  "tutorial.absolute_carnage.wings_dir.title": "Dodge directionally",
+  "tutorial.absolute_carnage.wings_dir.desc": "by moving whilst dodging"
 }

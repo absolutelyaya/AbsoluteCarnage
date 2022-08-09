@@ -36,7 +36,7 @@ public class ShoesTrinketItem extends TrinketItem implements TrinketRenderer
 		//TODO: move to constructor or make it a builder
 		Multimap<EntityAttribute, EntityAttributeModifier> map = super.getModifiers(stack, slot, entity, uuid);
 		map.put(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE,
-				new EntityAttributeModifier("minecraft:generic_knockback_resistance", 0.2, EntityAttributeModifier.Operation.ADDITION));
+				new EntityAttributeModifier(UUID.randomUUID().toString(), 0.2, EntityAttributeModifier.Operation.ADDITION));
 		return map;
 	}
 	
