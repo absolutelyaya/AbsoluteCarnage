@@ -40,7 +40,8 @@ public class ShoesTrinketItem extends TrinketItem implements TrinketRenderer
 		return map;
 	}
 	
-	//TODO: add behavior for ignoring web decals / reducce effects of webs
+	//TODO: Add a system for adding lore text
+	//TODO: Add lore text to setae shoes that explains their web properties
 	
 	@Override
 	@SuppressWarnings("unchecked")
