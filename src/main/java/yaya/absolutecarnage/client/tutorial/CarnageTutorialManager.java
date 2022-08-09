@@ -41,10 +41,10 @@ public class CarnageTutorialManager
 		{
 			case "wings" -> toast = new CarnageTutorialToast(this, "wings", Text.translatable("tutorial.absolute_carnage.wings.title"),
 					Text.translatable("tutorial.absolute_carnage.wings.desc",
-							Text.translatable(KeyInputHandler.dashKey.getBoundKeyTranslationKey())), true, 3, 3, false)
+							Text.translatable(KeyInputHandler.dashKey.getBoundKeyTranslationKey())), true, 0, 3, false)
 					.addChild("wingsDir");
 			case "wingsDir" -> toast = new CarnageTutorialToast(this, "wingsDir", Text.translatable("tutorial.absolute_carnage.wings_dir.title"),
-					Text.translatable("tutorial.absolute_carnage.wings_dir.desc"), true, 3, 6, true);
+					Text.translatable("tutorial.absolute_carnage.wings_dir.desc"), true, 0, 6, true);
 			case "webs" -> { }
 		}
 		if(toast != null)

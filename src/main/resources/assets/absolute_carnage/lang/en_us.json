@@ -23,6 +23,8 @@
   "itemGroup.absolute_carnage.carnage_main": "Absolute Carnage",
   "itemGroup.absolute_carnage.carnage_trinkets": "Absolute Carnage Trinkets",
 
+  "stat.absolute_carnage.dodge": "Times Dodged",
+
   "key.category.absolute_carnage": "Absolute Carnage",
 
   "key.absolute_carnage.directional_dash": "Directional Dash",

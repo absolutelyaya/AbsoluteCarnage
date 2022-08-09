@@ -96,7 +96,7 @@ public class CarnageTutorialToast implements Toast
 		description = Text.translatable("tutorial.absolute_carnage.finished.desc");
 		for (String child : children)
 		{
-			manager.startTutorial(child);
+			manager.startTutorial(child); //TODO: delay until this toast is gone
 		}
 	}
 	
