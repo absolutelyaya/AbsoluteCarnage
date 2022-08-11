@@ -33,7 +33,7 @@ public class CarnageTutorialManager
 		return instance;
 	}
 	
-	//TODO: figure out why the wings tutorial always triggers despite dodge stat. Or maybe it doesn't save correctly?
+	//NOTE: tutorials are reset every time you start a new yarn instance due to technically being a new player.
 	public void startTutorial(String type)
 	{
 		if(tutorials.getOrDefault(type, 0) != 0)

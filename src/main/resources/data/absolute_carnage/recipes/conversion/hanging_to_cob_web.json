@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#"
+  ],
+  "key": {
+    "#": {
+      "item": "absolute_carnage:hanging_web"
+    }
+  },
+  "result": {
+    "item": "minecraft:cobweb",
+    "count": 1
+  },
+  "group": "absolute_carnage:web_conversion"
+}
