@@ -39,9 +39,6 @@ public class ShoesTrinketItem extends CarnageTrinket
 		return map;
 	}
 	
-	//TODO: Add a system for adding lore text
-	//TODO: Add lore text to setae shoes that explains their web properties
-	
 	@Override
 	@SuppressWarnings("unchecked")
 	public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch)

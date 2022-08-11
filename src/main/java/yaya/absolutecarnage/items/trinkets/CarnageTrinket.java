@@ -39,8 +39,16 @@ public class CarnageTrinket extends TrinketItem implements TrinketRenderer
 		{
 			if(!line.startsWith("e#"))
 				tooltip.add(Text.translatable(line));
-			else if(context.isAdvanced())
-				tooltip.add(Text.translatable(line.replace("e#", "")));
 		});
+		if(lore.stream().anyMatch(line -> line.startsWith("e#")) && context.isAdvanced())
+		{
+			tooltip.add(Text.empty());
+			lore.forEach(line ->
+			{
+				if(line.startsWith("e#"))
+					tooltip.add(Text.translatable(line.replace("e#", "")));
+			});
+			tooltip.add(Text.empty());
+		}
 	}
 }

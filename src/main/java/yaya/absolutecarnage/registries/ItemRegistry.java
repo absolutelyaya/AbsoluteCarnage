@@ -33,9 +33,11 @@ public class ItemRegistry
 					TranslationUtil.getKey("desc", "dev")));
 	public static final Item CUTICLE_WINGS = registerItem("cuticle_wings",
 			new WingTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1), 0.5f,
-					"cuticle_wings", 2, new Vec2f(1, 3.5f), new Vec2f(13, 7), new Vec2f(26, 7)));
+					"cuticle_wings", 2, new Vec2f(1, 3.5f), new Vec2f(13, 7), new Vec2f(26, 7),
+					TranslationUtil.getLoreBuilder("cuticle_wings").addExtra(1).build()));
 	public static final Item  SETAE_SHOES = registerItem("setae_boots",
-			new ShoesTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1)));
+			new ShoesTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1),
+					TranslationUtil.getLoreBuilder("setae_boots").addLines(1).addExtra(3).build()));
 	
 	public static final Item INFESTED_CHEST = registerItem("infested_chest",
 			new AnimatedBlockItem(BlockRegistry.INFESTED_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
@@ -49,7 +51,7 @@ public class ItemRegistry
 	public static final Item MUREYAKI = registerItem("mureyaki", //mure = swarm, yaki = grilled (群れ焼き). Inspired by taiyaki, those fish waffles.
 			new CarnageItem(new FabricItemSettings().food(new FoodComponent.Builder().hunger(6).build())
 					.group(ItemGroupRegistry.CARNAGE),
-					TranslationUtil.getLoreBuilder("mureyaki").addLines(1).addExtra().build()));
+					TranslationUtil.getLoreBuilder("mureyaki").addLines(1).addExtra(1).build()));
 	
 	public static Item registerItem(String name, Item item)
 	{

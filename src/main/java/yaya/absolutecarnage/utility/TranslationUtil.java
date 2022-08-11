@@ -40,9 +40,10 @@ public class TranslationUtil
 			return this;
 		}
 		
-		public LoreBuilder addExtra()
+		public LoreBuilder addExtra(int lines )
 		{
-			keys.add("e#" +getKey("extra", name));
+			for (int i = 0; i < lines; i++)
+				keys.add("e#" +getKey("extra", name + (i + 1)));
 			return this;
 		}
 		

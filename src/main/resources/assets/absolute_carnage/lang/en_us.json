@@ -6,12 +6,13 @@
   "item.absolute_carnage.test_wings": "Test Wings",
   "item.absolute_carnage.cuticle_wings": "Cuticle Wings",
   "item.absolute_carnage.setae_boots": "Setae Shoes",
+  "item.absolute_carnage.setae_boots.desc1": "§7Reduces effects of webs",
   "item.absolute_carnage.wings.desc": "§7Dodge Power:§9 %s",
   "item.absolute_carnage.carapace": "Carapace",
   "item.absolute_carnage.sticky_silk": "Sticky Silk",
   "item.absolute_carnage.charred_remains": "§7Charred Remains",
   "item.absolute_carnage.mureyaki": "Mureyaki",
-  "item.absolute_carnage.mureyaki.desc1": "群れ焼き",
+  "item.absolute_carnage.mureyaki.desc1": "§7群れ焼き",
 
   "desc.absolute_carnage.trash": "§7Trash",
   "desc.absolute_carnage.dev": "§3Developer/Testing Item",
@@ -48,5 +49,9 @@
   "tutorial.absolute_carnage.wings_dir.title": "Dodge directionally",
   "tutorial.absolute_carnage.wings_dir.desc": "by moving whilst dodging",
 
-  "extra.absolute_carnage.mureyaki": "§i§7Yes, I am a weeb, how did you know?"
+  "extra.absolute_carnage.mureyaki1": "§7§oYes, I am a weeb, how did you know?",
+  "extra.absolute_carnage.cuticle_wings1": "§7§oInsect fact: Insect Wings are composed of cuticle!",
+  "extra.absolute_carnage.setae_boots1": "§7§oInsect fact: Flies and other insects can walk on walls due to",
+  "extra.absolute_carnage.setae_boots2": "§7§oa sticky secretion coming out of the 'setae' on their feet.",
+  "extra.absolute_carnage.setae_boots3": "§7§oSetae are simply specialized short hairs."
 }
