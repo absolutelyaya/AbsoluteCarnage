@@ -2,7 +2,6 @@ package yaya.absolutecarnage.items.trinkets;
 
 import com.google.common.collect.Multimap;
 import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -23,11 +22,11 @@ import net.minecraft.util.math.Quaternion;
 
 import java.util.UUID;
 
-public class ShoesTrinketItem extends TrinketItem implements TrinketRenderer
+public class ShoesTrinketItem extends CarnageTrinket
 {
-	public ShoesTrinketItem(Settings settings)
+	public ShoesTrinketItem(Settings settings, String... lore)
 	{
-		super(settings);
+		super(settings, lore);
 	}
 	
 	@Override

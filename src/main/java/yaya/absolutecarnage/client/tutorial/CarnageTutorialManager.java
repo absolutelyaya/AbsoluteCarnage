@@ -6,6 +6,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.text.Text;
 import yaya.absolutecarnage.event.KeyInputHandler;
+import yaya.absolutecarnage.utility.TranslationUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,12 +41,14 @@ public class CarnageTutorialManager
 		CarnageTutorialToast toast = null;
 		switch (type)
 		{
-			case "wings" -> toast = new CarnageTutorialToast(this, "wings", Text.translatable("tutorial.absolute_carnage.wings.title"),
+			case "wings" -> toast = new CarnageTutorialToast(this, "wings",
+					TranslationUtil.getText("tutorial", "wings.title"),
 					Text.translatable("tutorial.absolute_carnage.wings.desc",
 							Text.translatable(KeyInputHandler.dashKey.getBoundKeyTranslationKey())), true, 0, 3, false)
 					.addChild("wingsDir");
-			case "wingsDir" -> toast = new CarnageTutorialToast(this, "wingsDir", Text.translatable("tutorial.absolute_carnage.wings_dir.title"),
-					Text.translatable("tutorial.absolute_carnage.wings_dir.desc"), true, 0, 6, true);
+			case "wingsDir" -> toast = new CarnageTutorialToast(this, "wingsDir",
+					TranslationUtil.getText("tutorial", "wings_dir.title"),
+					TranslationUtil.getText("tutorial", "wings_dir.desc"), true, 0, 6, true);
 			case "webs" -> { }
 		}
 		if(toast != null)

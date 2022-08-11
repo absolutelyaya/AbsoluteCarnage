@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "#C#"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:wheat"
+    },
+    "C": {
+      "item": "absolute_carnage:carapace"
+    }
+  },
+  "result": {
+    "item": "absolute_carnage:mureyaki",
+    "count": 1
+  }
+}

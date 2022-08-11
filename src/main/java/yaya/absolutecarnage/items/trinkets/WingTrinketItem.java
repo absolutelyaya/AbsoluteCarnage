@@ -1,7 +1,6 @@
 package yaya.absolutecarnage.items.trinkets;
 
 import dev.emi.trinkets.api.SlotReference;
-import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
@@ -19,8 +18,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.stat.ServerStatHandler;
-import net.minecraft.stat.StatFormatter;
 import net.minecraft.stat.StatHandler;
 import net.minecraft.stat.Stats;
 import net.minecraft.text.Text;
@@ -31,13 +28,12 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.client.tutorial.CarnageTutorialManager;
-import yaya.absolutecarnage.client.tutorial.CarnageTutorialToast;
 import yaya.absolutecarnage.registries.StatRegistry;
 
 import java.util.List;
 import java.util.Map;
 
-public class WingTrinketItem extends TrinketItem implements TrinketRenderer
+public class WingTrinketItem extends CarnageTrinket
 {
 	final Identifier texture;
 	final int wingCount;
@@ -47,9 +43,9 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 	float lastWingRot;
 	final float power;
 	
-	public WingTrinketItem(Settings settings, float power, String texture, int wingCount, Vec2f pos, Vec2f size, Vec2f texSize)
+	public WingTrinketItem(Settings settings, float power, String texture, int wingCount, Vec2f pos, Vec2f size, Vec2f texSize, String... lore)
 	{
-		super(settings);
+		super(settings, lore);
 		this.power = power;
 		this.texture = new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/trinket/" + texture + ".png");
 		this.wingCount = wingCount;
@@ -82,8 +78,8 @@ public class WingTrinketItem extends TrinketItem implements TrinketRenderer
 	@Override
 	public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context)
 	{
-		
 		tooltip.add(Text.of(I18n.translate("item.absolute_carnage.wings.desc", getPower())));
+		super.appendTooltip(stack, world, tooltip, context);
 	}
 	
 	@Override

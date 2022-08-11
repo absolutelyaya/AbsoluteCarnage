@@ -14,6 +14,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import yaya.absolutecarnage.items.trinkets.WingTrinketItem;
 import yaya.absolutecarnage.registries.StatRegistry;
+import yaya.absolutecarnage.utility.TranslationUtil;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -40,7 +41,7 @@ public class DashC2SPacket
 			if(b.get() && wing.get() != null)
 			{
 				if(player.getItemCooldownManager().isCoolingDown(wing.get()))
-					player.sendMessage(Text.translatable("msg.absolute_carnage.wings_cooldown"), true);
+					player.sendMessage(TranslationUtil.getText("msg", "wings.cooldown"), true);
 				else
 				{
 					Vec3d dir = new Vec3d(0, 0, -1).rotateY(-(float)Math.toRadians(player.getYaw() + 180));

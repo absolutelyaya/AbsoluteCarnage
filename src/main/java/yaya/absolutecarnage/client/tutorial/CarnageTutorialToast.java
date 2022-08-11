@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.Nullable;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.utility.TranslationUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +93,8 @@ public class CarnageTutorialToast implements Toast
 	public void remove()
 	{
 		visibility = Visibility.HIDE;
-		title = Text.translatable("tutorial.absolute_carnage.finished.title");
-		description = Text.translatable("tutorial.absolute_carnage.finished.desc");
+		title = TranslationUtil.getText("tutorial", "finished.title");
+		description = TranslationUtil.getText("tutorial", "finished.desc");
 		for (String child : children)
 		{
 			manager.startTutorial(child); //TODO: delay until this toast is gone

@@ -5,8 +5,17 @@
   "item.absolute_carnage.flame_thrower": "Flamethrower",
   "item.absolute_carnage.test_wings": "Test Wings",
   "item.absolute_carnage.cuticle_wings": "Cuticle Wings",
-  "item.absolute_carnage.setae_shoes": "Setae Shoes",
+  "item.absolute_carnage.setae_boots": "Setae Shoes",
   "item.absolute_carnage.wings.desc": "§7Dodge Power:§9 %s",
+  "item.absolute_carnage.carapace": "Carapace",
+  "item.absolute_carnage.sticky_silk": "Sticky Silk",
+  "item.absolute_carnage.charred_remains": "§7Charred Remains",
+  "item.absolute_carnage.mureyaki": "Mureyaki",
+  "item.absolute_carnage.mureyaki.desc1": "群れ焼き",
+
+  "desc.absolute_carnage.trash": "§7Trash",
+  "desc.absolute_carnage.dev": "§3Developer/Testing Item",
+  "desc.absolute_carnage.wip": "§dWork in Progress",
 
   "block.absolute_carnage.dune": "Dune",
   "block.absolute_carnage.hanging_web": "Hanging Web",
@@ -29,7 +38,7 @@
 
   "key.absolute_carnage.directional_dash": "Directional Dash",
 
-  "msg.absolute_carnage.wings_cooldown": "§cWings on cooldown!",
+  "msg.absolute_carnage.wings.cooldown": "§cWings on cooldown!",
   "msg.absolute_carnage.flamethrower.overheat": "§cThe Flamethrower overheated!",
 
   "tutorial.absolute_carnage.finished.title": "Tutorial Finished!",
@@ -37,5 +46,7 @@
   "tutorial.absolute_carnage.wings.title": "Aquired Wings!",
   "tutorial.absolute_carnage.wings.desc": "Press %s to dodge",
   "tutorial.absolute_carnage.wings_dir.title": "Dodge directionally",
-  "tutorial.absolute_carnage.wings_dir.desc": "by moving whilst dodging"
+  "tutorial.absolute_carnage.wings_dir.desc": "by moving whilst dodging",
+
+  "extra.absolute_carnage.mureyaki": "§i§7Yes, I am a weeb, how did you know?"
 }
