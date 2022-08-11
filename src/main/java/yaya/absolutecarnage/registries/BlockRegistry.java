@@ -16,7 +16,7 @@ public class BlockRegistry
 {
 	public static final Block DUNE = register("dune", new FallingBlock(FabricBlockSettings.of(Material.SOIL)
 					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f)), ItemGroupRegistry.CARNAGE);
-	public static final Block HANGING_WEB = register("hanging_web", new CobwebBlock(FabricBlockSettings.of(Material.COBWEB)
+	public static final Block HANGING_WEB = register("hanging_web", new HangingBlock(FabricBlockSettings.of(Material.COBWEB)
 					.sounds(BlockSoundGroup.STONE).strength(0.5f, 0.8f).noCollision().nonOpaque()),
 			ItemGroupRegistry.CARNAGE, 100, 100);
 	public static final Block HARDENED_SANDSTONE = register("hardened_sandstone", new Block(FabricBlockSettings.of(Material.STONE)
@@ -36,8 +36,7 @@ public class BlockRegistry
 					.luminance(DanglingEggBlock.getLuminanceSupplier(10)).nonOpaque().noCollision().sounds(BlockSoundGroup.MUD)),
 			null, 100, 100);
 	public static final Block INFESTED_CHEST = register("infested_chest", new InfestedChestBlock(FabricBlockSettings.of(Material.WOOD)
-					.nonOpaque()),
-			null);
+					.nonOpaque()), null);
 	
 	@SuppressWarnings("SameParameterValue")
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
