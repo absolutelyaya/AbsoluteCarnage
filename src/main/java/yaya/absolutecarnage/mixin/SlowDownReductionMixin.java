@@ -5,6 +5,7 @@ import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.tag.TagKey;
@@ -13,6 +14,7 @@ import net.minecraft.util.Nameable;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,6 +30,8 @@ public abstract class SlowDownReductionMixin extends LivingEntity implements Nam
 {
 	@Shadow public abstract boolean isPlayer();
 	
+	@Shadow @Final private PlayerAbilities abilities;
+	
 	protected SlowDownReductionMixin(EntityType<? extends LivingEntity> entityType, World world) {
 		super(entityType, world);
 	}
@@ -35,7 +39,7 @@ public abstract class SlowDownReductionMixin extends LivingEntity implements Nam
 	@Inject(at = @At("HEAD"), method = "slowMovement", cancellable = true)
 	public void slowMovement(BlockState state, Vec3d multiplier, CallbackInfo info)
 	{
-		if(this.isPlayer())
+		if(this.isPlayer() && !this.abilities.flying)
 		{
 			Optional<TrinketComponent> opt = TrinketsApi.getTrinketComponent(this);
 			if(opt.isEmpty())

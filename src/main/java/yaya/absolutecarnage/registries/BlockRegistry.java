@@ -16,7 +16,7 @@ public class BlockRegistry
 {
 	public static final Block DUNE = register("dune", new FallingBlock(FabricBlockSettings.of(Material.SOIL)
 					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f)), ItemGroupRegistry.CARNAGE);
-	public static final Block HANGING_WEB = register("hanging_web", new HangingBlock(FabricBlockSettings.of(Material.COBWEB)
+	public static final Block HANGING_WEB = register("hanging_web", new HangingCobwebBlock(FabricBlockSettings.of(Material.COBWEB)
 					.sounds(BlockSoundGroup.STONE).strength(0.5f, 0.8f).noCollision().nonOpaque()),
 			ItemGroupRegistry.CARNAGE, 100, 100);
 	public static final Block HARDENED_SANDSTONE = register("hardened_sandstone", new Block(FabricBlockSettings.of(Material.STONE)
