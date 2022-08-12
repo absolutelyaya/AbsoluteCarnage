@@ -43,15 +43,20 @@ public class WingTrinketItem extends CarnageTrinket
 	float lastWingRot;
 	final float power;
 	
-	public WingTrinketItem(Settings settings, float power, String texture, int wingCount, Vec2f pos, Vec2f size, Vec2f texSize, String... lore)
+	public WingTrinketItem(Settings settings, float power, String texture, int wingCount, Vec2f pos, Vec2f size, Vec2f texSize, AttributeBuilder attributes, String... lore)
 	{
-		super(settings, lore);
+		super(settings, attributes, lore);
 		this.power = power;
 		this.texture = new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/trinket/" + texture + ".png");
 		this.wingCount = wingCount;
 		this.pos = pos;
 		this.size = size;
 		this.texSize = texSize;
+	}
+	
+	public WingTrinketItem(Settings settings, float power, String texture, int wingCount, Vec2f pos, Vec2f size, Vec2f texSize, String... lore)
+	{
+		this(settings, power, texture, wingCount, pos, size, texSize, new AttributeBuilder(), lore);
 	}
 	
 	public float getPower()

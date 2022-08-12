@@ -1,6 +1,5 @@
 package yaya.absolutecarnage.items.trinkets;
 
-import com.google.common.collect.Multimap;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import net.minecraft.client.MinecraftClient;
@@ -13,30 +12,20 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtInt;
 import net.minecraft.util.math.Quaternion;
 
-import java.util.UUID;
-
 public class ShoesTrinketItem extends CarnageTrinket
 {
-	public ShoesTrinketItem(Settings settings, String... lore)
+	public ShoesTrinketItem(Settings settings, AttributeBuilder attributes, String... lore)
 	{
-		super(settings, lore);
+		super(settings, attributes, lore);
 	}
 	
-	@Override
-	public Multimap<EntityAttribute, EntityAttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, UUID uuid)
+	public ShoesTrinketItem(Settings settings, String... lore)
 	{
-		//TODO: move to constructor or make it a builder
-		Multimap<EntityAttribute, EntityAttributeModifier> map = super.getModifiers(stack, slot, entity, uuid);
-		map.put(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE,
-				new EntityAttributeModifier(UUID.randomUUID().toString(), 0.2, EntityAttributeModifier.Operation.ADDITION));
-		return map;
+		this(settings, new AttributeBuilder(), lore);
 	}
 	
 	@Override

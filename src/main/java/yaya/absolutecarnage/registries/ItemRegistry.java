@@ -3,6 +3,8 @@ package yaya.absolutecarnage.registries;
 import dev.emi.trinkets.api.client.TrinketRenderer;
 import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -15,6 +17,7 @@ import yaya.absolutecarnage.items.AnimatedBlockItem;
 import yaya.absolutecarnage.items.CarnageItem;
 import yaya.absolutecarnage.items.FlameThrower;
 import yaya.absolutecarnage.items.JungleSeeds;
+import yaya.absolutecarnage.items.trinkets.CarnageTrinket;
 import yaya.absolutecarnage.items.trinkets.ShoesTrinketItem;
 import yaya.absolutecarnage.items.trinkets.WingTrinketItem;
 import yaya.absolutecarnage.utility.TranslationUtil;
@@ -37,6 +40,8 @@ public class ItemRegistry
 					TranslationUtil.getLoreBuilder("cuticle_wings").addExtra(1).build()));
 	public static final Item  SETAE_SHOES = registerItem("setae_boots",
 			new ShoesTrinketItem(new FabricItemSettings().group(ItemGroupRegistry.CARNAGE_TRINKETS).maxCount(1),
+					new CarnageTrinket.AttributeBuilder().addAttribute(EntityAttributes.GENERIC_KNOCKBACK_RESISTANCE,
+							0.2, EntityAttributeModifier.Operation.ADDITION),
 					TranslationUtil.getLoreBuilder("setae_boots").addLines(1).addExtra(3).build()));
 	
 	public static final Item INFESTED_CHEST = registerItem("infested_chest",
