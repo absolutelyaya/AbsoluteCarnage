@@ -13,6 +13,14 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+    maven {
+        name = "Ladysnake Libs"
+        url = "https://ladysnake.jfrog.io/artifactory/mods"
+    }
     maven { url = 'https://maven.minecraftforge.net/' }
 }
 
@@ -30,6 +38,9 @@ dependencies {
 
     //TerraBlender
     modImplementation 'com.github.glitchfiend:TerraBlender-fabric:1.19-2.0.0.120'
+
+    //Trinkets
+    modImplementation "dev.emi:trinkets:3.4.0"
 }
 
 processResources {

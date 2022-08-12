@@ -12,6 +12,7 @@ import net.minecraft.util.UseAction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import yaya.absolutecarnage.entities.projectile.FlameProjectile;
+import yaya.absolutecarnage.utility.TranslationUtil;
 
 import java.util.function.Predicate;
 
@@ -72,7 +73,7 @@ public class FlameThrower extends RangedWeaponItem
 			if (remainingUseTicks == 1)
 			{
 				((PlayerEntity)user).getItemCooldownManager().set(this, 300);
-				((PlayerEntity)user).sendMessage(Text.translatable("msg.absolute_carnage.flamethrower.overheat"), true);
+				((PlayerEntity)user).sendMessage(TranslationUtil.getText("msg", "flamethrower.overheat"), true);
 			}
 		}
 	}

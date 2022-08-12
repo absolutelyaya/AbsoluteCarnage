@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cobweb",
+    "absolute_carnage:floor_web_decal",
+    "absolute_carnage:wall_web_decal",
+    "absolute_carnage:swarm_cluster_block",
+    "absolute_carnage:hanging_web"
+  ]
+}

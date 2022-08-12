@@ -13,6 +13,8 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
 import yaya.absolutecarnage.client.entities.block.InfestedChestRenderer;
 import yaya.absolutecarnage.client.entities.other.SwarmClusterRenderer;
+import yaya.absolutecarnage.event.KeyInputHandler;
+import yaya.absolutecarnage.registries.EntityRegistry;
 import yaya.absolutecarnage.client.items.block.AnimatedBlockItemRenderer;
 import yaya.absolutecarnage.particles.FliesParticle;
 import yaya.absolutecarnage.registries.*;
@@ -43,5 +45,7 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		registry.register(ParticleRegistry.FLIES, FliesParticle.FliesParticleFactory::new);
 		//Model predicates
 		ModelPredicateRegistry.registerModels();
+		
+		KeyInputHandler.register();
 	}
 }

@@ -1,0 +1,12 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "absolute_carnage:item/trinkets/setae_boots"
+  },
+  "overrides": [
+    {
+      "predicate": {"custom_model_data": 1},
+      "model": "absolute_carnage:trinket/setae_boots"
+    }
+  ]
+}
