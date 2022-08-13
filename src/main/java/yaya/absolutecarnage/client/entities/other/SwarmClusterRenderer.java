@@ -4,9 +4,9 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.entities.SwarmCluster;
+import yaya.absolutecarnage.entities.SwarmClusterEntity;
 
-public class SwarmClusterRenderer extends GeoEntityRenderer<SwarmCluster>
+public class SwarmClusterRenderer extends GeoEntityRenderer<SwarmClusterEntity>
 {
 	public SwarmClusterRenderer(EntityRendererFactory.Context ctx)
 	{
@@ -14,7 +14,7 @@ public class SwarmClusterRenderer extends GeoEntityRenderer<SwarmCluster>
 	}
 	
 	@Override
-	public Identifier getTextureResource(SwarmCluster object)
+	public Identifier getTextureResource(SwarmClusterEntity object)
 	{
 		return new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/swarm_cluster.png");
 	}

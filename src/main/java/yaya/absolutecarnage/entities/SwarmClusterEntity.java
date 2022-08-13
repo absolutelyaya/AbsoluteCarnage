@@ -26,14 +26,14 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.registries.BlockTagRegistry;
 
-public class SwarmCluster extends MobEntity implements IAnimatable
+public class SwarmClusterEntity extends MobEntity implements IAnimatable
 {
 	private final AnimationFactory factory = new AnimationFactory(this);
 	private final static AnimationBuilder WRIGGLE_ANIM = new AnimationBuilder().addAnimation("animation.swarm_cluster.wriggle", true);
 	boolean hatching;
 	int swarmlings, hatchTicks;
 	
-	public SwarmCluster(EntityType<? extends MobEntity> entityType, World world)
+	public SwarmClusterEntity(EntityType<? extends MobEntity> entityType, World world)
 	{
 		super(entityType, world);
 		swarmlings = random.nextInt(3);
@@ -84,7 +84,7 @@ public class SwarmCluster extends MobEntity implements IAnimatable
 			else
 				setVelocity(0, -10, 0);
 		}
-		if(hatching)
+		if(hatching && !isOnFire())
 		{
 			for (int i = 0; i < 4; i++)
 				particles(new BlockStateParticleEffect(ParticleTypes.BLOCK, Blocks.SOUL_SAND.getDefaultState()));
@@ -153,7 +153,7 @@ public class SwarmCluster extends MobEntity implements IAnimatable
 	@Override
 	public void registerControllers(AnimationData animationData)
 	{
-		AnimationController<SwarmCluster> controller = new AnimationController<>(this, "controller",
+		AnimationController<SwarmClusterEntity> controller = new AnimationController<>(this, "controller",
 				2, this::predicate);
 		animationData.addAnimationController(controller);
 	}
@@ -166,6 +166,6 @@ public class SwarmCluster extends MobEntity implements IAnimatable
 	
 	@SuppressWarnings("unused")
 	public static boolean canSpawn(EntityType<? extends LivingEntity> type, ServerWorldAccess world, SpawnReason reason, BlockPos pos, Random random) {
-		return world.getBlockState(pos.down()).isIn(BlockTagRegistry.SWARMLING_SPAWNABLE) && !world.isSkyVisible(pos);
+		return world.getBlockState(pos.down()).isIn(BlockTagRegistry.SWARMLING_SPAWNABLE) && !world.isSkyVisible(pos) && pos.getY() < 64;
 	}
 }

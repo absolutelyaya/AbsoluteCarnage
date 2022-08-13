@@ -7,11 +7,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.entities.SwarmClusterEntity;
+import yaya.absolutecarnage.entities.SwarmlingSpawnEntity;
 import yaya.absolutecarnage.entities.projectile.FlameProjectile;
 import yaya.absolutecarnage.entities.projectile.ToxicSpit;
 import yaya.absolutecarnage.entities.ChomperEntity;
 import yaya.absolutecarnage.entities.ChompyEntity;
-import yaya.absolutecarnage.entities.SwarmCluster;
 
 public class EntityRegistry
 {
@@ -28,23 +29,30 @@ public class EntityRegistry
 			FabricEntityTypeBuilder.create(SpawnGroup.MISC, ToxicSpit::new).disableSummon()
 					.dimensions(EntityDimensions.fixed(0.25F, 0.25F))
 					.trackRangeBlocks(4).trackedUpdateRate(10).build());
-	public static final EntityType<SwarmCluster> SWARM_CLUSTER = Registry.register(Registry.ENTITY_TYPE,
+	public static final EntityType<SwarmClusterEntity> SWARM_CLUSTER = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(AbsoluteCarnage.MOD_ID, "swarm_cluster"),
-			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.MONSTER).entityFactory(SwarmCluster::new)
+			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.MONSTER).entityFactory(SwarmClusterEntity::new)
 					.dimensions(EntityDimensions.fixed(0.75f, 1f))
-					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmCluster::canSpawn)
+					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmClusterEntity::canSpawn)
 					.build());
 	public static final EntityType<FlameProjectile> FLAME_PROJECTILE = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(AbsoluteCarnage.MOD_ID, "flame_projectile"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MISC, FlameProjectile::new).disableSummon()
 					.dimensions(EntityDimensions.changing(0.25F, 0.25F))
 					.trackRangeBlocks(4).trackedUpdateRate(10).build());
+	public static final EntityType<SwarmlingSpawnEntity> SWARMLING_SPAWN = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(AbsoluteCarnage.MOD_ID, "swarmling_spawn"),
+			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.MONSTER).entityFactory(SwarmlingSpawnEntity::new)
+					.dimensions(EntityDimensions.fixed(0.75f, 1f))
+					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmlingSpawnEntity::canSpawn)
+					.build());
 	
 	@SuppressWarnings("ConstantConditions")
 	public static void registerAttributes()
 	{
 		FabricDefaultAttributeRegistry.register(CHOMPY, ChompyEntity.setAttributes());
 		FabricDefaultAttributeRegistry.register(CHOMPER, ChomperEntity.setAttributes());
-		FabricDefaultAttributeRegistry.register(SWARM_CLUSTER, SwarmCluster.setAttributes());
+		FabricDefaultAttributeRegistry.register(SWARM_CLUSTER, SwarmClusterEntity.setAttributes());
+		FabricDefaultAttributeRegistry.register(SWARMLING_SPAWN, SwarmlingSpawnEntity.setAttributes());
 	}
 }

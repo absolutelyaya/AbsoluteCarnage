@@ -11,6 +11,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
+import yaya.absolutecarnage.client.entities.agressive.SwarmlingSpawnRenderer;
 import yaya.absolutecarnage.client.entities.block.InfestedChestRenderer;
 import yaya.absolutecarnage.client.entities.other.SwarmClusterRenderer;
 import yaya.absolutecarnage.event.KeyInputHandler;
@@ -31,6 +32,7 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		EntityRendererRegistry.register(EntityRegistry.CHOMPER, ChomperRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.TOXIC_SPIT, FlyingItemEntityRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARM_CLUSTER, SwarmClusterRenderer::new);
+		EntityRendererRegistry.register(EntityRegistry.SWARMLING_SPAWN, SwarmlingSpawnRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.FLAME_PROJECTILE, FlyingItemEntityRenderer::new);
 		//BlockEntity + Item renderers
 		BlockEntityRendererRegistry.register(BlockEntityRegistry.INFESTED_CHEST, InfestedChestRenderer::new);
