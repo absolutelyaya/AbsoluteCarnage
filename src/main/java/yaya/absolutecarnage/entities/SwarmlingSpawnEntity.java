@@ -3,10 +3,20 @@ package yaya.absolutecarnage.entities;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.control.FlightMoveControl;
+import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.AttackGoal;
+import net.minecraft.entity.ai.goal.FlyGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.pathing.BirdNavigation;
+import net.minecraft.entity.ai.pathing.EntityNavigation;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ServerWorldAccess;
@@ -28,13 +38,50 @@ public class SwarmlingSpawnEntity extends HostileEntity implements IAnimatable
 	public SwarmlingSpawnEntity(EntityType<? extends HostileEntity> entityType, World world)
 	{
 		super(entityType, world);
-		setNoGravity(true);
+		this.moveControl = new FlightMoveControl(this, 20, true);
+		this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0F);
+		this.setPathfindingPenalty(PathNodeType.WATER, -1.0F);
+		this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0F);
+		this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, -1.0F);
+	}
+	
+	@Override
+	protected void initGoals()
+	{
+		goalSelector.add(0, new FlyGoal(this, 1));
+		goalSelector.add(1, new AttackGoal(this));
+		goalSelector.add(2, new LookAtEntityGoal(this, LivingEntity.class, 5));
+		
+		targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
+	}
+	
+	public static DefaultAttributeContainer.Builder setAttributes()
+	{
+		return TameableEntity.createMobAttributes()
+					   .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
+					   .add(EntityAttributes.GENERIC_ARMOR, 4.0D)
+					   .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
+					   .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3D);
+	}
+	
+	protected EntityNavigation createNavigation(World world) {
+		BirdNavigation nav = new BirdNavigation(this, world);
+		nav.setCanPathThroughDoors(false);
+		nav.setCanSwim(false);
+		nav.setCanEnterOpenDoors(true);
+		return nav;
 	}
 	
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
 	{
 		event.getController().setAnimation(IDLE_ANIM);
 		return PlayState.CONTINUE;
+	}
+	
+	@Override
+	protected boolean isDisallowedInPeaceful()
+	{
+		return true;
 	}
 	
 	@Override
@@ -45,17 +92,14 @@ public class SwarmlingSpawnEntity extends HostileEntity implements IAnimatable
 		animationData.addAnimationController(controller);
 	}
 	
+	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+		return false;
+	}
+	
 	@Override
 	public AnimationFactory getFactory()
 	{
 		return factory;
-	}
-	
-	public static DefaultAttributeContainer.Builder setAttributes()
-	{
-		return TameableEntity.createMobAttributes()
-					   .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
-					   .add(EntityAttributes.GENERIC_ARMOR, 4.0D);
 	}
 	
 	@SuppressWarnings("unused")

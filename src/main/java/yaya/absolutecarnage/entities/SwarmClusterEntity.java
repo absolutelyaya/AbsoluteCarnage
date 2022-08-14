@@ -47,6 +47,12 @@ public class SwarmClusterEntity extends MobEntity implements IAnimatable
 	}
 	
 	@Override
+	protected boolean isDisallowedInPeaceful()
+	{
+		return true;
+	}
+	
+	@Override
 	public boolean damage(DamageSource source, float amount)
 	{
 		if(source.equals(DamageSource.ON_FIRE))
