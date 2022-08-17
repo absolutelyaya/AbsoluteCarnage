@@ -51,19 +51,34 @@ public class SwarmlingSpawnModel extends AnimatedGeoModel<SwarmlingSpawnEntity>
 		
 		if(wingL != null && wingR != null)
 		{
-			Vec3d pos1 = new Vec3d(15, -42, -5);
-			Vec3d pos2 = new Vec3d(25, -10, 30);
-			double time = Math.sin(getCurrentTick() * 1.5) * 0.5 + 0.5;
-			
-			Vec3d pos = new Vec3d(MathHelper.lerp(time, pos1.x, pos2.x), MathHelper.lerp(time, pos1.y, pos2.y),
-					MathHelper.lerp(time, pos1.z, pos2.z));
-			
-			wingL.setRotationX(-(float)pos.x * f);
-			wingL.setRotationY(-(float)pos.y * f);
-			wingL.setRotationZ(-(float)pos.z * f);
-			wingR.setRotationX(-(float)pos.x * f);
-			wingR.setRotationY((float)pos.y * f);
-			wingR.setRotationZ((float)pos.z * f);
+			Vec3d pos1 = new Vec3d(-15, -42, -5);
+			Vec3d pos2 = new Vec3d(-25, -10, 30);
+			if(!entity.isOnGround())
+			{
+				double time = Math.sin(getCurrentTick() * 1.5) * 0.5 + 0.5;
+				
+				Vec3d pos = new Vec3d(MathHelper.lerp(time, pos1.x, pos2.x), MathHelper.lerp(time, pos1.y, pos2.y),
+						MathHelper.lerp(time, pos1.z, pos2.z));
+				
+				wingL.setRotationX(-(float)pos.x * f);
+				wingL.setRotationY(-(float)pos.y * f);
+				wingL.setRotationZ(-(float)pos.z * f);
+				wingR.setRotationX(-(float)pos.x * f);
+				wingR.setRotationY((float)pos.y * f);
+				wingR.setRotationZ((float)pos.z * f);
+			}
+			else
+			{
+				Vec3d pos = new Vec3d(MathHelper.lerp(0.1, wingR.getRotationX(), pos1.x), MathHelper.lerp(0.1, wingR.getRotationY(), pos1.y),
+						MathHelper.lerp(0.1, wingR.getRotationZ(), pos1.z));
+				
+				wingL.setRotationX((float)pos.x * f);
+				wingL.setRotationY(-(float)pos.y * f);
+				wingL.setRotationZ(-(float)pos.z * f);
+				wingR.setRotationX((float)pos.x * f);
+				wingR.setRotationY((float)pos.y * f);
+				wingR.setRotationZ((float)pos.z * f);
+			}
 		}
 	}
 }

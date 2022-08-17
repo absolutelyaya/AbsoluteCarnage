@@ -1,13 +1,11 @@
 package yaya.absolutecarnage.entities;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.control.FlightMoveControl;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.AttackGoal;
-import net.minecraft.entity.ai.goal.FlyGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.ai.pathing.PathNodeType;
@@ -33,7 +31,8 @@ import yaya.absolutecarnage.registries.BlockTagRegistry;
 public class SwarmlingSpawnEntity extends HostileEntity implements IAnimatable
 {
 	final AnimationFactory factory = new AnimationFactory(this);
-	private final static AnimationBuilder IDLE_ANIM = new AnimationBuilder().addAnimation("idle", true);
+	private final static AnimationBuilder IDLEAIR_ANIM = new AnimationBuilder().addAnimation("idle_air", true);
+	private final static AnimationBuilder IDLEGROUND_ANIM = new AnimationBuilder().addAnimation("idle_ground", true);
 	
 	public SwarmlingSpawnEntity(EntityType<? extends HostileEntity> entityType, World world)
 	{
@@ -48,9 +47,10 @@ public class SwarmlingSpawnEntity extends HostileEntity implements IAnimatable
 	@Override
 	protected void initGoals()
 	{
-		goalSelector.add(0, new FlyGoal(this, 1));
-		goalSelector.add(1, new AttackGoal(this));
-		goalSelector.add(2, new LookAtEntityGoal(this, LivingEntity.class, 5));
+		goalSelector.add(0, new AttackGoal(this));
+		goalSelector.add(1, new LookAtEntityGoal(this, LivingEntity.class, 5));
+		goalSelector.add(2, new LookAroundGoal(this));
+		goalSelector.add(3, new FlyGoal(this, 1.0));
 		
 		targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 	}
@@ -61,7 +61,8 @@ public class SwarmlingSpawnEntity extends HostileEntity implements IAnimatable
 					   .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0D)
 					   .add(EntityAttributes.GENERIC_ARMOR, 4.0D)
 					   .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.25D)
-					   .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3D);
+					   .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D)
+					   .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D);
 	}
 	
 	protected EntityNavigation createNavigation(World world) {
@@ -74,7 +75,10 @@ public class SwarmlingSpawnEntity extends HostileEntity implements IAnimatable
 	
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
 	{
-		event.getController().setAnimation(IDLE_ANIM);
+		if(isOnGround())
+			event.getController().setAnimation(IDLEGROUND_ANIM);
+		else
+			event.getController().setAnimation(IDLEAIR_ANIM);
 		return PlayState.CONTINUE;
 	}
 	
@@ -94,6 +98,11 @@ public class SwarmlingSpawnEntity extends HostileEntity implements IAnimatable
 	
 	public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
 		return false;
+	}
+	
+	protected void fall(double heightDifference, boolean onGround, BlockState state, BlockPos landedPosition)
+	{
+		setOnGround(onGround);
 	}
 	
 	@Override

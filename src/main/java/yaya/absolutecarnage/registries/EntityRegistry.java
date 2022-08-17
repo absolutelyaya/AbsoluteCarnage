@@ -43,7 +43,7 @@ public class EntityRegistry
 	public static final EntityType<SwarmlingSpawnEntity> SWARMLING_SPAWN = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(AbsoluteCarnage.MOD_ID, "swarmling_spawn"),
 			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.MONSTER).entityFactory(SwarmlingSpawnEntity::new)
-					.dimensions(EntityDimensions.fixed(0.75f, 1f))
+					.dimensions(EntityDimensions.fixed(0.75f, 0.25f))
 					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmlingSpawnEntity::canSpawn)
 					.build());
 	
