@@ -15,6 +15,7 @@ public class GoopParticle extends SurfaceAlignedParticle
 	{
 		super(world, x, y, z, spriteProvider, color, scale, dir);
 		maxAge = 300;
+		this.alpha = Math.min(random.nextFloat() + 0.5f, 1);
 	}
 	
 	@Override

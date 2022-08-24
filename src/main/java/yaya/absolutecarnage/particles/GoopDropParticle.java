@@ -1,6 +1,5 @@
 package yaya.absolutecarnage.particles;
 
-import net.minecraft.block.Blocks;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -16,18 +15,23 @@ public class GoopDropParticle extends SpriteBillboardParticle
 	protected final SpriteProvider spriteProvider;
 	protected final Vec3f color;
 	
-	protected GoopDropParticle(ClientWorld clientWorld, double d, double e, double f, SpriteProvider spriteProvider, Vec3f color, float scale)
+	protected GoopDropParticle(ClientWorld clientWorld, Vec3d pos, Vec3d vel, SpriteProvider spriteProvider, Vec3f color, float scale)
 	{
-		super(clientWorld, d, e, f);
+		super(clientWorld, pos.x, pos.y, pos.z);
 		setColor(color.getX(), color.getY(), color.getZ());
 		this.color = color;
 		this.scale = scale;
 		this.spriteProvider = spriteProvider;
 		sprite = spriteProvider.getSprite(random);
-		gravityStrength = 1;
+		gravityStrength = 1 + scale / 2;
 		maxAge = 300;
 		setVelocity(random.nextFloat() * 0.5 - 0.25, random.nextFloat() * 0.5, random.nextFloat() * 0.5 - 0.25);
 		collidesWithWorld = true;
+		
+		if(vel.distanceTo(Vec3d.ZERO) > 0)
+			setVelocity(vel.x, vel.y, vel.z);
+		
+		//angle = random.nextInt(3) * 90;
 	}
 	
 	@Override
@@ -52,8 +56,17 @@ public class GoopDropParticle extends SpriteBillboardParticle
 			
 			Vec3d offset = new Vec3d(1, 1, 1).multiply(Math.max(random.nextFloat() * 0.02f, 0.01f));
 			offset = offset.add(dir.x < 0 ? 0 : 1, dir.y < 0 ? 0 : 1, dir.z < 0 ? 0 : 1);
-			world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
-					pos.getX() + dir.x * offset.x, pos.getY() + dir.y * offset.y, pos.getZ() + dir.z * offset.z, 0, 0, 0);
+			
+			if(dir.y == 1)
+			{
+				world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
+						x + dir.x * offset.x, pos.getY() + dir.y * offset.y, z + dir.z * offset.z,
+						0, 0, 0);
+			}
+			else
+				world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
+						pos.getX() + dir.x * offset.x, pos.getY() + dir.y * offset.y, pos.getZ() + dir.z * offset.z,
+						0, 0, 0);
 		}
 	}
 	
@@ -90,7 +103,8 @@ public class GoopDropParticle extends SpriteBillboardParticle
 		@Override
 		public Particle createParticle(GoopDropParticleEffect parameters, ClientWorld world, double x, double y, double z, double velocityX, double velocityY, double velocityZ)
 		{
-			return new GoopDropParticle(world, x, y, z, spriteProvider, parameters.getColor(), parameters.getScale());
+			return new GoopDropParticle(world, new Vec3d(x, y, z), new Vec3d(velocityX, velocityY, velocityZ),
+					spriteProvider, parameters.getColor(), parameters.getScale());
 		}
 	}
 }
