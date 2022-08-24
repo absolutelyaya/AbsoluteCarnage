@@ -70,7 +70,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 	public void tick()
 	{
 		super.tick();
-		//if(world.getBlockState(new BlockPos(x, y, z)).isAir())
-		//	markDead();
+		if(world.getBlockState(new BlockPos(x - dir.getX(), y - dir.getY(), z - dir.getZ())).isAir())
+			markDead();
 	}
 }

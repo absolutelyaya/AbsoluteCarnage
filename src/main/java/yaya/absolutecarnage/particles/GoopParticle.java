@@ -23,6 +23,12 @@ public class GoopParticle extends SurfaceAlignedParticle
 		return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
 	}
 	
+	@Override
+	public void tick()
+	{
+		super.tick();
+	}
+	
 	public static class GoopParticleFactory implements ParticleFactory<GoopParticleEffect>
 	{
 		protected final SpriteProvider spriteProvider;

@@ -1,11 +1,15 @@
 package yaya.absolutecarnage.particles;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.client.particle.*;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.*;
+import net.minecraft.util.shape.VoxelShape;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class GoopDropParticle extends SpriteBillboardParticle
 {
@@ -36,22 +40,41 @@ public class GoopDropParticle extends SpriteBillboardParticle
 	public void tick()
 	{
 		super.tick();
-		if(onGround)
+	}
+	
+	void nextParticle(BlockPos pos, Vec3d dir)
+	{
+		if(!world.getBlockState(pos).isAir())
 		{
-			nextParticle(new BlockPos(new Vec3d(x, y - 0.2, z)));
-			markDead();
+			//Vec3d dir = new Vec3d(x, y, z).subtract(new Vec3d(pos.getX(), pos.getY(), pos.getZ()));
+			
+			dir = dir.normalize();
+			
+			Vec3d offset = new Vec3d(1, 1, 1).multiply(Math.max(random.nextFloat() * 0.02f, 0.01f));
+			offset = offset.add(dir.x < 0 ? 0 : 1, dir.y < 0 ? 0 : 1, dir.z < 0 ? 0 : 1);
+			world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
+					pos.getX() + dir.x * offset.x, pos.getY() + dir.y * offset.y, pos.getZ() + dir.z * offset.z, 0, 0, 0);
 		}
 	}
 	
-	void nextParticle(BlockPos pos)
+	@Override
+	public void move(double dx, double dy, double dz)
 	{
-		if(world.getBlockState(pos).isSolidBlock(world, pos))
+		if (this.collidesWithWorld && (dx != 0.0 || dy != 0.0 || dz != 0.0) && dx * dx + dy * dy + dz * dz < MathHelper.square(100.0))
 		{
-			Vec3d dir = new Vec3d(x, y, z).subtract(new Vec3d(pos.getX(), pos.getY(), pos.getZ())).normalize();
-			
-			world.addParticle(new GoopParticleEffect(color, scale * 5, dir),
-					x, y + Math.max(random.nextFloat() * 0.02f, 0.01f), z, 0, 0, 0);
+			Iterator<VoxelShape> it = world.getBlockCollisions(null, getBoundingBox().stretch(new Vec3d(dx, dy, dz))).iterator();
+			if(it.hasNext())
+			{
+				VoxelShape shape = it.next();
+				Vec3d point = shape.getBoundingBox().getCenter();
+				Vec3d vec3d = Entity.adjustMovementForCollisions(null, new Vec3d(dx, dy, dz), this.getBoundingBox(), this.world, List.of());
+				Vec3d diff = vec3d.subtract(new Vec3d(dx, dy, dz));
+				
+				nextParticle(new BlockPos(point), diff);
+				markDead();
+			}
 		}
+		super.move(dx, dy, dz);
 	}
 	
 	public static class GoopDropParticleFactory implements ParticleFactory<GoopDropParticleEffect>
