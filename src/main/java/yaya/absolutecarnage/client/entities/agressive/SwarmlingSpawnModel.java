@@ -1,5 +1,6 @@
 package yaya.absolutecarnage.client.entities.agressive;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -8,11 +9,13 @@ import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.entities.ChomperEntity;
 import yaya.absolutecarnage.entities.SwarmlingSpawnEntity;
 
 public class SwarmlingSpawnModel extends AnimatedGeoModel<SwarmlingSpawnEntity>
 {
+	double lastTime;
+	Vec3d lastWingPos;
+	
 	@Override
 	public Identifier getModelResource(SwarmlingSpawnEntity object)
 	{
@@ -41,6 +44,9 @@ public class SwarmlingSpawnModel extends AnimatedGeoModel<SwarmlingSpawnEntity>
 		IBone wingR = this.getAnimationProcessor().getBone("WingR");
 		
 		float f = ((float) Math.PI / 180F);
+		double delta = getCurrentTick() - lastTime;
+		if(MinecraftClient.getInstance().isPaused())
+			return;
 		
 		EntityModelData extraData = (EntityModelData)customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
 		if(head != null)
@@ -51,11 +57,14 @@ public class SwarmlingSpawnModel extends AnimatedGeoModel<SwarmlingSpawnEntity>
 		
 		if(wingL != null && wingR != null)
 		{
+			if(lastWingPos == null)
+				lastWingPos = new Vec3d(wingR.getRotationX(), wingR.getRotationY(), wingR.getRotationZ());
+			
 			Vec3d pos1 = new Vec3d(-15, -42, -5);
 			Vec3d pos2 = new Vec3d(-25, -10, 30);
 			if(!entity.isOnGround())
 			{
-				double time = Math.sin(getCurrentTick() * 1.5) * 0.5 + 0.5;
+				double time = Math.sin(lastTime * 1.5) * 0.5 + 0.5;
 				
 				Vec3d pos = new Vec3d(MathHelper.lerp(time, pos1.x, pos2.x), MathHelper.lerp(time, pos1.y, pos2.y),
 						MathHelper.lerp(time, pos1.z, pos2.z));
@@ -66,11 +75,12 @@ public class SwarmlingSpawnModel extends AnimatedGeoModel<SwarmlingSpawnEntity>
 				wingR.setRotationX(-(float)pos.x * f);
 				wingR.setRotationY((float)pos.y * f);
 				wingR.setRotationZ((float)pos.z * f);
+				//TODO: improve animation.
 			}
 			else
 			{
-				Vec3d pos = new Vec3d(MathHelper.lerp(0.1, wingR.getRotationX(), pos1.x), MathHelper.lerp(0.1, wingR.getRotationY(), pos1.y),
-						MathHelper.lerp(0.1, wingR.getRotationZ(), pos1.z));
+				Vec3d pos = new Vec3d(MathHelper.lerp(delta, lastWingPos.x, -15), MathHelper.lerp(delta, lastWingPos.y, -52),
+						MathHelper.lerp(delta, lastWingPos.z, -5));
 				
 				wingL.setRotationX((float)pos.x * f);
 				wingL.setRotationY(-(float)pos.y * f);
@@ -78,7 +88,10 @@ public class SwarmlingSpawnModel extends AnimatedGeoModel<SwarmlingSpawnEntity>
 				wingR.setRotationX((float)pos.x * f);
 				wingR.setRotationY((float)pos.y * f);
 				wingR.setRotationZ((float)pos.z * f);
+				
+				lastWingPos = pos;
 			}
+			lastTime = getCurrentTick();
 		}
 	}
 }
