@@ -25,10 +25,24 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		this.scale = this.random.nextFloat() * scale * 0.5f + scale * 0.25f;
 		this.spriteProvider = spriteProvider;
 		sprite = spriteProvider.getSprite(random);
-		this.dir = new Vec3f((float)Math.round(dir.x), (float)Math.round(dir.y), (float)Math.round(dir.z));
 		gravityStrength = 0;
 		angle = random.nextFloat() * 360;
 		setColor(color.getX(), color.getY(), color.getZ());
+		
+		boolean b = dir.x != 0;
+		if(dir.y != 0)
+		{
+			if(b)
+				markDead();
+			b = true;
+		}
+		if(dir.z != 0 && b)
+			markDead();
+		
+		if(dead)
+			this.scale = 0;
+		
+		this.dir = new Vec3f((float)Math.round(dir.x), (float)Math.round(dir.y), (float)Math.round(dir.z));
 		
 		if(dir.y == 0)
 			maxDeform = new float[] {
