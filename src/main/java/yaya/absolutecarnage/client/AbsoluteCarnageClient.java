@@ -14,6 +14,8 @@ import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
 import yaya.absolutecarnage.client.entities.block.InfestedChestRenderer;
 import yaya.absolutecarnage.client.entities.other.SwarmClusterRenderer;
 import yaya.absolutecarnage.event.KeyInputHandler;
+import yaya.absolutecarnage.particles.GoopDropParticle;
+import yaya.absolutecarnage.particles.GoopParticle;
 import yaya.absolutecarnage.registries.EntityRegistry;
 import yaya.absolutecarnage.client.items.block.AnimatedBlockItemRenderer;
 import yaya.absolutecarnage.particles.FliesParticle;
@@ -43,6 +45,8 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		//Particles
 		ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
 		registry.register(ParticleRegistry.FLIES, FliesParticle.FliesParticleFactory::new);
+		registry.register(ParticleRegistry.GOOP_DROP, GoopDropParticle.GoopDropParticleFactory::new);
+		registry.register(ParticleRegistry.GOOP, GoopParticle.GoopParticleFactory::new);
 		//Model predicates
 		ModelPredicateRegistry.registerModels();
 		
