@@ -5,6 +5,7 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import org.jetbrains.annotations.Nullable;
@@ -12,13 +13,18 @@ import org.jetbrains.annotations.Nullable;
 public class GoopParticle extends SurfaceAlignedParticle
 {
 	private final Vec3f color;
+	private final float size;
+	private final float normalAlpha;
 	
 	protected GoopParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider, Vec3f color, float scale, Vec3d dir)
 	{
 		super(world, x, y, z, spriteProvider, color, scale, dir);
-		maxAge = 300;
+		this.maxAge = 300;
 		this.alpha = Math.min(random.nextFloat() + 0.5f, 1);
 		this.color = color;
+		this.scale = 0;
+		this.size = scale;
+		this.normalAlpha = alpha;
 	}
 	
 	@Override
@@ -31,6 +37,15 @@ public class GoopParticle extends SurfaceAlignedParticle
 	public void tick()
 	{
 		super.tick();
+		
+		if(age <= 5)
+			scale = MathHelper.clampedLerp(0f, size, age / 5f);
+		else if(age >= maxAge - 60)
+		{
+			scale = MathHelper.clampedLerp(size, 0f, (age - (maxAge - 60)) / 60f);
+			alpha = MathHelper.clampedLerp(normalAlpha, 0f, (age - (maxAge - 60)) / 60f);
+		}
+		
 		if(dir.getY() < 0 && random.nextInt(60) == 0)
 			world.addParticle(new GoopStringParticleEffect(color, 0.25f),
 					x + random.nextFloat() * scale - scale / 2f, y, z + random.nextFloat() * scale - scale / 2f,
