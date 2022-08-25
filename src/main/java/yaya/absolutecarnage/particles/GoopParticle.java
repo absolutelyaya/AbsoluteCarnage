@@ -11,11 +11,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class GoopParticle extends SurfaceAlignedParticle
 {
+	private final Vec3f color;
+	
 	protected GoopParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider, Vec3f color, float scale, Vec3d dir)
 	{
 		super(world, x, y, z, spriteProvider, color, scale, dir);
 		maxAge = 300;
 		this.alpha = Math.min(random.nextFloat() + 0.5f, 1);
+		this.color = color;
 	}
 	
 	@Override
@@ -28,6 +31,10 @@ public class GoopParticle extends SurfaceAlignedParticle
 	public void tick()
 	{
 		super.tick();
+		if(dir.getY() < 0 && random.nextInt(60) == 0)
+			world.addParticle(new GoopStringParticleEffect(color, 0.25f),
+					x + random.nextFloat() * scale - scale / 2f, y, z + random.nextFloat() * scale - scale / 2f,
+					0, 0, 0);
 	}
 	
 	public static class GoopParticleFactory implements ParticleFactory<GoopParticleEffect>
