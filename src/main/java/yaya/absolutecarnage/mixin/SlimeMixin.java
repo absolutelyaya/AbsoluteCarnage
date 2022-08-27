@@ -59,7 +59,7 @@ public abstract class SlimeMixin extends MobEntity
 	public void onTick(CallbackInfo ci)
 	{
 		Vec3d pos = getPos();
-		world.addParticle(new GoopDropParticleEffect(getGoopColor(), 0.75f * getSize() * 0.5f),
+		world.addParticle(new GoopDropParticleEffect(getGoopColor(), 0.5f * getSize() * 0.5f),
 				pos.getX(), pos.getY() + 1, pos.getZ(), 0, -2, 0);
 	}
 	

@@ -7,21 +7,26 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.math.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 {
+	private final List<Vec3f> verts = new ArrayList<>();
+	private final List<Vec2f> uvs = new ArrayList<>();
+	private final List<Float> maxDeform = new ArrayList<>();
 	protected final SpriteProvider spriteProvider;
 	protected final Vec3f dir;
 	
 	protected float deformation;
-	float[] maxDeform;
+	float targetSize;
 	
 	protected SurfaceAlignedParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider,
 									 Vec3f color, float scale, Vec3d dir)
 	{
 		super(world, x, y, z);
+		this.targetSize = scale;
 		this.scale = this.random.nextFloat() * scale * 0.5f + scale * 0.25f;
 		this.spriteProvider = spriteProvider;
 		sprite = spriteProvider.getSprite(random);
@@ -39,74 +44,93 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		if(dir.z != 0 && b)
 			markDead();
 		
-		if(dead)
-			this.scale = 0;
-		
 		this.dir = new Vec3f((float)Math.round(dir.x), (float)Math.round(dir.y), (float)Math.round(dir.z));
 		
-		if(dir.y == 0)
-			maxDeform = new float[] {
-					random.nextFloat(),
-					random.nextFloat(),
-					random.nextFloat(),
-					random.nextFloat()
-			};
-		else
-			maxDeform = new float[] {
-					random.nextBoolean() ? random.nextFloat() : 0,
-					random.nextBoolean() ? random.nextFloat() : 0,
-					random.nextBoolean() ? random.nextFloat() : 0,
-					random.nextBoolean() ? random.nextFloat() : 0
-			};
+		if(dead)
+		{
+			this.scale = 0;
+			return;
+		}
+		
+		Vec3f modDir = new Vec3f(dir.getX() == 0 ? 1 : 0, dir.getY() == 0 ? 1 : 0, dir.getZ() == 0 ? 1 : 0);
+		float s = Math.max(targetSize, 1);
+		for(int vy = 0; vy <= s; vy++)
+			for (int vx = 0; vx <= s; vx++)
+			{
+				Vec3f vert;
+				if(dir.y != 0)
+					vert = new Vec3f(modDir.getX() * vx / s, modDir.getY(), modDir.getZ() * vy / s);
+				else
+					vert = new Vec3f(modDir.getX() * vx / s, modDir.getY() * vy / s, modDir.getZ() * vx / s);
+				verts.add(vert);
+				uvs.add(new Vec2f(MathHelper.lerp(vx / s, getMinU(), getMaxU()), MathHelper.lerp(vy / s, getMinV(), getMaxV())));
+				if(dir.y == 0)
+					maxDeform.add(random.nextFloat());
+				else
+					maxDeform.add(random.nextBoolean() ? random.nextFloat() : 0);
+			}
 	}
 	
 	@Override
 	public void buildGeometry(VertexConsumer vertexConsumer, Camera camera, float tickDelta)
 	{
+		if(verts.size() == 0)
+			return;
+		
 		Vec3d camPos = camera.getPos();
 		float f = (float)(MathHelper.lerp(tickDelta, this.prevPosX, this.x) - camPos.getX());
 		float g = (float)(MathHelper.lerp(tickDelta, this.prevPosY, this.y) - camPos.getY());
 		float h = (float)(MathHelper.lerp(tickDelta, this.prevPosZ, this.z) - camPos.getZ());
 		
 		Vec3f dir = this.dir;
-		Vec3f finalDir = dir;
-		dir = new Vec3f(dir.getX() == 0 ? 1 : 0, dir.getY() == 0 ? 1 : 0, dir.getZ() == 0 ? 1 : 0);
 		
-		List<Vec3f> verts = List.of(
-				new Vec3f(-dir.getX(), -dir.getY(), -dir.getZ()),
-				new Vec3f(-dir.getX(), (dir.getX() == 0 ? -1 : 1) * dir.getY(), dir.getZ()),
-				new Vec3f(dir.getX(), dir.getY(), dir.getZ()),
-				new Vec3f(dir.getX(), (dir.getZ() == 0 ? -1 : 1) * dir.getY(), -dir.getZ()));
+		List<Vec3f> verts = new ArrayList<>();
+		Vec3f modDir = new Vec3f(dir.getX() == 0 ? 1 : 0, dir.getY() == 0 ? 1 : 0, dir.getZ() == 0 ? 1 : 0);
+		this.verts.forEach(i ->
+		{
+			Vec3f v = i.copy();
+			v.subtract(new Vec3f((float)(modDir.getX() * 0.5), (float)(modDir.getY() * 0.5), (float)(modDir.getZ() * 0.5)));
+			verts.add(v);
+		});
 		
 		AtomicInteger vert = new AtomicInteger();
 		verts.forEach(i ->
 		{
 			//random rotation
-			i.rotate(Quaternion.fromEulerXyzDegrees(new Vec3f(finalDir.getX() * angle, finalDir.getY() * angle, finalDir.getZ() * angle)));
+			i.rotate(Quaternion.fromEulerXyzDegrees(new Vec3f(dir.getX() * angle, dir.getY() * angle, dir.getZ() * angle)));
 			//deformation
 			if(!(this.dir.getY() > 0))
-			{
-				i.subtract(new Vec3f(0, deformation * maxDeform[vert.get()], 0));
-			}
+				i.subtract(new Vec3f(0, deformation * maxDeform.get(vert.get()), 0));
 			vert.getAndIncrement();
 		});
 		
-		for(int k = 0; k < 4; ++k)
+		for (Vec3f vec3f : verts)
 		{
-			Vec3f vec3f = verts.get(k);
 			vec3f.scale(scale);
 			vec3f.add(f, g, h);
 		}
 		
 		int n = this.getBrightness(tickDelta);
-		vertexConsumer.vertex(verts.get(0).getX(), verts.get(0).getY(), verts.get(0).getZ()).texture(getMaxU(), getMaxV()).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-		vertexConsumer.vertex(verts.get(1).getX(), verts.get(1).getY(), verts.get(1).getZ()).texture(getMaxU(), getMinV()).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-		vertexConsumer.vertex(verts.get(2).getX(), verts.get(2).getY(), verts.get(2).getZ()).texture(getMinU(), getMinV()).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-		vertexConsumer.vertex(verts.get(3).getX(), verts.get(3).getY(), verts.get(3).getZ()).texture(getMinU(), getMaxV()).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-		vertexConsumer.vertex(verts.get(3).getX(), verts.get(3).getY(), verts.get(3).getZ()).texture(getMinU(), getMaxV()).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-		vertexConsumer.vertex(verts.get(2).getX(), verts.get(2).getY(), verts.get(2).getZ()).texture(getMinU(), getMinV()).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-		vertexConsumer.vertex(verts.get(1).getX(), verts.get(1).getY(), verts.get(1).getZ()).texture(getMaxU(), getMinV()).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-		vertexConsumer.vertex(verts.get(0).getX(), verts.get(0).getY(), verts.get(0).getZ()).texture(getMaxU(), getMaxV()).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+		float ts = Math.max(targetSize, 1);
+		for (int y = 1, vi = 0; y < (int)ts + 1; y++, vi++)
+		{
+			for (int x = 1; x < (int)ts + 1; x++, vi++)
+			{
+				//top
+				vertexConsumer.vertex(verts.get(vi).getX(), verts.get(vi).getY(), verts.get(vi).getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				vertexConsumer.vertex(verts.get((int)(vi + ts + 1)).getX(), verts.get((int)(vi + ts + 1)).getY(), verts.get((int)(vi + ts + 1)).getZ()).texture(uvs.get((int)(vi + ts + 1)).x, uvs.get((int)(vi + ts + 1)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				vertexConsumer.vertex(verts.get((int)(vi + ts + 2)).getX(), verts.get((int)(vi + ts + 2)).getY(), verts.get((int)(vi + ts + 2)).getZ()).texture(uvs.get((int)(vi + ts + 2)).x, uvs.get((int)(vi + ts + 2)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				vertexConsumer.vertex(verts.get(vi + 1).getX(), verts.get(vi + 1).getY(), verts.get(vi + 1).getZ()).texture(uvs.get(vi + 1).x, uvs.get(vi + 1).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				//bottom
+				vertexConsumer.vertex(verts.get(vi + 1).getX(), verts.get(vi + 1).getY(), verts.get(vi + 1).getZ()).texture(uvs.get(vi + 1).x, uvs.get(vi + 1).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				vertexConsumer.vertex(verts.get((int)(vi + ts + 2)).getX(), verts.get((int)(vi + ts + 2)).getY(), verts.get((int)(vi + ts + 2)).getZ()).texture(uvs.get((int)(vi + ts + 2)).x, uvs.get((int)(vi + ts + 2)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				vertexConsumer.vertex(verts.get((int)(vi + ts + 1)).getX(), verts.get((int)(vi + ts + 1)).getY(), verts.get((int)(vi + ts + 1)).getZ()).texture(uvs.get((int)(vi + ts + 1)).x, uvs.get((int)(vi + ts + 1)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				vertexConsumer.vertex(verts.get(vi).getX(), verts.get(vi).getY(), verts.get(vi).getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+			}
+		}
+		
+		//TODO: wrap to block edges
+		//TODO: figure out why some negative X & Z (bottom) wall goops render weirdly
 	}
 	
 	@Override

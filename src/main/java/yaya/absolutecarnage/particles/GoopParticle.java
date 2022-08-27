@@ -15,16 +15,18 @@ public class GoopParticle extends SurfaceAlignedParticle
 	private final Vec3f color;
 	private final float size;
 	private final float normalAlpha;
+	private final int appearTicks;
 	
 	protected GoopParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider, Vec3f color, float scale, Vec3d dir)
 	{
 		super(world, x, y, z, spriteProvider, color, scale, dir);
-		this.maxAge = 300;
+		this.maxAge = 200 + random.nextInt(100);
 		this.alpha = Math.min(random.nextFloat() + 0.5f, 1);
 		this.color = color;
 		this.scale = 0;
 		this.size = scale;
 		this.normalAlpha = alpha;
+		this.appearTicks = random.nextInt(4) + 3;
 	}
 	
 	@Override
@@ -38,11 +40,11 @@ public class GoopParticle extends SurfaceAlignedParticle
 	{
 		super.tick();
 		
-		if(age <= 5)
-			scale = MathHelper.clampedLerp(0f, size, age / 5f);
+		if(age <= appearTicks)
+			scale = MathHelper.clampedLerp(0f, size, (float)age / appearTicks);
 		else if(age >= maxAge - 60)
 		{
-			scale = MathHelper.clampedLerp(size, 0f, (age - (maxAge - 60)) / 60f);
+			scale = MathHelper.clampedLerp(size, size * 0.5f, (age - (maxAge - 60)) / 60f);
 			alpha = MathHelper.clampedLerp(normalAlpha, 0f, (age - (maxAge - 60)) / 60f);
 		}
 		
