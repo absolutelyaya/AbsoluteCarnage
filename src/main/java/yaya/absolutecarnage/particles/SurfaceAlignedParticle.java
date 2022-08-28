@@ -5,10 +5,15 @@ import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.*;
+import net.minecraft.util.shape.VoxelShape;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
@@ -34,6 +39,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		angle = random.nextFloat() * 360;
 		setColor(color.getX(), color.getY(), color.getZ());
 		
+		this.dir = new Vec3f((float)Math.round(dir.x), (float)Math.round(dir.y), (float)Math.round(dir.z));
 		boolean b = dir.x != 0;
 		if(dir.y != 0)
 		{
@@ -43,8 +49,6 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		}
 		if(dir.z != 0 && b)
 			markDead();
-		
-		this.dir = new Vec3f((float)Math.round(dir.x), (float)Math.round(dir.y), (float)Math.round(dir.z));
 		
 		if(dead)
 		{
@@ -93,41 +97,74 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 			verts.add(v);
 		});
 		
-		AtomicInteger vert = new AtomicInteger();
+		AtomicInteger atomicInt = new AtomicInteger();
 		verts.forEach(i ->
 		{
 			//random rotation
 			i.rotate(Quaternion.fromEulerXyzDegrees(new Vec3f(dir.getX() * angle, dir.getY() * angle, dir.getZ() * angle)));
 			//deformation
 			if(!(this.dir.getY() > 0))
-				i.subtract(new Vec3f(0, deformation * maxDeform.get(vert.get()), 0));
-			vert.getAndIncrement();
+				i.subtract(new Vec3f(0, deformation * maxDeform.get(atomicInt.get()), 0));
+			i.scale(scale);
+			i.add(f, g, h);
+			atomicInt.getAndIncrement();
 		});
-		
-		for (Vec3f vec3f : verts)
-		{
-			vec3f.scale(scale);
-			vec3f.add(f, g, h);
-		}
 		
 		int n = this.getBrightness(tickDelta);
 		float ts = Math.max(targetSize, 1);
+		
+		List<Boolean> vertOnGround = new ArrayList<>();
+		for (Vec3f v : verts)
+			vertOnGround.add(!world.getBlockState(new BlockPos(camPos.x + v.getX(), camPos.y + v.getY() + 0.1, camPos.z + v.getZ())
+														  .down()).isAir());
+		
 		for (int y = 1, vi = 0; y < (int)ts + 1; y++, vi++)
 		{
 			for (int x = 1; x < (int)ts + 1; x++, vi++)
 			{
-				//top
-				vertexConsumer.vertex(verts.get(vi).getX(), verts.get(vi).getY(), verts.get(vi).getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-				vertexConsumer.vertex(verts.get((int)(vi + ts + 1)).getX(), verts.get((int)(vi + ts + 1)).getY(), verts.get((int)(vi + ts + 1)).getZ()).texture(uvs.get((int)(vi + ts + 1)).x, uvs.get((int)(vi + ts + 1)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-				vertexConsumer.vertex(verts.get((int)(vi + ts + 2)).getX(), verts.get((int)(vi + ts + 2)).getY(), verts.get((int)(vi + ts + 2)).getZ()).texture(uvs.get((int)(vi + ts + 2)).x, uvs.get((int)(vi + ts + 2)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-				vertexConsumer.vertex(verts.get(vi + 1).getX(), verts.get(vi + 1).getY(), verts.get(vi + 1).getZ()).texture(uvs.get(vi + 1).x, uvs.get(vi + 1).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-				//bottom
-				vertexConsumer.vertex(verts.get(vi + 1).getX(), verts.get(vi + 1).getY(), verts.get(vi + 1).getZ()).texture(uvs.get(vi + 1).x, uvs.get(vi + 1).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-				vertexConsumer.vertex(verts.get((int)(vi + ts + 2)).getX(), verts.get((int)(vi + ts + 2)).getY(), verts.get((int)(vi + ts + 2)).getZ()).texture(uvs.get((int)(vi + ts + 2)).x, uvs.get((int)(vi + ts + 2)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-				vertexConsumer.vertex(verts.get((int)(vi + ts + 1)).getX(), verts.get((int)(vi + ts + 1)).getY(), verts.get((int)(vi + ts + 1)).getZ()).texture(uvs.get((int)(vi + ts + 1)).x, uvs.get((int)(vi + ts + 1)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
-				vertexConsumer.vertex(verts.get(vi).getX(), verts.get(vi).getY(), verts.get(vi).getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				Vec3f[] modVerts = new Vec3f[] {verts.get(vi), verts.get((int)(vi + ts + 1)),
+						verts.get((int)(vi + ts + 2)), verts.get(vi + 1)};
+				
+				if(!((vi > 0 && vertOnGround.get(vi - 1)) || (vertOnGround.size() > vi + 1 && vertOnGround.get(vi + 1)) ||
+							 (vi >= ts && vertOnGround.get(vi - (int)ts)) || (vertOnGround.size() > vi + (int)ts && vertOnGround.get(vi + (int)ts))))
+				{
+					for (Vec3f mv : modVerts)
+						mv.set(new Vec3f(mv.getX(), mv.getY() + 10f, mv.getZ()));
+				}
+				
+				if(vertOnGround.get(vi))
+				{
+					//top
+					vertexConsumer.vertex(modVerts[0].getX(), modVerts[0].getY(), modVerts[0].getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+					vertexConsumer.vertex(modVerts[1].getX(), modVerts[1].getY(), modVerts[1].getZ()).texture(uvs.get((int)(vi + ts + 1)).x, uvs.get((int)(vi + ts + 1)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+					vertexConsumer.vertex(modVerts[2].getX(), modVerts[2].getY(), modVerts[2].getZ()).texture(uvs.get((int)(vi + ts + 2)).x, uvs.get((int)(vi + ts + 2)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+					vertexConsumer.vertex(modVerts[3].getX(), modVerts[3].getY(), modVerts[3].getZ()).texture(uvs.get(vi + 1).x, uvs.get(vi + 1).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+					//bottom
+					vertexConsumer.vertex(modVerts[3].getX(), modVerts[3].getY(), modVerts[3].getZ()).texture(uvs.get(vi + 1).x, uvs.get(vi + 1).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+					vertexConsumer.vertex(modVerts[2].getX(), modVerts[2].getY(), modVerts[2].getZ()).texture(uvs.get((int)(vi + ts + 2)).x, uvs.get((int)(vi + ts + 2)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+					vertexConsumer.vertex(modVerts[1].getX(), modVerts[1].getY(), modVerts[1].getZ()).texture(uvs.get((int)(vi + ts + 1)).x, uvs.get((int)(vi + ts + 1)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+					vertexConsumer.vertex(modVerts[0].getX(), modVerts[0].getY(), modVerts[0].getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
+				}
+				
 			}
 		}
+		
+		int x = 0, y = 0;
+		for (Vec3f v : verts)
+		{
+			world.addParticle(new DustParticleEffect(new Vec3f(x / ts, y / ts, 0f), 0.5f),
+					camPos.x + v.getX(), camPos.y + v.getY() + 0.1, camPos.z + v.getZ(),
+					0, 0.05, 0);
+			x++;
+			if(x > (int)ts)
+			{
+				x = 0;
+				y++;
+			}
+		}
+		
+		world.addParticle(new DustParticleEffect(new Vec3f(1f, 1f, 1f), 1f), this.x, this.y, this.z,
+				0, 0.25, 0);
 		
 		//TODO: wrap to block edges
 		//TODO: figure out why some negative X & Z (bottom) wall goops render weirdly
