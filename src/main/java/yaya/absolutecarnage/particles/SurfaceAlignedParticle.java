@@ -8,12 +8,9 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.*;
-import net.minecraft.util.shape.VoxelShape;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
@@ -113,26 +110,42 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		int n = this.getBrightness(tickDelta);
 		float ts = Math.max(targetSize, 1);
 		
-		List<Boolean> vertOnGround = new ArrayList<>();
-		for (Vec3f v : verts)
-			vertOnGround.add(!world.getBlockState(new BlockPos(camPos.x + v.getX(), camPos.y + v.getY() + 0.1, camPos.z + v.getZ())
-														  .down()).isAir());
-		
 		for (int y = 1, vi = 0; y < (int)ts + 1; y++, vi++)
 		{
 			for (int x = 1; x < (int)ts + 1; x++, vi++)
 			{
-				Vec3f[] modVerts = new Vec3f[] {verts.get(vi), verts.get((int)(vi + ts + 1)),
-						verts.get((int)(vi + ts + 2)), verts.get(vi + 1)};
+				Vec3f[] modVerts = new Vec3f[] {verts.get(vi).copy(), verts.get((int)(vi + ts + 1)).copy(),
+						verts.get((int)(vi + ts + 2)).copy(), verts.get(vi + 1).copy()};
 				
-				if(!((vi > 0 && vertOnGround.get(vi - 1)) || (vertOnGround.size() > vi + 1 && vertOnGround.get(vi + 1)) ||
-							 (vi >= ts && vertOnGround.get(vi - (int)ts)) || (vertOnGround.size() > vi + (int)ts && vertOnGround.get(vi + (int)ts))))
+				boolean grounded = true;
+				
+				if(dir.getY() != 0)
 				{
-					for (Vec3f mv : modVerts)
-						mv.set(new Vec3f(mv.getX(), mv.getY() + 10f, mv.getZ()));
+					Vec3f faceCenter = modVerts[0].copy();
+					faceCenter.add(modVerts[1]);
+					faceCenter.add(modVerts[2]);
+					faceCenter.add(modVerts[3]);
+					faceCenter.scale(0.25f);
+					
+					grounded = !world.isAir(new BlockPos(camPos.add(new Vec3d(faceCenter))).down());
+					
+					world.addParticle(ParticleTypes.FLAME,
+							camPos.x + faceCenter.getX(), camPos.y + faceCenter.getY() + 0.1, camPos.z + faceCenter.getZ(),
+							0, 0.05, 0);
+					
+					//if(!grounded)
+					//{
+					//	for (Vec3f mv : modVerts)
+					//	{
+					//		Vec3f camPosF = new Vec3f(camPos);
+					//		mv.add(camPosF);
+					//		moveToBlockEdge(mv);
+					//		mv.subtract(camPosF);
+					//	}
+					//}
 				}
 				
-				if(vertOnGround.get(vi))
+				if(grounded)
 				{
 					//top
 					vertexConsumer.vertex(modVerts[0].getX(), modVerts[0].getY(), modVerts[0].getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
@@ -145,7 +158,6 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 					vertexConsumer.vertex(modVerts[1].getX(), modVerts[1].getY(), modVerts[1].getZ()).texture(uvs.get((int)(vi + ts + 1)).x, uvs.get((int)(vi + ts + 1)).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
 					vertexConsumer.vertex(modVerts[0].getX(), modVerts[0].getY(), modVerts[0].getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
 				}
-				
 			}
 		}
 		
@@ -177,5 +189,10 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		if(world.getBlockState(new BlockPos(x - dir.getX(), y - dir.getY(), z - dir.getZ())).isAir())
 			markDead();
 		deformation = (float)age / maxAge;
+	}
+	
+	private void moveToBlockEdge(Vec3f vert)
+	{
+		vert.set(Math.round(vert.getX()), vert.getY(), Math.round(vert.getZ()));
 	}
 }
