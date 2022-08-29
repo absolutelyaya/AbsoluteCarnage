@@ -1,5 +1,6 @@
 package yaya.absolutecarnage.particles;
 
+import yaya.yayconfig.settings.SettingsStorage;
 import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.render.Camera;
@@ -8,6 +9,7 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.*;
+import yaya.absolutecarnage.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,9 +131,13 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 					
 					grounded = !world.isAir(new BlockPos(camPos.add(new Vec3d(faceCenter))).down());
 					
-					world.addParticle(ParticleTypes.FLAME,
-							camPos.x + faceCenter.getX(), camPos.y + faceCenter.getY() + 0.1, camPos.z + faceCenter.getZ(),
-							0, 0.05, 0);
+					
+					if(SettingsStorage.getBoolean(Settings.DEBUG_SURFACEALIGNED_PARTICLE.id))
+					{
+						world.addParticle(ParticleTypes.FLAME,
+								camPos.x + faceCenter.getX(), camPos.y + faceCenter.getY() + 0.1, camPos.z + faceCenter.getZ(),
+								0, 0.05, 0);
+					}
 					
 					//if(!grounded)
 					//{
@@ -161,22 +167,25 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 			}
 		}
 		
-		int x = 0, y = 0;
-		for (Vec3f v : verts)
+		if(SettingsStorage.getBoolean(Settings.DEBUG_SURFACEALIGNED_PARTICLE.id))
 		{
-			world.addParticle(new DustParticleEffect(new Vec3f(x / ts, y / ts, 0f), 0.5f),
-					camPos.x + v.getX(), camPos.y + v.getY() + 0.1, camPos.z + v.getZ(),
-					0, 0.05, 0);
-			x++;
-			if(x > (int)ts)
+			int x = 0, y = 0;
+			for (Vec3f v : verts)
 			{
-				x = 0;
-				y++;
+				world.addParticle(new DustParticleEffect(new Vec3f(x / ts, y / ts, 0f), 0.5f),
+						camPos.x + v.getX(), camPos.y + v.getY() + 0.1, camPos.z + v.getZ(),
+						0, 0.05, 0);
+				x++;
+				if(x > (int)ts)
+				{
+					x = 0;
+					y++;
+				}
 			}
+			
+			world.addParticle(new DustParticleEffect(new Vec3f(1f, 1f, 1f), 1f), this.x, this.y, this.z,
+					0, 0.25, 0);
 		}
-		
-		world.addParticle(new DustParticleEffect(new Vec3f(1f, 1f, 1f), 1f), this.x, this.y, this.z,
-				0, 0.25, 0);
 		
 		//TODO: wrap to block edges
 		//TODO: figure out why some negative X & Z (bottom) wall goops render weirdly

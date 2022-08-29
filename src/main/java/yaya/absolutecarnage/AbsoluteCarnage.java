@@ -1,5 +1,6 @@
 package yaya.absolutecarnage;
 
+import yaya.yayconfig.settings.SettingsManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.tinyremapper.extension.mixin.common.Logger;
 import net.minecraft.util.Identifier;
@@ -13,6 +14,8 @@ import yaya.absolutecarnage.registries.*;
 import yaya.absolutecarnage.networking.ModPackets;
 import yaya.absolutecarnage.registries.EntityRegistry;
 import yaya.absolutecarnage.registries.ItemRegistry;
+import yaya.absolutecarnage.settings.Settings;
+import yaya.yayconfig.utilities.TranslationUtil;
 
 public class AbsoluteCarnage implements ModInitializer, TerraBlenderApi
 {
@@ -34,6 +37,11 @@ public class AbsoluteCarnage implements ModInitializer, TerraBlenderApi
 		GeckoLib.initialize();
 		
 		PlacedFeatureRegistry.registerPlacedFeatures();
+		
+		TranslationUtil.setActiveGroupID(MOD_ID);
+		SettingsManager.init(MOD_ID);
+		new Settings(Settings.Category.class);
+		SettingsManager.load();
 	}
 	
 	@Override
