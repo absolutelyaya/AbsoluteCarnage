@@ -14,6 +14,7 @@ public class GoopDropParticle extends SpriteBillboardParticle
 {
 	protected final SpriteProvider spriteProvider;
 	protected final Vec3f color;
+	float rotSpeed;
 	
 	protected GoopDropParticle(ClientWorld clientWorld, Vec3d pos, Vec3d vel, SpriteProvider spriteProvider, Vec3f color, float scale)
 	{
@@ -28,10 +29,10 @@ public class GoopDropParticle extends SpriteBillboardParticle
 		setVelocity(random.nextFloat() * 0.5 - 0.25, random.nextFloat() * 0.5, random.nextFloat() * 0.5 - 0.25);
 		collidesWithWorld = true;
 		
+		rotSpeed = (random.nextFloat() - 0.5f) * 0.25f;
+		
 		if(vel.distanceTo(Vec3d.ZERO) > 0)
 			setVelocity(vel.x, vel.y, vel.z);
-		
-		//angle = random.nextInt(3) * 90;
 	}
 	
 	@Override
@@ -44,6 +45,8 @@ public class GoopDropParticle extends SpriteBillboardParticle
 	public void tick()
 	{
 		super.tick();
+		prevAngle = angle;
+		angle += rotSpeed;
 	}
 	
 	void nextParticle(BlockPos pos, Vec3d dir)

@@ -121,7 +121,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 				
 				boolean grounded = true;
 				
-				if(dir.getY() != 0)
+				if(dir.getY() > 0)
 				{
 					Vec3f faceCenter = modVerts[0].copy();
 					faceCenter.add(modVerts[1]);
