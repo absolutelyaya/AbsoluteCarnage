@@ -50,9 +50,13 @@
   "tutorial.absolute_carnage.wings_dir.desc": "by moving whilst dodging",
 
   "screen.absolute_carnage.options.main.title": "Absolute Carnage Settings",
+  "screen.absolute_carnage.options.particles.title": "Particle Settings",
   "screen.absolute_carnage.options.dev.title": "Developer Settings",
 
   "setting.absolute_carnage.debug.surface-aligned": "SA Debug Particles",
+  "setting.absolute_carnage.particle.sa-rendermode": "SA Particle Quality",
+  "setting.absolute_carnage.particle.sa-edgewrap": "SA Block-Edge-Wrapping",
+  "setting.absolute_carnage.particle.goop-maxsize": "Max Goop Size",
 
   "extra.absolute_carnage.mureyaki1": "§7§oYes, I am a weeb, how did you know?",
   "extra.absolute_carnage.cuticle_wings1": "§7§oInsect fact: Insect Wings are composed of cuticle!",

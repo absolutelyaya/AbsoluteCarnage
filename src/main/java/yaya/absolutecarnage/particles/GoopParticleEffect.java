@@ -5,14 +5,13 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.AbstractDustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import yaya.absolutecarnage.registries.ParticleRegistry;
 
-public class GoopParticleEffect extends AbstractDustParticleEffect
+public class GoopParticleEffect extends AbstractGoopParticleEffect
 {
 	public static final Codec<GoopParticleEffect> CODEC;
 	protected final Vec3d dir;
@@ -34,7 +33,7 @@ public class GoopParticleEffect extends AbstractDustParticleEffect
 		@Override
 		public GoopParticleEffect read(ParticleType type, StringReader reader) throws CommandSyntaxException
 		{
-			Vec3f vec3f = AbstractDustParticleEffect.readColor(reader);
+			Vec3f vec3f = AbstractGoopParticleEffect.readColor(reader);
 			reader.expect(' ');
 			float f = reader.readFloat();
 			reader.expect(' ');

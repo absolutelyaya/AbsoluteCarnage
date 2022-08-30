@@ -26,6 +26,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 	
 	protected float deformation;
 	float targetSize;
+	int renderMode;
 	
 	protected SurfaceAlignedParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider,
 									 Vec3f color, float scale, Vec3d dir)
@@ -38,6 +39,8 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		gravityStrength = 0;
 		angle = random.nextFloat() * 360;
 		setColor(color.getX(), color.getY(), color.getZ());
+		
+		renderMode = SettingsStorage.getChoice(Settings.SURFACEALIGNED_RENDERMODE.id)[0];
 		
 		this.dir = new Vec3f((float)Math.round(dir.x), (float)Math.round(dir.y), (float)Math.round(dir.z));
 		boolean b = dir.x != 0;
@@ -57,7 +60,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		}
 		
 		Vec3f modDir = new Vec3f(dir.getX() == 0 ? 1 : 0, dir.getY() == 0 ? 1 : 0, dir.getZ() == 0 ? 1 : 0);
-		float s = Math.max(targetSize, 1);
+		float s = isFancy() ? Math.max(targetSize, 1) : 1;
 		for(int vy = 0; vy <= s; vy++)
 			for (int vx = 0; vx <= s; vx++)
 			{
@@ -105,7 +108,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 			//random rotation
 			i.rotate(Quaternion.fromEulerXyzDegrees(new Vec3f(dir.getX() * angle, dir.getY() * angle, dir.getZ() * angle)));
 			//deformation
-			if(!(this.dir.getY() > 0))
+			if(!(this.dir.getY() > 0) && isFancy())
 				i.subtract(new Vec3f(0, deformation * maxDeform.get(atomicInt.get()), 0));
 			i.scale(scale);
 			i.add(f, g, h);
@@ -113,7 +116,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		});
 		
 		int n = this.getBrightness(tickDelta);
-		float ts = Math.max(targetSize, 1);
+		float ts = isFancy() ? Math.max(targetSize, 1) : 1;
 		
 		for (int y = 1, vi = 0; y < (int)ts + 1; y++, vi++)
 		{
@@ -122,9 +125,9 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 				Vec3f[] modVerts = new Vec3f[] {verts.get(vi).copy(), verts.get((int)(vi + ts + 1)).copy(),
 						verts.get((int)(vi + ts + 2)).copy(), verts.get(vi + 1).copy()};
 				
-				boolean render = faceShouldRender.get(vi);
+				boolean render = !isFancy() || faceShouldRender.get(vi);
 				
-				if(dir.getY() > 0 && faceShouldRender.get(vi))
+				if(isFancy() && dir.getY() > 0 && faceShouldRender.get(vi))
 				{
 					Vec3f faceCenter = modVerts[0].copy();
 					faceCenter.add(modVerts[1]);
@@ -132,8 +135,8 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 					faceCenter.add(modVerts[3]);
 					faceCenter.scale(0.25f);
 					
-					render = !world.isAir(new BlockPos(camPos.add(new Vec3d(faceCenter))).down()) &&
-									 world.isAir(new BlockPos(camPos.add(new Vec3d(faceCenter))));
+					BlockPos pos = new BlockPos(camPos.add(new Vec3d(faceCenter)));
+					render = !world.isAir(pos.down()) && !world.getBlockState(pos).isSolidBlock(world, pos);
 					if(!render)
 						faceShouldRender.set(vi, false); //so faces don't reappear after being removed
 					
@@ -148,8 +151,8 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 					{
 						Vec3f camPosF = new Vec3f(camPos);
 						mv.add(camPosF);
-						if((world.isAir(new BlockPos(new Vec3d(mv)).down()) || !world.isAir(new BlockPos(new Vec3d(mv))))
-								   && targetSize >= 2)
+						BlockPos vpos = new BlockPos(new Vec3d(mv));
+						if((world.isAir(vpos.down()) || world.getBlockState(pos).isSolidBlock(world, pos)) && targetSize >= 2)
 							moveToBlockEdge(mv);
 						mv.subtract(camPosF);
 					}
@@ -206,7 +209,14 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 	
 	private void moveToBlockEdge(Vec3f vert)
 	{
+		if(!SettingsStorage.getBoolean(Settings.SURFACEALIGNED_EDGEWRAP.id))
+			return;
 		Vec3d dir = new Vec3d(vert).subtract(x, y, z).normalize().multiply(0.33);
 		vert.set(Math.round(vert.getX() - dir.x), vert.getY(), Math.round(vert.getZ() - dir.z));
+	}
+	
+	boolean isFancy()
+	{
+		return renderMode == 0;
 	}
 }

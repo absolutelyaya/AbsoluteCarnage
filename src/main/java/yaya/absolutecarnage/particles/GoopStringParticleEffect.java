@@ -3,13 +3,12 @@ package yaya.absolutecarnage.particles;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.particle.AbstractDustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.math.Vec3f;
 import yaya.absolutecarnage.registries.ParticleRegistry;
 
-public class GoopStringParticleEffect extends AbstractDustParticleEffect
+public class GoopStringParticleEffect extends AbstractGoopParticleEffect
 {
 	public GoopStringParticleEffect(Vec3f color, float scale)
 	{
@@ -27,7 +26,7 @@ public class GoopStringParticleEffect extends AbstractDustParticleEffect
 		@Override
 		public GoopStringParticleEffect read(ParticleType type, StringReader reader) throws CommandSyntaxException
 		{
-			Vec3f vec3f = AbstractDustParticleEffect.readColor(reader);
+			Vec3f vec3f = AbstractGoopParticleEffect.readColor(reader);
 			reader.expect(' ');
 			float f = reader.readFloat();
 			return new GoopStringParticleEffect(vec3f, f);
