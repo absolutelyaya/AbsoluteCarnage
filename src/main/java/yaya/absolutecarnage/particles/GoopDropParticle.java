@@ -60,15 +60,17 @@ public class GoopDropParticle extends SpriteBillboardParticle
 			Vec3d offset = new Vec3d(1, 1, 1).multiply(Math.max(random.nextFloat() * 0.02f, 0.01f));
 			offset = offset.add(dir.x < 0 ? 0 : 1, dir.y < 0 ? 0 : 1, dir.z < 0 ? 0 : 1);
 			
-			if(dir.y == 1)
-			{
+			if(dir.y != 0)
 				world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
 						x + dir.x * offset.x, pos.getY() + dir.y * offset.y, z + dir.z * offset.z,
 						0, 0, 0);
-			}
-			else
+			else if(dir.x != 0)
 				world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
-						pos.getX() + dir.x * offset.x, pos.getY() + dir.y * offset.y, pos.getZ() + dir.z * offset.z,
+						pos.getX() + dir.x * offset.x, y + dir.y * offset.y, z + dir.z * offset.z,
+						0, 0, 0);
+			else if(dir.z != 0)
+				world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
+						x + dir.x * offset.x, y + dir.y * offset.y, pos.getZ() + dir.z * offset.z,
 						0, 0, 0);
 		}
 	}

@@ -48,7 +48,7 @@ public class GoopParticle extends SurfaceAlignedParticle
 			alpha = MathHelper.clampedLerp(normalAlpha, 0f, (age - (maxAge - 60)) / 60f);
 		}
 		
-		if(dir.getY() < 0 && random.nextInt(60) == 0)
+		if(dir.getY() < 0 && random.nextInt(120) == 0)
 			world.addParticle(new GoopStringParticleEffect(color, 0.25f),
 					x + random.nextFloat() * scale - scale / 2f, y, z + random.nextFloat() * scale - scale / 2f,
 					0, 0, 0);

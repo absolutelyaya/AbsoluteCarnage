@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 {
+	private final List<Boolean> faceShouldRender = new ArrayList<>();
 	private final List<Vec3f> verts = new ArrayList<>();
 	private final List<Vec2f> uvs = new ArrayList<>();
 	private final List<Float> maxDeform = new ArrayList<>();
@@ -65,12 +66,14 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 					vert = new Vec3f(modDir.getX() * vx / s, modDir.getY(), modDir.getZ() * vy / s);
 				else
 					vert = new Vec3f(modDir.getX() * vx / s, modDir.getY() * vy / s, modDir.getZ() * vx / s);
+				vert.add(new Vec3f(dir.multiply(random.nextFloat() / 100))); //fight Z-Fighting);
 				verts.add(vert);
+				faceShouldRender.add(true);
 				uvs.add(new Vec2f(MathHelper.lerp(vx / s, getMinU(), getMaxU()), MathHelper.lerp(vy / s, getMinV(), getMaxV())));
 				if(dir.y == 0)
 					maxDeform.add(random.nextFloat());
 				else
-					maxDeform.add(random.nextBoolean() ? random.nextFloat() : 0);
+					maxDeform.add(random.nextBoolean() ? random.nextFloat() * 0.25f * targetSize : 0);
 			}
 	}
 	
@@ -119,9 +122,9 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 				Vec3f[] modVerts = new Vec3f[] {verts.get(vi).copy(), verts.get((int)(vi + ts + 1)).copy(),
 						verts.get((int)(vi + ts + 2)).copy(), verts.get(vi + 1).copy()};
 				
-				boolean grounded = true;
+				boolean render = faceShouldRender.get(vi);
 				
-				if(dir.getY() > 0)
+				if(dir.getY() > 0 && faceShouldRender.get(vi))
 				{
 					Vec3f faceCenter = modVerts[0].copy();
 					faceCenter.add(modVerts[1]);
@@ -129,8 +132,10 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 					faceCenter.add(modVerts[3]);
 					faceCenter.scale(0.25f);
 					
-					grounded = !world.isAir(new BlockPos(camPos.add(new Vec3d(faceCenter))).down());
-					
+					render = !world.isAir(new BlockPos(camPos.add(new Vec3d(faceCenter))).down()) &&
+									 world.isAir(new BlockPos(camPos.add(new Vec3d(faceCenter))));
+					if(!render)
+						faceShouldRender.set(vi, false); //so faces don't reappear after being removed
 					
 					if(SettingsStorage.getBoolean(Settings.DEBUG_SURFACEALIGNED_PARTICLE.id))
 					{
@@ -139,19 +144,18 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 								0, 0.05, 0);
 					}
 					
-					//if(!grounded)
-					//{
-					//	for (Vec3f mv : modVerts)
-					//	{
-					//		Vec3f camPosF = new Vec3f(camPos);
-					//		mv.add(camPosF);
-					//		moveToBlockEdge(mv);
-					//		mv.subtract(camPosF);
-					//	}
-					//}
+					for (Vec3f mv : modVerts)
+					{
+						Vec3f camPosF = new Vec3f(camPos);
+						mv.add(camPosF);
+						if((world.isAir(new BlockPos(new Vec3d(mv)).down()) || !world.isAir(new BlockPos(new Vec3d(mv))))
+								   && targetSize >= 2)
+							moveToBlockEdge(mv);
+						mv.subtract(camPosF);
+					}
 				}
 				
-				if(grounded)
+				if(render)
 				{
 					//top
 					vertexConsumer.vertex(modVerts[0].getX(), modVerts[0].getY(), modVerts[0].getZ()).texture(uvs.get(vi).x, uvs.get(vi).y).color(this.red, this.green, this.blue, this.alpha).light(n).next();
@@ -187,7 +191,6 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 					0, 0.25, 0);
 		}
 		
-		//TODO: wrap to block edges
 		//TODO: figure out why some negative X & Z (bottom) wall goops render weirdly
 	}
 	
@@ -195,13 +198,15 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 	public void tick()
 	{
 		super.tick();
-		if(world.getBlockState(new BlockPos(x - dir.getX(), y - dir.getY(), z - dir.getZ())).isAir())
+		if(world.getBlockState(new BlockPos(x - dir.getX(), y - dir.getY(), z - dir.getZ())).isAir() ||
+				   !world.getBlockState(new BlockPos(x, y, z)).isAir())
 			markDead();
 		deformation = (float)age / maxAge;
 	}
 	
 	private void moveToBlockEdge(Vec3f vert)
 	{
-		vert.set(Math.round(vert.getX()), vert.getY(), Math.round(vert.getZ()));
+		Vec3d dir = new Vec3d(vert).subtract(x, y, z).normalize().multiply(0.33);
+		vert.set(Math.round(vert.getX() - dir.x), vert.getY(), Math.round(vert.getZ() - dir.z));
 	}
 }
