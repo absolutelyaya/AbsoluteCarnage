@@ -23,7 +23,7 @@ public abstract class AbstractGoopParticleEffect implements ParticleEffect
 		this.scale = MathHelper.clamp(scale, 0.01f, (float)SettingsStorage.getDouble(Settings.GOOP_MAXSIZE.id));
 	}
 	
-	public static Vec3f readColor(StringReader reader) throws CommandSyntaxException
+	public static Vec3f readVec3(StringReader reader) throws CommandSyntaxException
 	{
 		reader.expect(' ');
 		float f = reader.readFloat();
@@ -34,7 +34,7 @@ public abstract class AbstractGoopParticleEffect implements ParticleEffect
 		return new Vec3f(f, g, h);
 	}
 	
-	public static Vec3f readColor(PacketByteBuf buf)
+	public static Vec3f readVec3(PacketByteBuf buf)
 	{
 		return new Vec3f(buf.readFloat(), buf.readFloat(), buf.readFloat());
 	}

@@ -15,13 +15,15 @@ public class GoopDropParticle extends SpriteBillboardParticle
 	protected final SpriteProvider spriteProvider;
 	protected final Vec3f color;
 	float rotSpeed;
+	float totalScale;
 	
 	protected GoopDropParticle(ClientWorld clientWorld, Vec3d pos, Vec3d vel, SpriteProvider spriteProvider, Vec3f color, float scale)
 	{
 		super(clientWorld, pos.x, pos.y, pos.z);
 		setColor(color.getX(), color.getY(), color.getZ());
 		this.color = color;
-		this.scale = scale;
+		this.scale = scale - (scale > 1 ? 1.25f * (scale / 2) : 0f);
+		totalScale = scale;
 		this.spriteProvider = spriteProvider;
 		sprite = spriteProvider.getSprite(random);
 		gravityStrength = 1 + scale / 2;
@@ -61,15 +63,15 @@ public class GoopDropParticle extends SpriteBillboardParticle
 			offset = offset.add(dir.x < 0 ? 0 : 1, dir.y < 0 ? 0 : 1, dir.z < 0 ? 0 : 1);
 			
 			if(dir.y != 0)
-				world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
+				world.addParticle(new GoopParticleEffect(color, totalScale * 2.5f, dir),
 						x + dir.x * offset.x, pos.getY() + dir.y * offset.y, z + dir.z * offset.z,
 						0, 0, 0);
 			else if(dir.x != 0)
-				world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
+				world.addParticle(new GoopParticleEffect(color, totalScale * 2.5f, dir),
 						pos.getX() + dir.x * offset.x, y + dir.y * offset.y, z + dir.z * offset.z,
 						0, 0, 0);
 			else if(dir.z != 0)
-				world.addParticle(new GoopParticleEffect(color, scale * 2.5f, dir),
+				world.addParticle(new GoopParticleEffect(color, totalScale * 2.5f, dir),
 						x + dir.x * offset.x, y + dir.y * offset.y, pos.getZ() + dir.z * offset.z,
 						0, 0, 0);
 		}

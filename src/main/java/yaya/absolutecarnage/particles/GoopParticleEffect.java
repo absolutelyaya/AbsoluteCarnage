@@ -33,19 +33,18 @@ public class GoopParticleEffect extends AbstractGoopParticleEffect
 		@Override
 		public GoopParticleEffect read(ParticleType type, StringReader reader) throws CommandSyntaxException
 		{
-			Vec3f vec3f = AbstractGoopParticleEffect.readColor(reader);
+			Vec3f vec3f = AbstractGoopParticleEffect.readVec3(reader);
 			reader.expect(' ');
 			float f = reader.readFloat();
 			reader.expect(' ');
-			Vec3f dir = readColor(reader);
+			Vec3f dir = readVec3(reader);
 			return new GoopParticleEffect(vec3f, f, new Vec3d(dir.getX(), dir.getY(), dir.getZ()));
 		}
 		
 		@Override
 		public GoopParticleEffect read(ParticleType type, PacketByteBuf buf)
 		{
-			return new GoopParticleEffect(readColor(buf), buf.readFloat(),
-				new Vec3d(buf.readFloat(), buf.readFloat(), buf.readFloat()));
+			return new GoopParticleEffect(readVec3(buf), buf.readFloat(), new Vec3d(readVec3(buf)));
 		}
 	}
 	
