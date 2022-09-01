@@ -8,10 +8,11 @@
     "Absolutelyaya"
   ],
   "contact": {
-    "repo": "soon"
+    "issues": "https://github.com/yaya-nyan/AbsoluteCarnage/issues",
+    "sources": "https://github.com/yaya-nyan/AbsoluteCarnage"
   },
   "license": "MIT",
-  "icon": "assets/AbsoluteCarnage/icon.png",
+  "icon": "assets/absolute_carnage/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
@@ -22,6 +23,9 @@
     ],
     "terrablender": [
       "yaya.absolutecarnage.AbsoluteCarnage"
+    ],
+    "modmenu": [
+      "yaya.absolutecarnage.settings.ModMenu"
     ]
   },
   "mixins": [
