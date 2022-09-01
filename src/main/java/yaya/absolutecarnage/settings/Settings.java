@@ -1,9 +1,8 @@
 package yaya.absolutecarnage.settings;
 
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import yaya.absolutecarnage.utility.TranslationUtil;
 import yaya.yayconfig.settings.BooleanSetting;
-import yaya.yayconfig.settings.ChoiceSetting;
 import yaya.yayconfig.settings.SettingsCategory;
 import yaya.yayconfig.settings.SliderSetting;
 
@@ -13,15 +12,20 @@ public class Settings extends yaya.yayconfig.settings.Settings
 {
 	public Settings(Class<? extends SettingsCategory> category)
 	{
-		super(category);
+		super(category, false);
 	}
 	
 	//Particles
-	public static final ChoiceSetting SURFACEALIGNED_RENDERMODE = new ChoiceSetting("particle.sa-rendermode", List.of("Fancy", "Fast"), true);
-	public static final BooleanSetting SURFACEALIGNED_EDGEWRAP = new BooleanSetting("particle.sa-edgewrap", true, true);
-	public static final SliderSetting GOOP_MAXSIZE = new SliderSetting("particle.goop-maxsize", 4.0, 1.0, 10.0, 0.1f, true);
+	public static final BooleanSetting SURFACEALIGNED_RENDERMODE =
+			new BooleanSetting("particle.sa-rendermode", true, "surface-aligned",
+					"options.graphics.fancy", "options.graphics.fast", true);
+	public static final BooleanSetting SURFACEALIGNED_EDGEWRAP =
+			new BooleanSetting("particle.sa-edgewrap", true, "surface-aligned", true);
+	public static final SliderSetting GOOP_MAXSIZE =
+			new SliderSetting("particle.goop-maxsize", 4.0, 1.0, 10.0, 0.1f, 1, "", true);
 	//Developer
-	public static final BooleanSetting DEBUG_SURFACEALIGNED_PARTICLE = new BooleanSetting("debug.surface-aligned", false, true);
+	public static final BooleanSetting DEBUG_SURFACEALIGNED_PARTICLE =
+			new BooleanSetting("debug.surface-aligned", false, "", true);
 	
 	static
 	{
@@ -32,13 +36,13 @@ public class Settings extends yaya.yayconfig.settings.Settings
 	
 	public enum Category implements yaya.yayconfig.settings.SettingsCategory
 	{
-		GENERAL(Text.translatable("screen.absolute_carnage.options.main.title")),
-		PARTICLES(Text.translatable("screen.absolute_carnage.options.particles.title")),
-		DEVELOPER(Text.translatable("screen.absolute_carnage.options.dev.title"));
+		GENERAL("main"),
+		PARTICLES("particles"),
+		DEVELOPER("dev");
 		
-		private final Text title;
+		private final String title;
 		
-		Category(Text title)
+		Category(String title)
 		{
 			this.title = title;
 		}
@@ -46,7 +50,7 @@ public class Settings extends yaya.yayconfig.settings.Settings
 		@Override
 		public MutableText getTitle()
 		{
-			return title.copy();
+			return TranslationUtil.getText("screen", String.format("options.%s.title", title)).copy();
 		}
 		
 		@Override

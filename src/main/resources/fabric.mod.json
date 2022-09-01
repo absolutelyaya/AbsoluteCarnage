@@ -8,7 +8,8 @@
     "Absolutelyaya"
   ],
   "contact": {
-    "repo": "https://github.com/yaya-nyan/AbsoluteCarnage"
+    "issues": "https://github.com/yaya-nyan/AbsoluteCarnage/issues",
+    "sources": "https://github.com/yaya-nyan/AbsoluteCarnage"
   },
   "license": "MIT",
   "icon": "assets/absolute_carnage/icon.png",

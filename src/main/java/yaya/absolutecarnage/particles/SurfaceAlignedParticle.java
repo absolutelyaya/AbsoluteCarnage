@@ -26,7 +26,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 	
 	protected float deformation;
 	float targetSize;
-	int renderMode;
+	boolean isFancy;
 	
 	protected SurfaceAlignedParticle(ClientWorld world, double x, double y, double z, SpriteProvider spriteProvider,
 									 Vec3f color, float scale, Vec3d dir)
@@ -40,7 +40,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		angle = random.nextFloat() * 360;
 		setColor(color.getX(), color.getY(), color.getZ());
 		
-		renderMode = SettingsStorage.getChoice(Settings.SURFACEALIGNED_RENDERMODE.id)[0];
+		isFancy = SettingsStorage.getBoolean(Settings.SURFACEALIGNED_RENDERMODE.id);
 		
 		this.dir = new Vec3f((float)Math.round(dir.x), (float)Math.round(dir.y), (float)Math.round(dir.z));
 		boolean b = dir.x != 0;
@@ -60,7 +60,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		}
 		
 		Vec3f modDir = new Vec3f(dir.getX() == 0 ? 1 : 0, dir.getY() == 0 ? 1 : 0, dir.getZ() == 0 ? 1 : 0);
-		float s = isFancy() ? Math.max(targetSize, 1) : 1;
+		float s = isFancy ? Math.max(targetSize, 1) : 1;
 		for(int vy = 0; vy <= s; vy++)
 			for (int vx = 0; vx <= s; vx++)
 			{
@@ -108,7 +108,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 			//random rotation
 			i.rotate(Quaternion.fromEulerXyzDegrees(new Vec3f(dir.getX() * angle, dir.getY() * angle, dir.getZ() * angle)));
 			//deformation
-			if(!(this.dir.getY() > 0) && isFancy())
+			if(!(this.dir.getY() > 0) && isFancy)
 				i.subtract(new Vec3f(0, deformation * maxDeform.get(atomicInt.get()), 0));
 			i.scale(scale);
 			i.add(f, g, h);
@@ -116,7 +116,7 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 		});
 		
 		int n = this.getBrightness(tickDelta);
-		float ts = isFancy() ? Math.max(targetSize, 1) : 1;
+		float ts = isFancy ? Math.max(targetSize, 1) : 1;
 		
 		for (int y = 1, vi = 0; y < (int)ts + 1; y++, vi++)
 		{
@@ -125,9 +125,9 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 				Vec3f[] modVerts = new Vec3f[] {verts.get(vi).copy(), verts.get((int)(vi + ts + 1)).copy(),
 						verts.get((int)(vi + ts + 2)).copy(), verts.get(vi + 1).copy()};
 				
-				boolean render = !isFancy() || faceShouldRender.get(vi);
+				boolean render = !isFancy || faceShouldRender.get(vi);
 				
-				if(isFancy() && dir.getY() > 0 && faceShouldRender.get(vi))
+				if(isFancy && dir.getY() > 0 && faceShouldRender.get(vi))
 				{
 					Vec3f faceCenter = modVerts[0].copy();
 					faceCenter.add(modVerts[1]);
@@ -193,8 +193,6 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 			world.addParticle(new DustParticleEffect(new Vec3f(1f, 1f, 1f), 1f), this.x, this.y, this.z,
 					0, 0.25, 0);
 		}
-		
-		//TODO: figure out why some negative X & Z (bottom) wall goops render weirdly
 	}
 	
 	@Override
@@ -213,10 +211,5 @@ public abstract class SurfaceAlignedParticle extends SpriteBillboardParticle
 			return;
 		Vec3d dir = new Vec3d(vert).subtract(x, y, z).normalize().multiply(0.33);
 		vert.set(Math.round(vert.getX() - dir.x), vert.getY(), Math.round(vert.getZ() - dir.z));
-	}
-	
-	boolean isFancy()
-	{
-		return renderMode == 0;
 	}
 }
