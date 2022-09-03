@@ -41,6 +41,13 @@ dependencies {
 
     //Trinkets
     modImplementation "dev.emi:trinkets:3.4.0"
+
+    //yayConfig
+    modImplementation files("libs/yayConfigLib-1.19-SNAPSHOT.jar")
+    include files("libs/yayConfigLib-1.19-SNAPSHOT.jar")
+
+    //ModMenu
+    modImplementation "com.terraformersmc:modmenu:4.0.4"
 }
 
 processResources {
