@@ -7,12 +7,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.entities.SwarmClusterEntity;
-import yaya.absolutecarnage.entities.SwarmlingSpawnEntity;
+import yaya.absolutecarnage.entities.*;
 import yaya.absolutecarnage.entities.projectile.FlameProjectile;
 import yaya.absolutecarnage.entities.projectile.ToxicSpit;
-import yaya.absolutecarnage.entities.ChomperEntity;
-import yaya.absolutecarnage.entities.ChompyEntity;
 
 public class EntityRegistry
 {
@@ -46,6 +43,12 @@ public class EntityRegistry
 					.dimensions(EntityDimensions.fixed(0.75f, 0.25f))
 					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmlingSpawnEntity::canSpawn)
 					.build());
+	public static final EntityType<WaterstriderEntity> WATERSTRIDER = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(AbsoluteCarnage.MOD_ID, "waterstrider"),
+			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.AMBIENT).entityFactory(WaterstriderEntity::new)
+					.dimensions(EntityDimensions.fixed(1f, 0.5f))
+					.spawnRestriction(SpawnRestriction.Location.IN_WATER, Heightmap.Type.MOTION_BLOCKING, WaterstriderEntity::canSpawn)
+					.build());
 	
 	@SuppressWarnings("ConstantConditions")
 	public static void registerAttributes()
@@ -54,5 +57,6 @@ public class EntityRegistry
 		FabricDefaultAttributeRegistry.register(CHOMPER, ChomperEntity.setAttributes());
 		FabricDefaultAttributeRegistry.register(SWARM_CLUSTER, SwarmClusterEntity.setAttributes());
 		FabricDefaultAttributeRegistry.register(SWARMLING_SPAWN, SwarmlingSpawnEntity.setAttributes());
+		FabricDefaultAttributeRegistry.register(WATERSTRIDER, WaterstriderEntity.setAttributes());
 	}
 }

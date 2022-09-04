@@ -13,6 +13,7 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
 import yaya.absolutecarnage.client.entities.agressive.SwarmlingSpawnRenderer;
 import yaya.absolutecarnage.client.entities.block.InfestedChestRenderer;
+import yaya.absolutecarnage.client.entities.neutral.WaterstriderRenderer;
 import yaya.absolutecarnage.client.entities.other.SwarmClusterRenderer;
 import yaya.absolutecarnage.event.KeyInputHandler;
 import yaya.absolutecarnage.particles.GoopDropParticle;
@@ -37,6 +38,7 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		EntityRendererRegistry.register(EntityRegistry.SWARM_CLUSTER, SwarmClusterRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARMLING_SPAWN, SwarmlingSpawnRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.FLAME_PROJECTILE, FlyingItemEntityRenderer::new);
+		EntityRendererRegistry.register(EntityRegistry.WATERSTRIDER, WaterstriderRenderer::new);
 		//BlockEntity + Item renderers
 		BlockEntityRendererRegistry.register(BlockEntityRegistry.INFESTED_CHEST, InfestedChestRenderer::new);
 		GeoItemRenderer.registerItemRenderer(ItemRegistry.INFESTED_CHEST, new AnimatedBlockItemRenderer());
