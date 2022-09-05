@@ -46,7 +46,7 @@ public class EntityRegistry
 	public static final EntityType<WaterstriderEntity> WATERSTRIDER = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(AbsoluteCarnage.MOD_ID, "waterstrider"),
 			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.AMBIENT).entityFactory(WaterstriderEntity::new)
-					.dimensions(EntityDimensions.fixed(1f, 0.5f))
+					.dimensions(EntityDimensions.fixed(2f, 0.5f))
 					.spawnRestriction(SpawnRestriction.Location.IN_WATER, Heightmap.Type.MOTION_BLOCKING, WaterstriderEntity::canSpawn)
 					.build());
 	

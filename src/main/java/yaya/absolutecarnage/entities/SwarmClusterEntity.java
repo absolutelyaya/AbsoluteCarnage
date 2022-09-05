@@ -33,6 +33,8 @@ public class SwarmClusterEntity extends MobEntity implements IAnimatable
 	boolean hatching;
 	int swarmlings, hatchTicks;
 	
+	//TODO: figure out why doing F3+T around these entitities crashes the game.
+	
 	public SwarmClusterEntity(EntityType<? extends MobEntity> entityType, World world)
 	{
 		super(entityType, world);
