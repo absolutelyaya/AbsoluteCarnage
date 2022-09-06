@@ -2,7 +2,9 @@ package yaya.absolutecarnage.entities;
 
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.AnimalMateGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -13,6 +15,7 @@ import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec2f;
@@ -28,6 +31,10 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
+import yaya.absolutecarnage.registries.EntityRegistry;
+import yaya.absolutecarnage.registries.ItemRegistry;
+
+import java.util.EnumSet;
 
 public class WaterstriderEntity extends AnimalEntity implements IAnimatable
 {
@@ -40,6 +47,11 @@ public class WaterstriderEntity extends AnimalEntity implements IAnimatable
 	
 	private Vec2f thrustVel = Vec2f.ZERO;
 	private int thrustTimer, animTime;
+	private float targetSpeed = 1f, speed = 1f;
+	private LivingEntity mate;
+	
+	//TODO: Add Strider Eggs and Egg-laying behavior
+	//TODO: Devour drowning Swarmling behavior
 	
 	public WaterstriderEntity(EntityType<? extends AnimalEntity> entityType, World world)
 	{
@@ -50,6 +62,14 @@ public class WaterstriderEntity extends AnimalEntity implements IAnimatable
 	protected void initGoals()
 	{
 		goalSelector.add(0, new LookAtEntityGoal(this, PlayerEntity.class, 4f));
+		
+		targetSelector.add(1, new MateGoal(this, 1f));
+	}
+	
+	@Override
+	public int getMaxLookYawChange()
+	{
+		return 180;
 	}
 	
 	@Override
@@ -63,11 +83,18 @@ public class WaterstriderEntity extends AnimalEntity implements IAnimatable
 	@Override
 	public PassiveEntity createChild(ServerWorld world, PassiveEntity entity)
 	{
-		return null;
+		return EntityRegistry.WATERSTRIDER.create(world);
+	}
+	
+	@Override
+	public boolean isBreedingItem(ItemStack stack)
+	{
+		return stack.isOf(ItemRegistry.INSECT_EGG);
 	}
 	
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
 	{
+		event.getController().animationSpeed = speed;
 		byte anim = dataTracker.get(ANIMATION);
 		
 		switch(anim)
@@ -115,6 +142,9 @@ public class WaterstriderEntity extends AnimalEntity implements IAnimatable
 	public void tickMovement()
 	{
 		super.tickMovement();
+		LivingEntity target = getTarget();
+		if(mate != null)
+			target = mate;
 		Vec3d pos = getPos();
 		if(isSubmergedInWater())
 			setPos(pos.x, pos.y + 0.55, pos.z);
@@ -124,28 +154,37 @@ public class WaterstriderEntity extends AnimalEntity implements IAnimatable
 			setPos(pos.x, Math.round(pos.y) - 1.0 / 16.0, pos.z);
 		}
 		
+		targetSpeed = getTarget() != null ? 2.0f : 1.0f;
+		
+		if(targetSpeed != speed)
+			thrustTimer = 0;
+		
 		if(thrustTimer <= 0)
-			thrustTimer = 60 + random.nextInt(120);
-		
-		if(thrustTimer == 34)
+			thrustTimer = (int)((60 + random.nextInt(120)) / speed);
+		if(thrustTimer == (int)(34 / speed))
 			setActiveAnimation(ANIMATION_THRUST);
-		
 		if(dataTracker.get(ANIMATION) == ANIMATION_THRUST)
 		{
-			if(animTime >= 34)
+			if(animTime >= (int)(34 / speed))
 				setActiveAnimation(ANIMATION_IDLE);
-			
-			if(animTime == 20)
+			if(animTime == (int)(20 / speed))
 			{
-				double dir = random.nextInt(360);
-				setRotation((float)dir - 90, 0);
-				
-				dir = Math.toRadians(dir);
-				thrustVel = new Vec2f((float)Math.cos(dir), (float)Math.sin(dir)).multiply(0.05f);
+				if(target == null)
+				{
+					double dir = random.nextInt(360);
+					setRotation((float)dir - 90, 0);
+					dir = Math.toRadians(dir);
+					thrustVel = new Vec2f((float)Math.cos(dir), (float)Math.sin(dir)).multiply(0.05f);
+				}
+				else
+				{
+					Vec3d dir = target.getPos().subtract(pos).multiply(1f, 0f, 1f).normalize().multiply(0.05f);
+					thrustVel = new Vec2f((float)dir.x, (float)dir.z);
+					System.out.println(thrustVel.x + " | " + thrustVel.y);
+				}
 			}
 		}
-		
-		thrustVel = thrustVel.multiply(0.75f);
+		thrustVel = thrustVel.multiply(isBaby() ? 0.5f : 0.75f);
 	}
 	
 	@Override
@@ -166,5 +205,31 @@ public class WaterstriderEntity extends AnimalEntity implements IAnimatable
 	{
 		dataTracker.set(ANIMATION, animation);
 		animTime = 0;
+		speed = targetSpeed;
+	}
+	
+	static class MateGoal extends AnimalMateGoal
+	{
+		public MateGoal(AnimalEntity animal, double chance)
+		{
+			super(animal, chance);
+			this.setControls(EnumSet.of(Control.LOOK));
+		}
+		
+		@Override
+		public void stop()
+		{
+			super.stop();
+			((WaterstriderEntity)animal).mate = null;
+		}
+		
+		@Override
+		public boolean canStart()
+		{
+			boolean b = super.canStart();
+			if(b)
+				((WaterstriderEntity)animal).mate = mate;
+			return b;
+		}
 	}
 }

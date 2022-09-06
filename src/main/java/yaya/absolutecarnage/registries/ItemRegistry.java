@@ -53,6 +53,8 @@ public class ItemRegistry
 			.group(ItemGroupRegistry.CARNAGE)));
 	public static final Item CHARRED_REMAINS = registerItem("charred_remains", new CarnageItem(new FabricItemSettings()
 			.group(ItemGroupRegistry.CARNAGE).fireproof(), TranslationUtil.getKey("desc", "trash")));
+	public static final Item INSECT_EGG = registerItem("insect_egg", new CarnageItem(
+			new FabricItemSettings().group(ItemGroupRegistry.CARNAGE), TranslationUtil.getLoreBuilder("insect_egg").addLines(1).build()));
 	public static final Item MUREYAKI = registerItem("mureyaki", //mure = swarm, yaki = grilled (群れ焼き). Inspired by taiyaki, those fish waffles.
 			new CarnageItem(new FabricItemSettings().food(new FoodComponent.Builder().hunger(6).build())
 					.group(ItemGroupRegistry.CARNAGE),

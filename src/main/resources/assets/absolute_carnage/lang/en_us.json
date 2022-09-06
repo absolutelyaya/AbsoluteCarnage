@@ -13,6 +13,8 @@
   "item.absolute_carnage.charred_remains": "§7Charred Remains",
   "item.absolute_carnage.mureyaki": "Mureyaki",
   "item.absolute_carnage.mureyaki.desc1": "§7群れ焼き",
+  "item.absolute_carnage.insect_egg": "Insect Egg",
+  "item.absolute_carnage.insect_egg.desc1": "§7Some Predator Insects might enjoy this...",
 
   "desc.absolute_carnage.trash": "§7Trash",
   "desc.absolute_carnage.dev": "§3Developer/Testing Item",

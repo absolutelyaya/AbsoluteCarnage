@@ -26,6 +26,8 @@ public class SwarmlingSpawnEntity extends AbstractSwarmling implements IAnimatab
 	private final static AnimationBuilder IDLEGROUND_ANIM = new AnimationBuilder().addAnimation("idle_ground", true);
 	private final static AnimationBuilder WALK_ANIM = new AnimationBuilder().addAnimation("walk", true);
 	
+	//TODO: Drowning behavior. Get stuck and struggle when fallen in water until drowning to death.
+	
 	public SwarmlingSpawnEntity(EntityType<? extends HostileEntity> entityType, World world)
 	{
 		super(entityType, world);

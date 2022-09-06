@@ -25,6 +25,14 @@
         "minCount": 1,
         "maxCount": 3
       }
+    ],
+    "creature": [
+      {
+        "type": "absolute_carnage:water_strider",
+        "weight": 1,
+        "minCount": 1,
+        "maxCount": 3
+      }
     ]
   },
   "spawn_costs": {},
