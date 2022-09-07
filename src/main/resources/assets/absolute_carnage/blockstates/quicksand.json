@@ -1,0 +1,25 @@
+{
+  "variants": {
+    "indent=0": {
+      "model": "absolute_carnage:block/quicksand/indent0"
+    },
+    "indent=1": {
+      "model": "absolute_carnage:block/quicksand/indent1"
+    },
+    "indent=2": {
+      "model": "absolute_carnage:block/quicksand/indent2"
+    },
+    "indent=3": {
+      "model": "absolute_carnage:block/quicksand/indent3"
+    },
+    "indent=4": {
+      "model": "absolute_carnage:block/quicksand/indent4"
+    },
+    "indent=5": {
+      "model": "absolute_carnage:block/quicksand/indent5"
+    },
+    "indent=6": {
+      "model": "absolute_carnage:block/quicksand/indent6"
+    }
+  }
+}
