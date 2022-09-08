@@ -161,6 +161,8 @@ public class QuicksandBlock extends Block
 	
 	VoxelShape getColl(double y, BlockState state)
 	{
+		if(y <= 0)
+			return VoxelShapes.empty();
 		return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0,
 				Math.min(y * 16.0, 16.0 - (Math.min(state.get(INDENT), 6)) * 2), 16.0);
 	}
@@ -242,5 +244,16 @@ public class QuicksandBlock extends Block
 	public int getOpacity(BlockState state, BlockView world, BlockPos pos)
 	{
 		return 10;
+	}
+	
+	@Override
+	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random)
+	{
+		super.scheduledTick(state, world, pos, random);
+	}
+	
+	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify)
+	{
+		world.createAndScheduleBlockTick(pos, this, 1);
 	}
 }

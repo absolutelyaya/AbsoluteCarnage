@@ -4,6 +4,7 @@
   "package": "yaya.absolutecarnage.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "DrowningMixin",
     "FlowerPotMixin",
     "MagmaCubeMixin",
     "SlimeMixin",

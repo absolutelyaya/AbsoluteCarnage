@@ -12,4 +12,6 @@ public class BlockTagRegistry
 			new Identifier(AbsoluteCarnage.MOD_ID, "infested_cavern_replaceable"));
 	public static TagKey<Block> SWARMLING_SPAWNABLE = TagKey.of(Registry.BLOCK_KEY,
 			new Identifier(AbsoluteCarnage.MOD_ID, "swarmling_spawnable_on"));
+	public static TagKey<Block> DROWN = TagKey.of(Registry.BLOCK_KEY,
+			new Identifier(AbsoluteCarnage.MOD_ID, "drownable"));
 }
