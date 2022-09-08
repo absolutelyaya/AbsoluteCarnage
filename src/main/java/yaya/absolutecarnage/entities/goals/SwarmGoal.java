@@ -1,4 +1,4 @@
-package yaya.absolutecarnage.entities.Goals;
+package yaya.absolutecarnage.entities.goals;
 
 import net.minecraft.entity.ai.goal.Goal;
 import yaya.absolutecarnage.entities.SwarmEntity;

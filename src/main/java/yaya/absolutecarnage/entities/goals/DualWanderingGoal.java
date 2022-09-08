@@ -1,4 +1,4 @@
-package yaya.absolutecarnage.entities.Goals;
+package yaya.absolutecarnage.entities.goals;
 
 import net.minecraft.entity.ai.AboveGroundTargeting;
 import net.minecraft.entity.ai.NoPenaltySolidTargeting;

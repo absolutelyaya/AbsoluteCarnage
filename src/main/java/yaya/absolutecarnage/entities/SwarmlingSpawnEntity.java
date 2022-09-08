@@ -17,7 +17,7 @@ import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
-import yaya.absolutecarnage.entities.Goals.DualWanderingGoal;
+import yaya.absolutecarnage.entities.goals.DualWanderingGoal;
 
 public class SwarmlingSpawnEntity extends AbstractSwarmling implements IAnimatable
 {

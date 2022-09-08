@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -16,7 +17,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.IntProperty;
-import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -40,7 +40,7 @@ public class QuicksandBlock extends Block
 	public static final IntProperty INDENT = IntProperty.of("indent", 0, 6);
 	
 	private final Random random = Random.create();
-	private final Map<Entity, Integer> victimUnmovingTime = new HashMap<>();
+	private final Map<Entity, Integer> victimContactTime = new HashMap<>();
 	
 	public QuicksandBlock(Settings settings)
 	{
@@ -50,7 +50,7 @@ public class QuicksandBlock extends Block
 	
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
 	{
-		return getShape(state.get(INDENT));
+		return getOutline(state.get(INDENT));
 	}
 	
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
@@ -61,20 +61,22 @@ public class QuicksandBlock extends Block
 			Entity entity = entityContext.getEntity();
 			if (entity != null)
 			{
-				if (entity.fallDistance > 2.5F)
-					shape = getShape(state.get(INDENT) + 2);
+				if (entity.fallDistance > 2F)
+				{
+					shape = getShape(state.get(INDENT) + 3);
+					victimContactTime.put(entity, 600);
+				}
 				else if (entity instanceof FallingBlockEntity ||
-								 canStepUp(getShape(state.get(INDENT)), pos, entityContext) && !context.isDescending())
+								 canStepUp(getShape(state.get(INDENT)), pos, entityContext) && !context.isDescending()
+										 && victimContactTime.getOrDefault(entity, 0) < 60)
 					shape = getShape(state.get(INDENT));
 				else
 					shape = getColl(Math.max(entity.getY() - pos.getY(), 0), state);
 				
-				if(victimUnmovingTime.containsKey(entity))
+				if(victimContactTime.containsKey(entity))
 				{
-					//accelerate to full sinking speed over 5 seconds of not moving
-					shape = shape.offset(0.0, -MathHelper.clampedLerp(0.0, 0.1, (victimUnmovingTime.get(entity) - 20) / 200.0), 0.0);
-					if(entity instanceof PlayerEntity player)
-						player.sendMessage(Text.of("unmoving time " + victimUnmovingTime.get(entity)), true);
+					//accelerate to full sinking speed over certain (unstable) period of not moving
+					shape = shape.offset(0.0, -MathHelper.clampedLerp(0.0, 0.01, (victimContactTime.get(entity) - 60) / 400.0), 0.0);
 				}
 			}
 		}
@@ -85,12 +87,19 @@ public class QuicksandBlock extends Block
 	{
 		Entity entity = context.getEntity();
 		if(entity == null)
-			return false;
-		//TODO: fix stepup from inside other quicksand blocks \/
+			return true;
 		if(entity.world.getBlockState(entity.getBlockPos()).isOf(this))
-			return entity.getY() > pos.getY() + shape.getMax(Direction.Axis.Y);
+			return isOnTop(entity);
 		double delta = Math.abs(entity.getPos().y - pos.getY() - (shape.getMax(Direction.Axis.Y)));
 		return delta < entity.stepHeight && !shape.getBoundingBox().offset(pos).intersects(entity.getBoundingBox());
+	}
+	
+	boolean isOnTop(Entity entity)
+	{
+		BlockState state = entity.getBlockStateAtPos();
+		if(!state.isOf(this))
+			return true;
+		return entity.getY() >= entity.getBlockPos().getY() + getShape(state.get(INDENT)).getMax(Direction.Axis.Y);
 	}
 	
 	public VoxelShape getSidesShape(BlockState state, BlockView world, BlockPos pos)
@@ -140,9 +149,14 @@ public class QuicksandBlock extends Block
 		builder.add(INDENT);
 	}
 	
-	VoxelShape getShape(int indent)
+	public VoxelShape getShape(int indent)
 	{
 		return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0 - Math.max((Math.min(indent, 6)) * 2, 1), 16.0);
+	}
+	
+	public VoxelShape getOutline(int indent)
+	{
+		return Block.createCuboidShape(0.0, 0.0, 0.0, 16.0, 16.0 - (Math.min(indent, 6) * 2), 16.0);
 	}
 	
 	VoxelShape getColl(double y, BlockState state)
@@ -182,17 +196,15 @@ public class QuicksandBlock extends Block
 	@Override
 	public void onLandedUpon(World world, BlockState state, BlockPos pos, Entity entity, float fallDistance)
 	{
-		//no fall damage
+		entity.handleFallDamage(fallDistance, 0.5F, DamageSource.FALL);
 	}
 	
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
 	{
-		if(getShape(state.get(INDENT)).getBoundingBox().offset(pos).intersects(entity.getBoundingBox()))
-			entity.slowMovement(state, new Vec3d(0.9, entity.getVelocity().y > 0f ? 0.75 : 0.5, 0.9));
-		else
-			entity.slowMovement(state, new Vec3d(0.95, 1.0, 0.95));
+		if(!isOnTop(entity))
+			entity.slowMovement(state, new Vec3d(0.3, entity.getVelocity().y > 0f ? 1 : 0.25, 0.3));
 		boolean moved = !entity.getPos().equals(new Vec3d(entity.lastRenderX, entity.lastRenderY, entity.lastRenderZ));
-		if (world.isClient && random.nextInt(2) == 0 && moved && world.isAir(pos.up()))
+		if (world.isClient && random.nextInt(2) == 0 && moved && world.isAir(pos.up()) && !isOnTop(entity))
 		{
 			world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
 					(random.nextFloat() - 0.5f) * 0.5f + entity.getX(),
@@ -201,25 +213,25 @@ public class QuicksandBlock extends Block
 					(random.nextFloat() - 0.5f) * 0.1f, 0.05f, (random.nextFloat() - 0.5f) * 0.1f);
 		}
 		
-		if(entity.getX() == entity.lastRenderX && entity.getZ() == entity.lastRenderZ)
-			victimUnmovingTime.put(entity, victimUnmovingTime.getOrDefault(entity, 0) + 1);
+		if(entity.getX() == entity.lastRenderX && entity.getY() <= entity.lastRenderY && entity.getZ() == entity.lastRenderZ)
+			victimContactTime.put(entity, victimContactTime.getOrDefault(entity, 0) + 1);
 		else
-			victimUnmovingTime.put(entity, 0);
+			victimContactTime.put(entity, 0);
 	}
 	
 	@Override
 	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random)
 	{
 		super.randomTick(state, world, pos, random);
-		if(victimUnmovingTime.keySet().size() == 0)
+		if(victimContactTime.keySet().size() == 0)
 			return;
 		List<Entity> removal = new ArrayList<>();
-		for (Entity e : victimUnmovingTime.keySet())
+		for (Entity e : victimContactTime.keySet())
 		{
 			if(!VoxelShapes.fullCube().getBoundingBox().offset(pos).intersects(e.getBoundingBox()))
 				removal.add(e);
 		}
-		removal.forEach(victimUnmovingTime::remove);
+		removal.forEach(victimContactTime::remove);
 	}
 	
 	public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
