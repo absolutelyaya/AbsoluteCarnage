@@ -1,6 +1,7 @@
 {
   "override": false,
   "values": [
-    "absolute_carnage:dune"
+    "absolute_carnage:dune",
+    "absolute_carnage:quicksand"
   ]
 }

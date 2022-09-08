@@ -15,6 +15,7 @@
   "item.absolute_carnage.mureyaki.desc1": "§7群れ焼き",
   "item.absolute_carnage.insect_egg": "Insect Egg",
   "item.absolute_carnage.insect_egg.desc1": "§7Some Predator Insects might enjoy this...",
+  "item.absolute_carnage.sand_bag": "Bag of Quicksand",
 
   "desc.absolute_carnage.trash": "§7Trash",
   "desc.absolute_carnage.dev": "§3Developer/Testing Item",
@@ -26,7 +27,6 @@
   "block.absolute_carnage.swarm_cluster_block": "Swarm Cluster Block",
   "block.absolute_carnage.nest_block": "Nest Block",
   "block.absolute_carnage.infested_chest": "Infested ChNest",
-  "block.absolute_carnage.quicksand": "Quicksand",
 
   "entity.absolute_carnage.chompy": "Chompy",
   "entity.absolute_carnage.chomper": "Chomper",

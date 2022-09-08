@@ -28,12 +28,14 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
+import yaya.absolutecarnage.registries.ItemRegistry;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//Accidentally made Quicksand the most complicated block in the game (to my knowledge). Whoops!
 @SuppressWarnings("deprecation")
 public class QuicksandBlock extends Block
 {
@@ -45,7 +47,7 @@ public class QuicksandBlock extends Block
 	public QuicksandBlock(Settings settings)
 	{
 		super(settings);
-		setDefaultState(getStateManager().getDefaultState().with(INDENT, 1));
+		setDefaultState(getStateManager().getDefaultState().with(INDENT, 6));
 	}
 	
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
@@ -137,6 +139,12 @@ public class QuicksandBlock extends Block
 	}
 	
 	@Override
+	public boolean canReplace(BlockState state, ItemPlacementContext context)
+	{
+		return state.isOf(this) && state.get(INDENT) != 0 && context.getSide().equals(Direction.UP);
+	}
+	
+	@Override
 	public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos)
 	{
 		if(direction.equals(Direction.DOWN) && neighborState.isOf(this))
@@ -186,6 +194,7 @@ public class QuicksandBlock extends Block
 			{
 				world.setBlockState(pos, state.with(INDENT, Math.min(state.get(INDENT) + random.nextInt(2) + 1, 6)));
 				spawnBreakParticles(world, player, pos, state);
+				dropStacks(state, world, pos);
 			}
 		}
 		else if(world.getBlockState(pos.up()).isOf(this))
@@ -221,21 +230,6 @@ public class QuicksandBlock extends Block
 			victimContactTime.put(entity, 0);
 	}
 	
-	@Override
-	public void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random)
-	{
-		super.randomTick(state, world, pos, random);
-		if(victimContactTime.keySet().size() == 0)
-			return;
-		List<Entity> removal = new ArrayList<>();
-		for (Entity e : victimContactTime.keySet())
-		{
-			if(!VoxelShapes.fullCube().getBoundingBox().offset(pos).intersects(e.getBoundingBox()))
-				removal.add(e);
-		}
-		removal.forEach(victimContactTime::remove);
-	}
-	
 	public boolean isTranslucent(BlockState state, BlockView world, BlockPos pos) {
 		return false;
 	}
@@ -249,11 +243,25 @@ public class QuicksandBlock extends Block
 	@Override
 	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random)
 	{
-		super.scheduledTick(state, world, pos, random);
+		if(victimContactTime.keySet().size() == 0)
+			return;
+		List<Entity> removal = new ArrayList<>();
+		for (Entity e : victimContactTime.keySet())
+		{
+			if(!VoxelShapes.fullCube().getBoundingBox().offset(pos).intersects(e.getBoundingBox()))
+				removal.add(e);
+		}
+		removal.forEach(victimContactTime::remove);
 	}
 	
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify)
 	{
-		world.createAndScheduleBlockTick(pos, this, 1);
+		world.createAndScheduleBlockTick(pos, this, 20);
+	}
+	
+	@Override
+	public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state)
+	{
+		return new ItemStack(ItemRegistry.SAND_BAG);
 	}
 }

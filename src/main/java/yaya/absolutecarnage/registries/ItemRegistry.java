@@ -13,10 +13,7 @@ import net.minecraft.util.Rarity;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.items.AnimatedBlockItem;
-import yaya.absolutecarnage.items.CarnageItem;
-import yaya.absolutecarnage.items.FlameThrower;
-import yaya.absolutecarnage.items.JungleSeeds;
+import yaya.absolutecarnage.items.*;
 import yaya.absolutecarnage.items.trinkets.CarnageTrinket;
 import yaya.absolutecarnage.items.trinkets.ShoesTrinketItem;
 import yaya.absolutecarnage.items.trinkets.WingTrinketItem;
@@ -55,6 +52,9 @@ public class ItemRegistry
 			.group(ItemGroupRegistry.CARNAGE).fireproof(), TranslationUtil.getKey("desc", "trash")));
 	public static final Item INSECT_EGG = registerItem("insect_egg", new CarnageItem(
 			new FabricItemSettings().group(ItemGroupRegistry.CARNAGE), TranslationUtil.getLoreBuilder("insect_egg").addLines(1).build()));
+	public static final Item SAND_BAG = registerItem("sand_bag", new SandBagItem(
+			new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
+	
 	public static final Item MUREYAKI = registerItem("mureyaki", //mure = swarm, yaki = grilled (群れ焼き). Inspired by taiyaki, those fish waffles.
 			new CarnageItem(new FabricItemSettings().food(new FoodComponent.Builder().hunger(6).build())
 					.group(ItemGroupRegistry.CARNAGE),

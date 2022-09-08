@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.*;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
@@ -38,7 +39,8 @@ public class BlockRegistry
 	public static final Block INFESTED_CHEST = register("infested_chest", new InfestedChestBlock(FabricBlockSettings.of(Material.WOOD)
 					.nonOpaque()), null);
 	public static final Block QUICKSAND = register("quicksand", new QuicksandBlock(FabricBlockSettings.of(Material.POWDER_SNOW)
-					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f).velocityMultiplier(0.4F).noCollision()), ItemGroupRegistry.CARNAGE);
+					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f).velocityMultiplier(0.4F).noCollision()
+					.drops(new Identifier(AbsoluteCarnage.MOD_ID, "blocks/quicksand"))), null);
 	
 	@SuppressWarnings("SameParameterValue")
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)
