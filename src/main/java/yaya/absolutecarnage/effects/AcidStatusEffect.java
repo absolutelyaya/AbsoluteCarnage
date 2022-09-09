@@ -13,8 +13,6 @@ public class AcidStatusEffect extends StatusEffect
 		super(StatusEffectCategory.HARMFUL, 0xb6d53c);
 	}
 	
-	//TODO: replace acid effect icon. Currently it's using the future "slimed" effect icon.
-	
 	@Override
 	public boolean canApplyUpdateEffect(int duration, int amplifier)
 	{
@@ -28,13 +26,7 @@ public class AcidStatusEffect extends StatusEffect
 	@Override
 	public void applyUpdateEffect(LivingEntity entity, int amplifier)
 	{
-		entity.damage(CarnageDamageSources.ACID, 1 << amplifier);
-		if(shouldMakeNoise(amplifier))
+		if (entity.damage(CarnageDamageSources.ACID, 1 << amplifier))
 			entity.playSound(SoundEvents.ENTITY_GENERIC_BURN, 1f, 1.25f);
-	}
-	
-	boolean shouldMakeNoise(int amplifier)
-	{
-		return 25 >> amplifier > 1;
 	}
 }
