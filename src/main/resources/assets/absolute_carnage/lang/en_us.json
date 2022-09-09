@@ -36,11 +36,15 @@
   "itemGroup.absolute_carnage.carnage_main": "Absolute Carnage",
   "itemGroup.absolute_carnage.carnage_trinkets": "Absolute Carnage Trinkets",
 
+  "effect.absolute_carnage.acid": "Acid",
+
   "stat.absolute_carnage.dodge": "Times Dodged",
 
   "key.category.absolute_carnage": "Absolute Carnage",
 
   "key.absolute_carnage.directional_dash": "Directional Dash",
+
+  "death.attack.acid": "%1$s was melted in acid",
 
   "msg.absolute_carnage.wings.cooldown": "§cWings on cooldown!",
   "msg.absolute_carnage.flamethrower.overheat": "§cThe Flamethrower overheated!",
