@@ -25,6 +25,7 @@ public class SwarmlingSpawnEntity extends AbstractSwarmling implements IAnimatab
 	private final static AnimationBuilder IDLEAIR_ANIM = new AnimationBuilder().addAnimation("idle_air", true);
 	private final static AnimationBuilder IDLEGROUND_ANIM = new AnimationBuilder().addAnimation("idle_ground", true);
 	private final static AnimationBuilder WALK_ANIM = new AnimationBuilder().addAnimation("walk", true);
+	private final static AnimationBuilder DROWN_ANIM = new AnimationBuilder().addAnimation("drown", true);
 	
 	//TODO: Drowning behavior. Get stuck and struggle when fallen in water until drowning to death.
 	
@@ -70,6 +71,12 @@ public class SwarmlingSpawnEntity extends AbstractSwarmling implements IAnimatab
 	
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
 	{
+		if(((CarnageEntityAccessor)this).isDrowning())
+		{
+			event.getController().setAnimation(DROWN_ANIM);
+			return PlayState.CONTINUE;
+		}
+		
 		if(isOnGround())
 		{
 			if(event.isMoving())

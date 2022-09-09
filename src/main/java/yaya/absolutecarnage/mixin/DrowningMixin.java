@@ -8,13 +8,19 @@ import net.minecraft.tag.TagKey;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import yaya.absolutecarnage.entities.CarnageEntityAccessor;
 import yaya.absolutecarnage.registries.BlockTagRegistry;
 
 @Mixin(LivingEntity.class)
-public abstract class DrowningMixin extends Entity
+public abstract class DrowningMixin extends Entity implements CarnageEntityAccessor
 {
+	@Shadow public abstract void baseTick();
+	
+	public boolean drowning;
+	
 	public DrowningMixin(EntityType<?> type, World world)
 	{
 		super(type, world);
@@ -26,9 +32,19 @@ public abstract class DrowningMixin extends Entity
 	{
 		double d = instance.getEyeY();
 		BlockPos blockPos = new BlockPos(this.getX(), d, this.getZ());
-		if(instance.world.getBlockState(blockPos).isIn(BlockTagRegistry.DROWN))
+		if(instance.world.getBlockState(blockPos).isIn(BlockTagRegistry.DROWN) || drowning)
 			return true;
 		return instance.isSubmergedIn(tagKey);
 	}
 	//TODO: Make this a mixin to baseTick instead of a redirect. Maybe that's better??? Probably not.
+	
+	public void setDrowning(boolean drowning)
+	{
+		this.drowning = drowning;
+	}
+	
+	public boolean isDrowning()
+	{
+		return drowning;
+	}
 }

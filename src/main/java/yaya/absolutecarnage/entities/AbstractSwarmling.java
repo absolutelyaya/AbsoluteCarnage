@@ -1,10 +1,7 @@
 package yaya.absolutecarnage.entities;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityGroup;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.ai.control.FlightMoveControl;
 import net.minecraft.entity.ai.control.MoveControl;
 import net.minecraft.entity.ai.pathing.BirdNavigation;
@@ -18,7 +15,7 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import yaya.absolutecarnage.registries.BlockTagRegistry;
 
-public class AbstractSwarmling extends HostileEntity implements DualMotionEntity, SwarmEntity
+public abstract class AbstractSwarmling extends HostileEntity implements DualMotionEntity, SwarmEntity
 {
 	protected boolean groundNavigation, stopAirNavigation;
 	
@@ -97,5 +94,20 @@ public class AbstractSwarmling extends HostileEntity implements DualMotionEntity
 	public static boolean canSpawn(EntityType<? extends LivingEntity> type, ServerWorldAccess world, SpawnReason reason, BlockPos pos, Random random)
 	{
 		return world.getBlockState(pos.down()).isIn(BlockTagRegistry.SWARMLING_SPAWNABLE);
+	}
+	
+	@Override
+	public void baseTick()
+	{
+		super.baseTick();
+		if (touchingWater)
+		{
+			if (!groundNavigation)
+				switchNavigator(true);
+			speed = 0.75f;
+			upwardSpeed = 0.5f;
+			((CarnageEntityAccessor) this).setDrowning(true);
+		} else if (((CarnageEntityAccessor) this).isDrowning())
+			((CarnageEntityAccessor) this).setDrowning(false);
 	}
 }
