@@ -16,6 +16,7 @@ import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -40,6 +41,7 @@ import java.util.Map;
 public class QuicksandBlock extends Block
 {
 	public static final IntProperty INDENT = IntProperty.of("indent", 0, 6);
+	public static final BooleanProperty SUPPORTED = BooleanProperty.of("supported");
 	
 	private final Random random = Random.create();
 	private final Map<Entity, Integer> victimContactTime = new HashMap<>();
@@ -47,7 +49,12 @@ public class QuicksandBlock extends Block
 	public QuicksandBlock(Settings settings)
 	{
 		super(settings);
-		setDefaultState(getStateManager().getDefaultState().with(INDENT, 6));
+		setDefaultState(getStateManager().getDefaultState().with(SUPPORTED, true).with(INDENT, 6));
+	}
+	
+	protected void appendProperties(StateManager.Builder<Block, BlockState> builder)
+	{
+		builder.add(INDENT).add(SUPPORTED);
 	}
 	
 	public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
@@ -57,6 +64,9 @@ public class QuicksandBlock extends Block
 	
 	public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
 	{
+		if(!state.get(SUPPORTED))
+			return VoxelShapes.empty();
+		
 		VoxelShape shape = VoxelShapes.empty();
 		if (context instanceof EntityShapeContext entityContext)
 		{
@@ -114,6 +124,10 @@ public class QuicksandBlock extends Block
 		return VoxelShapes.empty();
 	}
 	
+	public boolean hasSidedTransparency(BlockState state) {
+		return true;
+	}
+	
 	public VoxelShape getCullingShape(BlockState state, BlockView world, BlockPos pos) {
 		return VoxelShapes.empty();
 	}
@@ -121,8 +135,9 @@ public class QuicksandBlock extends Block
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack)
 	{
-		if(world.getBlockState(pos.down()).isOf(this))
+		if(world.getBlockState(pos.down()).isOf(this) && placer instanceof PlayerEntity && ((PlayerEntity)placer).getAbilities().creativeMode)
 			world.setBlockState(pos.down(), state.with(INDENT, 0));
+		world.setBlockState(pos, updateSupported(state, world, pos));
 		super.onPlaced(world, pos, state, placer, itemStack);
 	}
 	
@@ -135,13 +150,14 @@ public class QuicksandBlock extends Block
 		BlockPos pos = ctx.getBlockPos();
 		if(world.isAir(pos.up()))
 			indent = random.nextInt(4);
-		return stateManager.getDefaultState().with(INDENT, indent);
+		return updateSupported(stateManager.getDefaultState().with(INDENT, indent), world, pos);
 	}
 	
 	@Override
 	public boolean canReplace(BlockState state, ItemPlacementContext context)
 	{
-		return state.isOf(this) && state.get(INDENT) != 0 && context.getSide().equals(Direction.UP);
+		return state.isOf(this) && state.get(INDENT) != 0 && context.getSide().equals(Direction.UP)
+					   && context.getStack().isOf(ItemRegistry.SAND_BAG);
 	}
 	
 	@Override
@@ -149,12 +165,22 @@ public class QuicksandBlock extends Block
 	{
 		if(direction.equals(Direction.DOWN) && neighborState.isOf(this))
 			world.setBlockState(neighborPos, state.with(INDENT, 0), 1);
+		state = updateSupported(state, world, pos);
 		return super.getStateForNeighborUpdate(state, direction, neighborState, world, pos, neighborPos);
 	}
 	
-	protected void appendProperties(StateManager.Builder<Block, BlockState> builder)
+	private BlockState updateSupported(BlockState state, WorldAccess world, BlockPos pos)
 	{
-		builder.add(INDENT);
+		boolean b = true;
+		for (int i = 0; i < 5; i++)
+		{
+			BlockState s = world.getBlockState(pos.down(i));
+			if(s.isSolidBlock(world, pos.down(i)) && !s.isOf(this))
+				break;
+			if(s.isAir())
+				b = false;
+		}
+		return state.with(SUPPORTED, b);
 	}
 	
 	public VoxelShape getShape(int indent)
@@ -237,7 +263,13 @@ public class QuicksandBlock extends Block
 	@Override
 	public int getOpacity(BlockState state, BlockView world, BlockPos pos)
 	{
-		return 10;
+		return state.get(INDENT) == 0 ? world.getMaxLightLevel() : 0;
+	}
+	
+	@Override
+	public float getAmbientOcclusionLightLevel(BlockState state, BlockView world, BlockPos pos)
+	{
+		return state.get(INDENT) == 0 ? 0.2f : 1.0f;
 	}
 	
 	@Override

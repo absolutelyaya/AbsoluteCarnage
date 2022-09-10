@@ -8,7 +8,8 @@
     "FlowerPotMixin",
     "MagmaCubeMixin",
     "SlimeMixin",
-    "SlowDownReductionMixin"
+    "SlowDownReductionMixin",
+    "WaterBottleMixin"
   ],
   "client": [
   ],

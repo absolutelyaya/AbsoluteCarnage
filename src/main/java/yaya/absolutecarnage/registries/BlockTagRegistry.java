@@ -14,4 +14,6 @@ public class BlockTagRegistry
 			new Identifier(AbsoluteCarnage.MOD_ID, "swarmling_spawnable_on"));
 	public static TagKey<Block> DROWN = TagKey.of(Registry.BLOCK_KEY,
 			new Identifier(AbsoluteCarnage.MOD_ID, "drownable"));
+	public static TagKey<Block> QUICKSAND_CONVERTABLE = TagKey.of(Registry.BLOCK_KEY,
+			new Identifier(AbsoluteCarnage.MOD_ID, "quicksand_convertable"));
 }
