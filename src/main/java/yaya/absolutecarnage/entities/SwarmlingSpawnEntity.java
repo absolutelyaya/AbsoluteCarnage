@@ -27,8 +27,6 @@ public class SwarmlingSpawnEntity extends AbstractSwarmling implements IAnimatab
 	private final static AnimationBuilder WALK_ANIM = new AnimationBuilder().addAnimation("walk", true);
 	private final static AnimationBuilder DROWN_ANIM = new AnimationBuilder().addAnimation("drown", true);
 	
-	//TODO: Drowning behavior. Get stuck and struggle when fallen in water until drowning to death.
-	
 	public SwarmlingSpawnEntity(EntityType<? extends HostileEntity> entityType, World world)
 	{
 		super(entityType, world);
@@ -58,15 +56,6 @@ public class SwarmlingSpawnEntity extends AbstractSwarmling implements IAnimatab
 					   .add(EntityAttributes.GENERIC_FLYING_SPEED, 0.75D)
 					   .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25D)
 					   .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 3.0D);
-	}
-	
-	@Override
-	public void tickMovement()
-	{
-		super.tickMovement();
-		Vec3d vec3d = this.getVelocity();
-		if (!this.onGround && vec3d.y < 0.0)
-			this.setVelocity(vec3d.multiply(1.0, 0.8, 1.0));
 	}
 	
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)

@@ -10,6 +10,7 @@ import net.minecraft.entity.ai.pathing.MobNavigation;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -109,5 +110,14 @@ public abstract class AbstractSwarmling extends HostileEntity implements DualMot
 			((CarnageEntityAccessor) this).setDrowning(true);
 		} else if (((CarnageEntityAccessor) this).isDrowning())
 			((CarnageEntityAccessor) this).setDrowning(false);
+	}
+	
+	@Override
+	public void tickMovement()
+	{
+		super.tickMovement();
+		Vec3d vec3d = this.getVelocity();
+		if (!this.onGround && vec3d.y < 0.0)
+			this.setVelocity(vec3d.multiply(1.0, 0.8, 1.0));
 	}
 }

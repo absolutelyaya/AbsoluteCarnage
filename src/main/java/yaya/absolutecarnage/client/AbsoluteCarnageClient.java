@@ -11,6 +11,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
+import yaya.absolutecarnage.client.entities.agressive.SwarmlingRenderer;
 import yaya.absolutecarnage.client.entities.agressive.SwarmlingSpawnRenderer;
 import yaya.absolutecarnage.client.entities.block.InfestedChestRenderer;
 import yaya.absolutecarnage.client.entities.neutral.WaterstriderRenderer;
@@ -39,6 +40,7 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		EntityRendererRegistry.register(EntityRegistry.SWARMLING_SPAWN, SwarmlingSpawnRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.FLAME_PROJECTILE, FlyingItemEntityRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.WATERSTRIDER, WaterstriderRenderer::new);
+		EntityRendererRegistry.register(EntityRegistry.SWARMLING, SwarmlingRenderer::new);
 		//BlockEntity + Item renderers
 		BlockEntityRendererRegistry.register(BlockEntityRegistry.INFESTED_CHEST, InfestedChestRenderer::new);
 		GeoItemRenderer.registerItemRenderer(ItemRegistry.INFESTED_CHEST, new AnimatedBlockItemRenderer());
