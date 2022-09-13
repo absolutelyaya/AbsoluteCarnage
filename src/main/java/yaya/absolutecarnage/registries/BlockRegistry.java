@@ -12,6 +12,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.blocks.*;
+import yaya.absolutecarnage.entities.blocks.InfestedChestBlockEntity;
+import yaya.absolutecarnage.entities.blocks.OrnateSandstoneChestBlockEntity;
 
 public class BlockRegistry
 {
@@ -36,11 +38,14 @@ public class BlockRegistry
 	public static final Block DANGLING_EGG = register("dangling_egg", new DanglingEggBlock(FabricBlockSettings.of(Material.COBWEB)
 					.luminance(DanglingEggBlock.getLuminanceSupplier(10)).nonOpaque().noCollision().sounds(BlockSoundGroup.MUD)),
 			null, 100, 100);
-	public static final Block INFESTED_CHEST = register("infested_chest", new InfestedChestBlock(FabricBlockSettings.of(Material.WOOD)
-					.nonOpaque()), null);
 	public static final Block QUICKSAND = register("quicksand", new QuicksandBlock(FabricBlockSettings.of(Material.POWDER_SNOW)
 					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f).velocityMultiplier(0.4F).noCollision().nonOpaque()
 					.drops(new Identifier(AbsoluteCarnage.MOD_ID, "blocks/quicksand"))), null);
+	
+	public static final Block INFESTED_CHEST = register("infested_chest", new CarnageChestBlock(FabricBlockSettings.of(Material.WOOD)
+					.nonOpaque(), () -> BlockEntityRegistry.INFESTED_CHEST, InfestedChestBlockEntity.class, false, true), null);
+	public static final Block ORNATE_SANDSTONE_CHEST = register("ornate_sandstone_chest", new CarnageChestBlock(FabricBlockSettings.of(Material.STONE)
+					.nonOpaque(), () -> BlockEntityRegistry.ORNATE_SANDSTONE_CHEST, OrnateSandstoneChestBlockEntity.class, true, false), null);
 	
 	@SuppressWarnings("SameParameterValue")
 	private static Block register(String name, Block block, ItemGroup group, int burn, int spread)

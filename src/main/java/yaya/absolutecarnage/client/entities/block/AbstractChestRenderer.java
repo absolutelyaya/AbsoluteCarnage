@@ -7,17 +7,17 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.renderers.geo.GeoBlockRenderer;
-import yaya.absolutecarnage.entities.blocks.InfestedChestBlockEntity;
+import yaya.absolutecarnage.entities.blocks.AbstractChestBlockEntity;
 
-public class InfestedChestRenderer extends GeoBlockRenderer<InfestedChestBlockEntity>
+public class AbstractChestRenderer extends GeoBlockRenderer<AbstractChestBlockEntity>
 {
-	public InfestedChestRenderer(BlockEntityRendererFactory.Context ignored)
+	public AbstractChestRenderer(BlockEntityRendererFactory.Context ignored)
 	{
-		super(new InfestedChestModel());
+		super(new AbstractChestModel());
 	}
 	
 	@Override
-	public RenderLayer getRenderType(InfestedChestBlockEntity animatable, float partialTicks, MatrixStack stack, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, Identifier textureLocation)
+	public RenderLayer getRenderType(AbstractChestBlockEntity animatable, float partialTicks, MatrixStack stack, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, Identifier textureLocation)
 	{
 		return RenderLayer.getEntityTranslucent(getTextureResource(animatable));
 	}

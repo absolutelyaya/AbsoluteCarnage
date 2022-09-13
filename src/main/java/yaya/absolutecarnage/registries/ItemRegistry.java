@@ -19,6 +19,7 @@ import yaya.absolutecarnage.items.trinkets.ShoesTrinketItem;
 import yaya.absolutecarnage.items.trinkets.WingTrinketItem;
 import yaya.absolutecarnage.utility.TranslationUtil;
 
+@SuppressWarnings("unused")
 public class ItemRegistry
 {
 	public static final Item JUNGLE_SEEDS = registerItem("jungle_seeds",
@@ -43,6 +44,8 @@ public class ItemRegistry
 	
 	public static final Item INFESTED_CHEST = registerItem("infested_chest",
 			new AnimatedBlockItem(BlockRegistry.INFESTED_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
+	public static final Item ORNATE_SANDSTONE_CHEST = registerItem("ornate_sandstone_chest",
+			new AnimatedBlockItem(BlockRegistry.ORNATE_SANDSTONE_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
 	
 	public static final Item CARAPACE = registerItem("carapace", new Item(new FabricItemSettings().group(ItemGroup.MATERIALS)
 			.group(ItemGroupRegistry.CARNAGE)));

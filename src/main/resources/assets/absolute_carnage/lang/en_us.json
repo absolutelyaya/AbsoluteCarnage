@@ -27,6 +27,10 @@
   "block.absolute_carnage.swarm_cluster_block": "Swarm Cluster Block",
   "block.absolute_carnage.nest_block": "Nest Block",
   "block.absolute_carnage.infested_chest": "Infested ChNest",
+  "block.absolute_carnage.ornate_sandstone_chest": "Ornate Sandstone Chest",
+
+  "container.absolute_carnage.infested_chest": "Infested ChNest",
+  "container.absolute_carnage.ornate_sandstone_chest": "Ornate Sandstone Chest",
 
   "entity.absolute_carnage.chompy": "Chompy",
   "entity.absolute_carnage.chomper": "Chomper",

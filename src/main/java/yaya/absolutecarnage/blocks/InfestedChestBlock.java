@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import yaya.absolutecarnage.entities.blocks.InfestedChestBlockEntity;
 import yaya.absolutecarnage.registries.BlockEntityRegistry;
 
+@Deprecated
 public class InfestedChestBlock extends ChestBlock
 {
 	public InfestedChestBlock(Settings settings)

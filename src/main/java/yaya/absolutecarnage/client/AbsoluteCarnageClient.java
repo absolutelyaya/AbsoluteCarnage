@@ -13,7 +13,7 @@ import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
 import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
 import yaya.absolutecarnage.client.entities.agressive.SwarmlingRenderer;
 import yaya.absolutecarnage.client.entities.agressive.SwarmlingSpawnRenderer;
-import yaya.absolutecarnage.client.entities.block.InfestedChestRenderer;
+import yaya.absolutecarnage.client.entities.block.AbstractChestRenderer;
 import yaya.absolutecarnage.client.entities.neutral.WaterstriderRenderer;
 import yaya.absolutecarnage.client.entities.other.SwarmClusterRenderer;
 import yaya.absolutecarnage.event.KeyInputHandler;
@@ -42,8 +42,10 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		EntityRendererRegistry.register(EntityRegistry.WATERSTRIDER, WaterstriderRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARMLING, SwarmlingRenderer::new);
 		//BlockEntity + Item renderers
-		BlockEntityRendererRegistry.register(BlockEntityRegistry.INFESTED_CHEST, InfestedChestRenderer::new);
+		BlockEntityRendererRegistry.register(BlockEntityRegistry.INFESTED_CHEST, AbstractChestRenderer::new);
 		GeoItemRenderer.registerItemRenderer(ItemRegistry.INFESTED_CHEST, new AnimatedBlockItemRenderer());
+		BlockEntityRendererRegistry.register(BlockEntityRegistry.ORNATE_SANDSTONE_CHEST, AbstractChestRenderer::new);
+		GeoItemRenderer.registerItemRenderer(ItemRegistry.ORNATE_SANDSTONE_CHEST, new AnimatedBlockItemRenderer());
 		//Block render layers
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.HANGING_WEB);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.FLOOR_WEB_DECAL);
