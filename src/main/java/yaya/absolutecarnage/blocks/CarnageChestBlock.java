@@ -15,7 +15,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import org.jetbrains.annotations.Nullable;
-import yaya.absolutecarnage.registries.BlockEntityRegistry;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;

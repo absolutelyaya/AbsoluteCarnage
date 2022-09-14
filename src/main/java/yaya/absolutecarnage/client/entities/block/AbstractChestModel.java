@@ -8,7 +8,6 @@ import yaya.absolutecarnage.entities.blocks.AbstractChestBlockEntity;
 public class AbstractChestModel extends AnimatedGeoModel<AbstractChestBlockEntity>
 {
 	//TODO: Add support for double chests
-	//TODO: Make actual assets for ornate sandstone chest
 	
 	@Override
 	public Identifier getModelResource(AbstractChestBlockEntity object)

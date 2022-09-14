@@ -43,9 +43,9 @@ public class ItemRegistry
 					TranslationUtil.getLoreBuilder("setae_boots").addLines(1).addExtra(3).build()));
 	
 	public static final Item INFESTED_CHEST = registerItem("infested_chest",
-			new AnimatedBlockItem(BlockRegistry.INFESTED_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
+			new AnimatedBlockItem(BlockRegistry.INFESTED_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE), "infested_chest"));
 	public static final Item ORNATE_SANDSTONE_CHEST = registerItem("ornate_sandstone_chest",
-			new AnimatedBlockItem(BlockRegistry.ORNATE_SANDSTONE_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
+			new AnimatedBlockItem(BlockRegistry.ORNATE_SANDSTONE_CHEST, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE), "ornate_sandstone_chest"));
 	
 	public static final Item CARAPACE = registerItem("carapace", new Item(new FabricItemSettings().group(ItemGroup.MATERIALS)
 			.group(ItemGroupRegistry.CARNAGE)));

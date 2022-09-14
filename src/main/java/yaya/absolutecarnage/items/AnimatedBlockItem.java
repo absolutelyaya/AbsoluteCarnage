@@ -12,11 +12,14 @@ import software.bernie.geckolib3.core.manager.AnimationFactory;
 
 public class AnimatedBlockItem extends BlockItem implements IAnimatable
 {
+	public String id;
+	
 	public AnimationFactory factory = new AnimationFactory(this);
 	
-	public AnimatedBlockItem(Block block, Settings settings)
+	public AnimatedBlockItem(Block block, Settings settings, String id)
 	{
 		super(block, settings);
+		this.id = id;
 	}
 	
 	@Override

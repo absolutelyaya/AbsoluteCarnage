@@ -10,18 +10,18 @@ public class AnimatedBlockItemModel extends AnimatedGeoModel<AnimatedBlockItem>
 	@Override
 	public Identifier getModelResource(AnimatedBlockItem object)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/entities/block/infested_chest.geo.json");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/entities/block/" + object.id + ".geo.json");
 	}
 	
 	@Override
 	public Identifier getTextureResource(AnimatedBlockItem object)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/block/infested_chest.png");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/block/" + object.id + ".png");
 	}
 	
 	@Override
 	public Identifier getAnimationResource(AnimatedBlockItem animatable)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "animations/entities/block/infested_chest.animation.json");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "animations/entities/block/" + animatable.id + ".animation.json");
 	}
 }
