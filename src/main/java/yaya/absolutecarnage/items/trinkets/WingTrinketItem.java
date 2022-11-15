@@ -111,7 +111,9 @@ public class WingTrinketItem extends CarnageTrinket
 			{
 				StatHandler handler = player.getStatHandler();
 				if(handler.getStat(Stats.CUSTOM.getOrCreateStat(StatRegistry.DODGE)) == 0)
+				{
 					CarnageTutorialManager.getInstance().startTutorial("wings");
+				}
 			}
 		}
 	}

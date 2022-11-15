@@ -19,6 +19,7 @@ public class CarnageTutorialManager
 	public static CarnageTutorialManager instance;
 	private final ToastManager toastManager;
 	List<CarnageTutorialToast> toasts = new ArrayList<>();
+	List<CarnageTutorialToast> removedToasts = new ArrayList<>();
 	Map<String, Integer> tutorials = new HashMap<>(){{
 		put("wings", 0);
 	}};
@@ -90,11 +91,21 @@ public class CarnageTutorialManager
 					if(i.getId().matches(key))
 						toRemove.add(i);
 				});
-				toRemove.forEach(CarnageTutorialToast::remove);
-				toasts.removeIf(toast -> toast.getId().matches(key));
+				toRemove.forEach(CarnageTutorialToast::gratulate);
+				removedToasts.addAll(toasts.stream().filter(toast -> toast.getId().matches(key)).toList());
+				toasts.removeAll(removedToasts);
 			}
 			tutorials.put(key, 3);
 		}
+	}
+	
+	public void OnRemove()
+	{
+		for (var t : removedToasts)
+		{
+			t.showChildren();
+		}
+		removedToasts.clear();
 	}
 	
 	static

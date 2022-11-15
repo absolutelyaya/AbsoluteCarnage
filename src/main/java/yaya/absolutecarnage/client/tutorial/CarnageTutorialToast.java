@@ -26,10 +26,11 @@ public class CarnageTutorialToast implements Toast
 	private final int icon, requiredSteps;
 	private final List<String> children = new ArrayList<>();
 	
-	private long lastTime;
+	private long lastTime, gratulateTime = 40;
 	private float lastProgress;
 	private float progress;
 	private Visibility visibility;
+	private boolean gratulating;
 	
 	public CarnageTutorialToast(CarnageTutorialManager manager, String id, Text title, @Nullable Text description,
 								boolean hasProgressBar, int icon, int requiredSteps, boolean auto)
@@ -80,6 +81,19 @@ public class CarnageTutorialToast implements Toast
 			this.lastTime = startTime;
 		}
 		
+		if(gratulating)
+		{
+			if(gratulateTime > 0)
+			{
+				gratulateTime--;
+			}
+			else
+			{
+				gratulating = false;
+				remove();
+			}
+		}
+		
 		return visibility;
 	}
 	
@@ -90,14 +104,23 @@ public class CarnageTutorialToast implements Toast
 			manager.finishTutorial(this);
 	}
 	
+	public void gratulate()
+	{
+		title = TranslationUtil.getText("tutorial", "finished.title");
+		description = TranslationUtil.getText("tutorial", "finished.desc");
+		gratulating = true;
+	}
+	
 	public void remove()
 	{
 		visibility = Visibility.HIDE;
-		title = TranslationUtil.getText("tutorial", "finished.title");
-		description = TranslationUtil.getText("tutorial", "finished.desc");
+	}
+	
+	public void showChildren()
+	{
 		for (String child : children)
 		{
-			manager.startTutorial(child); //TODO: delay until this toast is gone
+			this.manager.startTutorial(child);
 		}
 	}
 	

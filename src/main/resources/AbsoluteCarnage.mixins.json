@@ -12,6 +12,7 @@
     "WaterBottleMixin"
   ],
   "client": [
+    "ToastManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
