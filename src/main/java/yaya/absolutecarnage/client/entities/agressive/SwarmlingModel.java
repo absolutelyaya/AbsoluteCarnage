@@ -53,6 +53,7 @@ public class SwarmlingModel extends AnimatedGeoModel<SwarmlingEntity>
 		{
 			head.setRotationX(head.getRotationX() + extraData.headPitch * f);
 			head.setRotationY(extraData.netHeadYaw * f);
+			head.setRotationZ(extraData.netHeadYaw * f * (head.getRotationX() / 180));
 		}
 		
 		if(wingL != null && wingR != null)

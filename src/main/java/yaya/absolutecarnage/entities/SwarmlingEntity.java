@@ -6,6 +6,7 @@ import net.minecraft.entity.ai.goal.ActiveTargetGoal;
 import net.minecraft.entity.ai.goal.AttackGoal;
 import net.minecraft.entity.ai.goal.LookAroundGoal;
 import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.mob.HostileEntity;
@@ -23,10 +24,19 @@ import yaya.absolutecarnage.entities.goals.DualWanderingGoal;
 public class SwarmlingEntity extends AbstractSwarmling implements SwarmEntity, IAnimatable
 {
 	final AnimationFactory factory = new AnimationFactory(this);
+	private final static AnimationBuilder IDLEAIR_ANIM = new AnimationBuilder().addAnimation("idle_air", true);
+	private final static AnimationBuilder IDLEGROUND_ANIM = new AnimationBuilder().addAnimation("idle_ground", true);
+	private final static AnimationBuilder WALK_ANIM = new AnimationBuilder().addAnimation("walk", true);
+	private final static AnimationBuilder DROWN_ANIM = new AnimationBuilder().addAnimation("drown", true);
 	
 	public SwarmlingEntity(EntityType<? extends HostileEntity> entityType, World world)
 	{
 		super(entityType, world);
+		switchNavigator(true);
+		this.setPathfindingPenalty(PathNodeType.DANGER_FIRE, -1.0F);
+		this.setPathfindingPenalty(PathNodeType.WATER, -1.0F);
+		this.setPathfindingPenalty(PathNodeType.WATER_BORDER, 16.0F);
+		this.setPathfindingPenalty(PathNodeType.DANGER_CACTUS, -1.0F);
 	}
 	
 	@Override
@@ -46,7 +56,7 @@ public class SwarmlingEntity extends AbstractSwarmling implements SwarmEntity, I
 					   .add(EntityAttributes.GENERIC_MAX_HEALTH, 30.0D)
 					   .add(EntityAttributes.GENERIC_ARMOR, 4.0D)
 					   .add(EntityAttributes.GENERIC_FLYING_SPEED, 1.0D)
-					   .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.5D)
+					   .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2D)
 					   .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 4.5D);
 	}
 	
@@ -58,7 +68,21 @@ public class SwarmlingEntity extends AbstractSwarmling implements SwarmEntity, I
 	
 	private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event)
 	{
-		event.getController().setAnimation(new AnimationBuilder().addAnimation("pose"));
+		if(((CarnageEntityAccessor)this).isDrowning())
+		{
+			event.getController().setAnimation(DROWN_ANIM);
+			return PlayState.CONTINUE;
+		}
+		
+		if(isOnGround())
+		{
+			if(event.isMoving())
+				event.getController().setAnimation(WALK_ANIM);
+			else
+				event.getController().setAnimation(IDLEGROUND_ANIM);
+		}
+		else
+			event.getController().setAnimation(IDLEAIR_ANIM);
 		return PlayState.CONTINUE;
 	}
 	
