@@ -30,4 +30,6 @@ public class OrnateSandstoneChestBlockEntity extends AbstractChestBlockEntity
 	protected void onClose() {
 	
 	}
+	
+	
 }
