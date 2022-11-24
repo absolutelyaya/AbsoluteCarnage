@@ -1,12 +1,12 @@
 package yaya.absolutecarnage.client.entities.block;
 
 import net.minecraft.block.ChestBlock;
-import net.minecraft.block.LeavesBlock;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import yaya.absolutecarnage.AbsoluteCarnage;
+import yaya.absolutecarnage.blocks.CarnageChestBlock;
 import yaya.absolutecarnage.entities.blocks.AbstractChestBlockEntity;
 
 public class AbstractChestModel extends AnimatedGeoModel<AbstractChestBlockEntity>
@@ -16,7 +16,7 @@ public class AbstractChestModel extends AnimatedGeoModel<AbstractChestBlockEntit
 	{
 		ChestType type = object.getCachedState().get(ChestBlock.CHEST_TYPE);
 		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/entities/block/" +
-			(type != ChestType.SINGLE ? "large_" : "") + object.id + ".geo.json");
+			(type != ChestType.SINGLE && !((CarnageChestBlock)object.getCachedState().getBlock()).isSingleOnly() ? "large_" : "") + object.id + ".geo.json");
 	}
 	
 	@Override
@@ -24,7 +24,7 @@ public class AbstractChestModel extends AnimatedGeoModel<AbstractChestBlockEntit
 	{
 		ChestType type = object.getCachedState().get(ChestBlock.CHEST_TYPE);
 		return new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/block/" +
-			(type != ChestType.SINGLE ? "large_" : "") + object.id + ".png");
+			(type != ChestType.SINGLE && !((CarnageChestBlock)object.getCachedState().getBlock()).isSingleOnly() ? "large_" : "") + object.id + ".png");
 	}
 	
 	@Override
@@ -38,7 +38,7 @@ public class AbstractChestModel extends AnimatedGeoModel<AbstractChestBlockEntit
 	{
 		super.setLivingAnimations(entity, uniqueID);
 		ChestType type = entity.getCachedState().get(ChestBlock.CHEST_TYPE);
-		if(type != ChestType.SINGLE)
+		if(type != ChestType.SINGLE && !((CarnageChestBlock)entity.getCachedState().getBlock()).isSingleOnly())
 		{
 			IBone base_left = this.getAnimationProcessor().getBone("base_left");
 			IBone base_right = this.getAnimationProcessor().getBone("base");

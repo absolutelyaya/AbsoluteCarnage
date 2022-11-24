@@ -74,4 +74,9 @@ public class CarnageChestBlock extends ChestBlock
 	{
 		return waterloggable;
 	}
+	
+	public boolean isSingleOnly()
+	{
+		return singleOnly;
+	}
 }
