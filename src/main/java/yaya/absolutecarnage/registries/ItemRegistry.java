@@ -5,6 +5,7 @@ import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.item.DecorationItem;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -62,6 +63,9 @@ public class ItemRegistry
 			new CarnageItem(new FabricItemSettings().food(new FoodComponent.Builder().hunger(6).build())
 					.group(ItemGroupRegistry.CARNAGE),
 					TranslationUtil.getLoreBuilder("mureyaki").addLines(1).addExtra(1).build()));
+	
+	public static final Item HYROGLYPHICS = registerItem("hyroglyphics",
+			new CarnagePaintingItem(EntityRegistry.CARNAGE_PAINTING, new FabricItemSettings().group(ItemGroupRegistry.CARNAGE)));
 	
 	public static Item registerItem(String name, Item item)
 	{

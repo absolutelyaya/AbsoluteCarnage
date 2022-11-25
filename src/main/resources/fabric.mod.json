@@ -38,5 +38,6 @@
     "moremcmeta": "*",
     "terrablender": "*",
     "trinkets": "*"
-  }
+  },
+  "accessWidener" : "AbsoluteCarnage.accesswidener"
 }

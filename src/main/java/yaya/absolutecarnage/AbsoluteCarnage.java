@@ -32,6 +32,7 @@ public class AbsoluteCarnage implements ModInitializer, TerraBlenderApi
 		ParticleRegistry.registerParticles();
 		StatRegistry.registerStats();
 		StatusEffectRegistry.registerEffects();
+		PaintingRegistry.registerPaintings();
 		
 		ModPackets.registerC2SPackets();
 		

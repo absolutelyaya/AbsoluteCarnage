@@ -24,6 +24,10 @@ repositories {
     maven { url = 'https://maven.minecraftforge.net/' }
 }
 
+loom {
+    accessWidenerPath = file("src/main/resources/AbsoluteCarnage.accesswidener")
+}
+
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"

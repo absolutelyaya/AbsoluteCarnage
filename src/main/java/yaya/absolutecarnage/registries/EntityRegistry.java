@@ -56,6 +56,10 @@ public class EntityRegistry
 					.spawnRestriction(SpawnRestriction.Location.IN_WATER, Heightmap.Type.MOTION_BLOCKING, WaterstriderEntity::canSpawn)
 					.build());
 	
+	public static final EntityType<CarnagePaintingEntity> CARNAGE_PAINTING = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(AbsoluteCarnage.MOD_ID, "carnage_painting"),
+			FabricEntityTypeBuilder.create(SpawnGroup.MISC, CarnagePaintingEntity::new).build());
+	
 	@SuppressWarnings("ConstantConditions")
 	public static void registerAttributes()
 	{

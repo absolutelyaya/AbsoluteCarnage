@@ -16,6 +16,10 @@
   "item.absolute_carnage.insect_egg": "Insect Egg",
   "item.absolute_carnage.insect_egg.desc1": "§7Some Predator Insects might enjoy this...",
   "item.absolute_carnage.sand_bag": "Bag of Quicksand",
+  "item.absolute_carnage.hyroglyphics": "Hyroglyphics Tablet",
+  "item.absolute_carnage.hyroglyphics.desc1" : "Looks like a... '%s'?",
+  "item.absolute_carnage.hyroglyphics.desc2.valid" : "It's %s x %s Blocks big.",
+  "item.absolute_carnage.hyroglyphics.desc2.invalid" : "§4No, that doesn't sound right...",
 
   "desc.absolute_carnage.trash": "§7Trash",
   "desc.absolute_carnage.dev": "§3Developer/Testing Item",
@@ -36,6 +40,8 @@
   "entity.absolute_carnage.chomper": "Chomper",
   "entity.absolute_carnage.swarm_cluster": "Swarm Cluster",
   "entity.absolute_carnage.swarmling_spawn": "Swarmling Spawn",
+  "entity.absolute_carnage.swarmling": "Swarmling",
+  "entity.absolute_carnage.carnage_painting": "Carnage Painting",
 
   "itemGroup.absolute_carnage.carnage_main": "Absolute Carnage",
   "itemGroup.absolute_carnage.carnage_trinkets": "Absolute Carnage Trinkets",
@@ -52,6 +58,9 @@
 
   "msg.absolute_carnage.wings.cooldown": "§cWings on cooldown!",
   "msg.absolute_carnage.flamethrower.overheat": "§cThe Flamethrower overheated!",
+  "msg.absolute_carnage.painting.nospace": "§cThere's not enough room here for this %s!",
+  "msg.absolute_carnage.painting.invalid": "§cSomething is wrong with this %s...",
+  "msg.absolute_carnage.painting.nonbt": "§4Something is seriously wrong with this %s...",
 
   "tutorial.absolute_carnage.finished.title": "Tutorial Finished!",
   "tutorial.absolute_carnage.finished.desc": "Well done!",
