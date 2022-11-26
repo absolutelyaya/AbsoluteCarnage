@@ -1,3 +1,6 @@
 accessWidener	v1	named
 accessible method net/minecraft/client/render/entity/PaintingEntityRenderer renderPainting (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/entity/decoration/painting/PaintingEntity;IILnet/minecraft/client/texture/Sprite;Lnet/minecraft/client/texture/Sprite;)V
 accessible method net/minecraft/client/texture/SpriteAtlasHolder getSprite (Lnet/minecraft/util/Identifier;)Lnet/minecraft/client/texture/Sprite;
+accessible method net/minecraft/entity/decoration/AbstractDecorationEntity setFacing (Lnet/minecraft/util/math/Direction;)V
+accessible method net/minecraft/entity/decoration/AbstractDecorationEntity updateAttachmentPosition ()V
+accessible method net/minecraft/client/render/WorldRenderer drawCuboidShapeOutline (Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;Lnet/minecraft/util/shape/VoxelShape;DDDFFFF)V

@@ -34,6 +34,8 @@ public class CarnagePaintingEntity extends PaintingEntity
 {
 	private static final TrackedData<String> PaintingType = DataTracker.registerData(CarnagePaintingEntity.class, TrackedDataHandlerRegistry.STRING);
 	
+	public boolean checkObstruction = true;
+	
 	public CarnagePaintingEntity(EntityType<? extends PaintingEntity> entityType, World world)
 	{
 		super(entityType, world);
@@ -86,8 +88,14 @@ public class CarnagePaintingEntity extends PaintingEntity
 	
 	@Override
 	public void onBreak(@Nullable Entity entity) {
-		if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-			this.playSound(SoundEvents.ENTITY_PAINTING_BREAK, 1.0F, 1.0F);
+		if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
+		{
+			
+			switch (getPaintingType())
+			{
+				case "hyroglyphics" -> this.playSound(SoundEvents.BLOCK_STONE_BREAK, 1.0F, 1.0F);
+				default -> this.playSound(SoundEvents.ENTITY_PAINTING_BREAK, 1.0F, 1.0F);
+			}
 			if (entity instanceof PlayerEntity playerEntity)
 			{
 				if (playerEntity.getAbilities().creativeMode)
@@ -97,7 +105,15 @@ public class CarnagePaintingEntity extends PaintingEntity
 		}
 	}
 	
-	private void setVariant(RegistryEntry<PaintingVariant> variant)
+	public boolean setVariant(Identifier variant)
+	{
+		RegistryKey<PaintingVariant> registryKey = RegistryKey.of(Registry.PAINTING_VARIANT_KEY, variant);
+		Optional<RegistryEntry<PaintingVariant>> entry = Registry.PAINTING_VARIANT.getEntry(registryKey);
+		entry.ifPresent(this::setVariant);
+		return entry.isPresent();
+	}
+	
+	public void setVariant(RegistryEntry<PaintingVariant> variant)
 	{
 		List<DataTracker.Entry<?>> list = getDataTracker().getAllEntries();
 		if(list == null)
@@ -139,11 +155,7 @@ public class CarnagePaintingEntity extends PaintingEntity
 		CarnagePaintingEntity entity = new CarnagePaintingEntity(world, pos);
 		
 		entity.setFacing(facing);
-		RegistryKey<PaintingVariant> registryKey = RegistryKey.of(Registry.PAINTING_VARIANT_KEY, variant);
-		Optional<RegistryEntry<PaintingVariant>> entry = Registry.PAINTING_VARIANT.getEntry(registryKey);
-		if(entry.isPresent())
-			entity.setVariant(entry.get());
-		else
+		if (!entity.setVariant(variant))
 			return Optional.empty();
 		
 		return entity.canStayAttached() ? Optional.of(entity) : Optional.empty();
@@ -159,5 +171,10 @@ public class CarnagePaintingEntity extends PaintingEntity
 		}
 	}
 	
-	///TODO: change back texture based on
+	@Override
+	public void tick()
+	{
+		if(checkObstruction)
+			super.tick();
+	}
 }

@@ -139,7 +139,4 @@ public class CarnagePaintingItem extends DecorationItem
 			}
 		}
 	}
-	
-	///TODO: preview rendering. A box of the right size would be enough
-	///TODO: replace placeholder texture
 }
