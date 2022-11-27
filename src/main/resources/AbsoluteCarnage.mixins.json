@@ -12,6 +12,7 @@
     "WaterBottleMixin"
   ],
   "client": [
+    "PlayerRendererMixin",
     "ToastManagerMixin",
     "WorldRendererMixin"
   ],

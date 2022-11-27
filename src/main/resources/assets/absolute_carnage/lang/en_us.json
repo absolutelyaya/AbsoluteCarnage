@@ -47,6 +47,7 @@
   "itemGroup.absolute_carnage.carnage_trinkets": "Absolute Carnage Trinkets",
 
   "effect.absolute_carnage.acid": "Acid",
+  "effect.absolute_carnage.webbed": "Webbed",
 
   "stat.absolute_carnage.dodge": "Times Dodged",
 
@@ -61,6 +62,7 @@
   "msg.absolute_carnage.painting.nospace": "§cThere's not enough room here for this %s!",
   "msg.absolute_carnage.painting.invalid": "§cSomething is wrong with this %s...",
   "msg.absolute_carnage.painting.nonbt": "§4Something is seriously wrong with this %s...",
+  "msg.absolute_carnage.webbed": "You're trapped in a cocoon! Wiggle around or cut your way out!",
 
   "tutorial.absolute_carnage.finished.title": "Tutorial Finished!",
   "tutorial.absolute_carnage.finished.desc": "Well done!",

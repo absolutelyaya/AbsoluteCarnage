@@ -6,14 +6,19 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.util.Identifier;
 import software.bernie.geckolib3.renderers.geo.GeoItemRenderer;
+import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.client.entities.agressive.ChomperRenderer;
 import yaya.absolutecarnage.client.entities.agressive.SwarmlingRenderer;
 import yaya.absolutecarnage.client.entities.agressive.SwarmlingSpawnRenderer;
 import yaya.absolutecarnage.client.entities.block.AbstractChestRenderer;
+import yaya.absolutecarnage.client.entities.feature.CocoonModel;
 import yaya.absolutecarnage.client.entities.neutral.WaterstriderRenderer;
 import yaya.absolutecarnage.client.entities.other.CarnagePaintingRenderer;
 import yaya.absolutecarnage.client.entities.other.SwarmClusterRenderer;
@@ -30,6 +35,7 @@ import yaya.absolutecarnage.client.entities.neutral.ChompyRenderer;
 @Environment(EnvType.CLIENT)
 public class AbsoluteCarnageClient implements ClientModInitializer
 {
+	public static final EntityModelLayer COCOON_LAYER = new EntityModelLayer(new Identifier(AbsoluteCarnage.MOD_ID, "cocoon"), "main");
 	@Override
 	public void onInitializeClient()
 	{
@@ -53,6 +59,8 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.FLOOR_WEB_DECAL);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.WALL_WEB_DECAL);
 		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.DANGLING_EGG);
+		//Entity model layers
+		EntityModelLayerRegistry.registerModelLayer(COCOON_LAYER, CocoonModel::getTexturedModelData);
 		//Particles
 		ParticleFactoryRegistry registry = ParticleFactoryRegistry.getInstance();
 		registry.register(ParticleRegistry.FLIES, FliesParticle.FliesParticleFactory::new);
