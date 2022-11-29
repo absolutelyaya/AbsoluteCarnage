@@ -296,4 +296,9 @@ public class QuicksandBlock extends Block
 	{
 		return new ItemStack(ItemRegistry.SAND_BAG);
 	}
+	
+	///TODO: disable step-up IF submerged
+	///TODO: add fog like for powder snow
+	///TODO: fix ambientOcclusion to be more like powder snow
+	///TODO: fix lighting issues (non-full blocks are very dark)
 }

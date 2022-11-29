@@ -12,6 +12,8 @@
     "WaterBottleMixin"
   ],
   "client": [
+    "BipedEntityModelMixin",
+    "InGameHudMixin",
     "PlayerRendererMixin",
     "ToastManagerMixin",
     "WorldRendererMixin"

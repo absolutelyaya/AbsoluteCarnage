@@ -44,7 +44,8 @@ public class CocoonModel<T extends LivingEntity> extends AnimalModel<T>
 		if(thinArms)
 		{
 			matrices.push();
-			matrices.scale(0.85f, 1f, 1f);
+			matrices.scale(0.85f, 0.85f, 1f);
+			matrices.translate(0f, 0.15f, 0f);
 		}
 		torso.render(matrices, vertexConsumer, light, overlay, red, green, blue, alpha);
 		if(thinArms)

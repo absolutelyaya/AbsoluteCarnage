@@ -24,6 +24,4 @@ public abstract class PlayerRendererMixin extends LivingEntityRenderer<AbstractC
 	{
 		addFeature(new CocoonFeature<>(this, ctx.getModelLoader(), slim));
 	}
-	
-	///TODO: stop player animations from playing while webbed
 }

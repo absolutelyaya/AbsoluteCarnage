@@ -14,12 +14,19 @@ public class WebbedStatusEffect extends StatusEffect
 	}
 	
 	@Override
+	public boolean canApplyUpdateEffect(int duration, int amplifier)
+	{
+		return true;
+	}
+	
+	@Override
 	public void applyUpdateEffect(LivingEntity entity, int amplifier)
 	{
 		if(entity instanceof PlayerEntity player)
 			player.sendMessage(Text.translatable("msg.absolute_carnage.webbed"), true);
 	}
 	
-	///TODO: actually get the hint message to display lol
-	///TODO: add freeing methods (moving and attacking) that speed up healing of this effect
+	///TODO: add freeing methods (moving and attacking) that speed up removal of this effect
+	///TODO: add a way to not change FOV due to this effect
+	///TODO: disable running
 }
