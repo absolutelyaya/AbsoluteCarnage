@@ -132,6 +132,11 @@ public class QuicksandBlock extends Block
 		return VoxelShapes.empty();
 	}
 	
+	public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction)
+	{
+		return stateFrom.isOf(this) && (stateFrom.get(QuicksandBlock.INDENT) <= state.get(QuicksandBlock.INDENT) || direction.getAxis().isVertical());
+	}
+	
 	@Override
 	public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack)
 	{
@@ -298,7 +303,5 @@ public class QuicksandBlock extends Block
 	}
 	
 	///TODO: disable step-up IF submerged
-	///TODO: add fog like for powder snow
-	///TODO: fix ambientOcclusion to be more like powder snow
-	///TODO: fix lighting issues (non-full blocks are very dark)
+	///TODO: fix lighting issues (non-full blocks/inside-faces are very dark)
 }

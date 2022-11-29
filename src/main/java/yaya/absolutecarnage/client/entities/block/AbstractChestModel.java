@@ -3,6 +3,7 @@ package yaya.absolutecarnage.client.entities.block;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.util.Identifier;
+import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import yaya.absolutecarnage.AbsoluteCarnage;
@@ -34,9 +35,8 @@ public class AbstractChestModel extends AnimatedGeoModel<AbstractChestBlockEntit
 	}
 	
 	@Override
-	public void setLivingAnimations(AbstractChestBlockEntity entity, Integer uniqueID)
+	public void setLivingAnimations(AbstractChestBlockEntity entity, Integer uniqueID, AnimationEvent customPredicate)
 	{
-		super.setLivingAnimations(entity, uniqueID);
 		ChestType type = entity.getCachedState().get(ChestBlock.CHEST_TYPE);
 		if(type != ChestType.SINGLE && !((CarnageChestBlock)entity.getCachedState().getBlock()).isSingleOnly())
 		{
