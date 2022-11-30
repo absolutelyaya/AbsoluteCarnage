@@ -22,6 +22,7 @@ repositories {
         url = "https://ladysnake.jfrog.io/artifactory/mods"
     }
     maven { url = 'https://maven.minecraftforge.net/' }
+    maven { url = "https://jitpack.io" }
 }
 
 loom {
@@ -47,10 +48,14 @@ dependencies {
     modImplementation "dev.emi:trinkets:3.4.0"
 
     //yayConfig
-    modApi(files("libs/yayConfigLib-1.19-SNAPSHOT.jar"))
+    modImplementation files("libs/yayConfigLib-1.19-SNAPSHOT.jar")
+    include files("libs/yayConfigLib-1.19-SNAPSHOT.jar")
 
     //ModMenu
-    modImplementation "com.terraformersmc:modmenu:4.0.4"
+    modCompileOnly "com.terraformersmc:modmenu:4.0.4"
+
+    modImplementation "com.github.emilyploszaj:step-height-entity-attribute:v1.0.1"
+    include "com.github.emilyploszaj:step-height-entity-attribute:v1.0.1"
 }
 
 processResources {

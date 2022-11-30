@@ -1,23 +1,32 @@
 package yaya.absolutecarnage.blocks;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
+import dev.emi.stepheightentityattribute.StepHeightEntityAttributeMain;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.EntityShapeContext;
 import net.minecraft.block.ShapeContext;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.particle.BlockDustParticle;
+import net.minecraft.client.particle.BlockFallingDustParticle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.FallingBlockEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -29,12 +38,10 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
+import yaya.absolutecarnage.registries.BlockRegistry;
 import yaya.absolutecarnage.registries.ItemRegistry;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 //Accidentally made Quicksand the most complicated block in the game (to my knowledge). Whoops!
 @SuppressWarnings("deprecation")
@@ -42,6 +49,8 @@ public class QuicksandBlock extends Block
 {
 	public static final IntProperty INDENT = IntProperty.of("indent", 0, 6);
 	public static final BooleanProperty SUPPORTED = BooleanProperty.of("supported");
+	
+	static final UUID STEPHEIGHT_MODIFIER = UUID.fromString("0e29dc96-f380-457c-8e4a-aea7237ab8b7");
 	
 	private final Random random = Random.create();
 	private final Map<Entity, Integer> victimContactTime = new HashMap<>();
@@ -244,7 +253,11 @@ public class QuicksandBlock extends Block
 	public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
 	{
 		if(!isOnTop(entity))
+		{
 			entity.slowMovement(state, new Vec3d(0.3, entity.getVelocity().y > 0f ? 1 : 0.25, 0.3));
+			if(entity instanceof LivingEntity living)
+				living.getAttributes().addTemporaryModifiers(getStuckAttributeModifiers());
+		}
 		boolean moved = !entity.getPos().equals(new Vec3d(entity.lastRenderX, entity.lastRenderY, entity.lastRenderZ));
 		if (world.isClient && random.nextInt(2) == 0 && moved && world.isAir(pos.up()) && !isOnTop(entity))
 		{
@@ -278,17 +291,37 @@ public class QuicksandBlock extends Block
 	}
 	
 	@Override
-	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random)
+	public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random)
 	{
+		if(!state.get(SUPPORTED) && world.getBlockState(pos.down()).isAir() && random.nextInt(8) == 0)
+		{
+			double x = (double)pos.getX() + random.nextDouble();
+			double y = (double)pos.getY() - 0.05;
+			double z = (double)pos.getZ() + random.nextDouble();
+			for (int i = 0; i < random.nextInt(4); i++)
+				world.addParticle(new BlockStateParticleEffect(ParticleTypes.FALLING_DUST, state), x, y + (0.2f * i), z, 0f, 0f, 0f);
+		}
+		
 		if(victimContactTime.keySet().size() == 0)
 			return;
 		List<Entity> removal = new ArrayList<>();
 		for (Entity e : victimContactTime.keySet())
 		{
-			if(!VoxelShapes.fullCube().getBoundingBox().offset(pos).intersects(e.getBoundingBox()))
+			if(!world.getBlockState(e.getBlockPos()).isOf(BlockRegistry.QUICKSAND))
 				removal.add(e);
 		}
-		removal.forEach(victimContactTime::remove);
+		for (Entity r : removal)
+		{
+			victimContactTime.remove(r);
+			if(r instanceof LivingEntity living)
+				living.getAttributes().removeModifiers(getStuckAttributeModifiers());
+		}
+	}
+	
+	@Override
+	public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random)
+	{
+	
 	}
 	
 	public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify)
@@ -302,6 +335,13 @@ public class QuicksandBlock extends Block
 		return new ItemStack(ItemRegistry.SAND_BAG);
 	}
 	
-	///TODO: disable step-up IF submerged
+	public Multimap<EntityAttribute, EntityAttributeModifier> getStuckAttributeModifiers()
+	{
+		ImmutableMultimap.Builder<EntityAttribute, EntityAttributeModifier> builder = ImmutableMultimap.builder();
+		builder.put(StepHeightEntityAttributeMain.STEP_HEIGHT, new EntityAttributeModifier(STEPHEIGHT_MODIFIER,
+				"Stuck in Quicksand", -0.2, EntityAttributeModifier.Operation.ADDITION));
+		return builder.build();
+	}
+	
 	///TODO: fix lighting issues (non-full blocks/inside-faces are very dark)
 }

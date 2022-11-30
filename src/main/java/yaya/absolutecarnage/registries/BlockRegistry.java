@@ -39,7 +39,7 @@ public class BlockRegistry
 					.luminance(DanglingEggBlock.getLuminanceSupplier(10)).nonOpaque().noCollision().sounds(BlockSoundGroup.MUD)),
 			null, 100, 100);
 	public static final Block QUICKSAND = register("quicksand", new QuicksandBlock(FabricBlockSettings.of(Material.POWDER_SNOW)
-					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f).velocityMultiplier(0.4F).noCollision()
+					.sounds(BlockSoundGroup.SAND).strength(0.5f, 0.8f).velocityMultiplier(0.4F).noCollision().ticksRandomly()
 					.drops(new Identifier(AbsoluteCarnage.MOD_ID, "blocks/quicksand"))), null);
 	
 	public static final Block INFESTED_CHEST = register("infested_chest", new CarnageChestBlock(FabricBlockSettings.of(Material.WOOD)
