@@ -10,6 +10,7 @@ import yaya.absolutecarnage.AbsoluteCarnage;
 import yaya.absolutecarnage.entities.*;
 import yaya.absolutecarnage.entities.projectile.FlameProjectile;
 import yaya.absolutecarnage.entities.projectile.ToxicSpit;
+import yaya.absolutecarnage.entities.projectile.WebProjectile;
 
 public class EntityRegistry
 {
@@ -25,6 +26,11 @@ public class EntityRegistry
 			new Identifier(AbsoluteCarnage.MOD_ID, "toxic_spit"),
 			FabricEntityTypeBuilder.create(SpawnGroup.MISC, ToxicSpit::new).disableSummon()
 					.dimensions(EntityDimensions.fixed(0.25F, 0.25F))
+					.trackRangeBlocks(4).trackedUpdateRate(10).build());
+	public static final EntityType<WebProjectile> WEB_PROJECTILE = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(AbsoluteCarnage.MOD_ID, "web_projectile"),
+			FabricEntityTypeBuilder.create(SpawnGroup.MISC, WebProjectile::new).disableSummon()
+					.dimensions(EntityDimensions.fixed(0.25f, 0.25f))
 					.trackRangeBlocks(4).trackedUpdateRate(10).build());
 	public static final EntityType<SwarmClusterEntity> SWARM_CLUSTER = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(AbsoluteCarnage.MOD_ID, "swarm_cluster"),
