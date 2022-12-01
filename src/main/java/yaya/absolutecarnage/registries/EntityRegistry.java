@@ -49,11 +49,11 @@ public class EntityRegistry
 					.dimensions(EntityDimensions.fixed(0.75f, 0.25f))
 					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmlingSpawnEntity::canSpawn)
 					.build());
-	public static final EntityType<SwarmlingEntity> SWARMLING = Registry.register(Registry.ENTITY_TYPE,
-			new Identifier(AbsoluteCarnage.MOD_ID, "swarmling"),
-			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.MONSTER).entityFactory(SwarmlingEntity::new)
+	public static final EntityType<SwarmlingWarriorEntity> SWARMLING_WARRIOR = Registry.register(Registry.ENTITY_TYPE,
+			new Identifier(AbsoluteCarnage.MOD_ID, "swarmling_warrior"),
+			FabricEntityTypeBuilder.createMob().spawnGroup(SpawnGroup.MONSTER).entityFactory(SwarmlingWarriorEntity::new)
 					.dimensions(EntityDimensions.fixed(1.5f, 1.0f))
-					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmlingEntity::canSpawn)
+					.spawnRestriction(SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING, SwarmlingWarriorEntity::canSpawn)
 					.build());
 	public static final EntityType<WaterstriderEntity> WATERSTRIDER = Registry.register(Registry.ENTITY_TYPE,
 			new Identifier(AbsoluteCarnage.MOD_ID, "waterstrider"),
@@ -73,7 +73,7 @@ public class EntityRegistry
 		FabricDefaultAttributeRegistry.register(CHOMPER, ChomperEntity.setAttributes());
 		FabricDefaultAttributeRegistry.register(SWARM_CLUSTER, SwarmClusterEntity.setAttributes());
 		FabricDefaultAttributeRegistry.register(SWARMLING_SPAWN, SwarmlingSpawnEntity.setAttributes());
-		FabricDefaultAttributeRegistry.register(SWARMLING, SwarmlingEntity.setAttributes());
+		FabricDefaultAttributeRegistry.register(SWARMLING_WARRIOR, SwarmlingWarriorEntity.setAttributes());
 		FabricDefaultAttributeRegistry.register(WATERSTRIDER, WaterstriderEntity.setAttributes());
 	}
 }

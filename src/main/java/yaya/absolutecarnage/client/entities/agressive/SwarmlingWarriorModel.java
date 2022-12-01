@@ -9,34 +9,34 @@ import software.bernie.geckolib3.core.processor.IBone;
 import software.bernie.geckolib3.model.AnimatedGeoModel;
 import software.bernie.geckolib3.model.provider.data.EntityModelData;
 import yaya.absolutecarnage.AbsoluteCarnage;
-import yaya.absolutecarnage.entities.SwarmlingEntity;
+import yaya.absolutecarnage.entities.SwarmlingWarriorEntity;
 
-public class SwarmlingModel extends AnimatedGeoModel<SwarmlingEntity>
+public class SwarmlingWarriorModel extends AnimatedGeoModel<SwarmlingWarriorEntity>
 {
 	double lastTime;
 	Vec3d lastWingPos;
 	
 	@Override
-	public Identifier getModelResource(SwarmlingEntity object)
+	public Identifier getModelResource(SwarmlingWarriorEntity object)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/entities/aggressive/swarmling.geo.json");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "geo/entities/aggressive/swarmling_warrior.geo.json");
 	}
 	
 	@Override
-	public Identifier getTextureResource(SwarmlingEntity object)
+	public Identifier getTextureResource(SwarmlingWarriorEntity object)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/swarmling.png");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "textures/entities/swarmling_warrior.png");
 	}
 	
 	@Override
-	public Identifier getAnimationResource(SwarmlingEntity animatable)
+	public Identifier getAnimationResource(SwarmlingWarriorEntity animatable)
 	{
-		return new Identifier(AbsoluteCarnage.MOD_ID, "animations/entities/aggressive/swarmling.animation.json");
+		return new Identifier(AbsoluteCarnage.MOD_ID, "animations/entities/aggressive/swarmling_warrior.animation.json");
 	}
 	
 	@SuppressWarnings({"unchecked"})
 	@Override
-	public void setLivingAnimations(SwarmlingEntity entity, Integer uniqueID, AnimationEvent customPredicate)
+	public void setLivingAnimations(SwarmlingWarriorEntity entity, Integer uniqueID, AnimationEvent customPredicate)
 	{
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
 		IBone head = this.getAnimationProcessor().getBone("Head");

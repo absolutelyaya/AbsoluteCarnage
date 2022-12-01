@@ -2,10 +2,7 @@ package yaya.absolutecarnage.entities;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.goal.ActiveTargetGoal;
-import net.minecraft.entity.ai.goal.AttackGoal;
-import net.minecraft.entity.ai.goal.LookAroundGoal;
-import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.ai.pathing.PathNodeType;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -21,7 +18,7 @@ import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import yaya.absolutecarnage.entities.goals.DualWanderingGoal;
 
-public class SwarmlingEntity extends AbstractSwarmling implements SwarmEntity, IAnimatable
+public class SwarmlingWarriorEntity extends AbstractSwarmling implements SwarmEntity, IAnimatable
 {
 	final AnimationFactory factory = new AnimationFactory(this);
 	private final static AnimationBuilder IDLEAIR_ANIM = new AnimationBuilder().addAnimation("idle_air", true);
@@ -29,7 +26,7 @@ public class SwarmlingEntity extends AbstractSwarmling implements SwarmEntity, I
 	private final static AnimationBuilder WALK_ANIM = new AnimationBuilder().addAnimation("walk", true);
 	private final static AnimationBuilder DROWN_ANIM = new AnimationBuilder().addAnimation("drown", true);
 	
-	public SwarmlingEntity(EntityType<? extends HostileEntity> entityType, World world)
+	public SwarmlingWarriorEntity(EntityType<? extends HostileEntity> entityType, World world)
 	{
 		super(entityType, world);
 		switchNavigator(true);
@@ -89,7 +86,7 @@ public class SwarmlingEntity extends AbstractSwarmling implements SwarmEntity, I
 	@Override
 	public void registerControllers(AnimationData animationData)
 	{
-		AnimationController<SwarmlingEntity> controller = new AnimationController<>(this, "controller",
+		AnimationController<SwarmlingWarriorEntity> controller = new AnimationController<>(this, "controller",
 				2, this::predicate);
 		animationData.addAnimationController(controller);
 	}
