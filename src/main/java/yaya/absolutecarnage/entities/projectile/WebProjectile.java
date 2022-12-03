@@ -22,9 +22,9 @@ public class WebProjectile extends AbstractStatusEffectProjectile
 		super(EntityRegistry.WEB_PROJECTILE, owner, world);
 	}
 	
-	public static ToxicSpit spawn(LivingEntity owner, World world)
+	public static WebProjectile spawn(LivingEntity owner, World world)
 	{
-		return new ToxicSpit(owner, world);
+		return new WebProjectile(owner, world);
 	}
 	
 	@Override

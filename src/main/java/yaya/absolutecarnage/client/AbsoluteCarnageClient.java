@@ -19,6 +19,7 @@ import yaya.absolutecarnage.client.entities.agressive.SwarmlingWarriorRenderer;
 import yaya.absolutecarnage.client.entities.agressive.SwarmlingSpawnRenderer;
 import yaya.absolutecarnage.client.entities.block.AbstractChestRenderer;
 import yaya.absolutecarnage.client.entities.feature.CocoonModel;
+import yaya.absolutecarnage.client.entities.neutral.SwarmlingWeaverRenderer;
 import yaya.absolutecarnage.client.entities.neutral.WaterstriderRenderer;
 import yaya.absolutecarnage.client.entities.other.CarnagePaintingRenderer;
 import yaya.absolutecarnage.client.entities.other.SwarmClusterRenderer;
@@ -48,6 +49,7 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		EntityRendererRegistry.register(EntityRegistry.FLAME_PROJECTILE, FlyingItemEntityRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.WATERSTRIDER, WaterstriderRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARMLING_WARRIOR, SwarmlingWarriorRenderer::new);
+		EntityRendererRegistry.register(EntityRegistry.SWARMLING_WEAVER, SwarmlingWeaverRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.CARNAGE_PAINTING, CarnagePaintingRenderer::new);
 		//BlockEntity + Item renderers
 		BlockEntityRendererRegistry.register(BlockEntityRegistry.INFESTED_CHEST, AbstractChestRenderer::new);
