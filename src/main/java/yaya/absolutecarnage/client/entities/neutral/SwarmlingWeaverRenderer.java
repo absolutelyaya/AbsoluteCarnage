@@ -40,13 +40,21 @@ public class SwarmlingWeaverRenderer extends GeoEntityRenderer<SwarmlingWeaverEn
 	{
 		animatable.alpha = MathHelper.lerp(partialTicks / 30, animatable.alpha, animatable.isRopeClimbing() ? 0.25f : 1f);
 		
+		matrixStack.push();
+		float rot = animatable.getDataTracker().get(SwarmlingWeaverEntity.CLIMBING_ROTATION);
+		if(rot > 0f)
+		{
+			matrixStack.multiply(Quaternion.fromEulerXyzDegrees(new Vec3f(90f * rot, 0f, 0f)));
+			matrixStack.translate(0f, -rot * 0.75f, 0f);
+		}
 		super.render(model, animatable, partialTicks, type, matrixStack, renderTypeBuffer, vertexBuilder, packedLightIn,
 				packedOverlayIn, red, green, blue, alpha * animatable.alpha);
+		matrixStack.pop();
 		if(animatable.hasRopeAttachmentPos() && model.getBone("RopeAttachment").isPresent())
 		{
 			GeoBone ropeAttachment = model.getBone("RopeAttachment").get();
 			
-			Vec3d start = new Vec3d(ropeAttachment.getPositionX() / 16, ropeAttachment.getPositionY() / 16, ropeAttachment.getPositionZ() / 16);
+			Vec3d start = new Vec3d(ropeAttachment.getPositionX() / 16f, ropeAttachment.getPositionY() / 16f, ropeAttachment.getPositionZ() / 16f);
 			Vec3d end = Vec3d.ofBottomCenter(animatable.getRopeAttachmentPos().get()).subtract(animatable.getPos());
 			
 			Vec3d dir = end.subtract(start).normalize();

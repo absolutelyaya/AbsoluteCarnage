@@ -45,6 +45,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.BYTE);
 	protected static final TrackedData<Optional<BlockPos>> ROPE_ATTACHMENT_POS = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.OPTIONAL_BLOCK_POS);
 	protected static final TrackedData<Integer> ROPE_CLIMB_TICKS = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	public static final TrackedData<Float> CLIMBING_ROTATION = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	private static final byte ANIMATION_IDLE = 0;
 	private static final byte ANIMATION_FLEE_CEILING = 1;
 	private static final byte ANIMATION_BALL = 2;
@@ -52,7 +53,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	
 	final float walkspeed = 0.3f;
 	
-	public float alpha = 1f;
+	public float alpha = 1f, climbingRot;
 	
 	BlockPos cachedRopeAttachment = null, ropeClimbDestination = null;
 	boolean shootingWebs;
@@ -85,6 +86,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
 		this.dataTracker.startTracking(ROPE_ATTACHMENT_POS, Optional.empty());
 		this.dataTracker.startTracking(ROPE_CLIMB_TICKS, 0);
+		this.dataTracker.startTracking(CLIMBING_ROTATION, 0f);
 	}
 	
 	@Override
@@ -139,7 +141,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 			case ANIMATION_IDLE ->
 			{
 				controller.setAnimationSpeed(getVelocity().horizontalLengthSquared() > 0.03 ? 2f : 1f);
-				controller.setAnimation(event.isMoving() ? WALK_ANIM : IDLE_ANIM);
+				controller.setAnimation(event.isMoving() || dataTracker.get(CLIMBING_ROTATION) > 0f ? WALK_ANIM : IDLE_ANIM);
 			}
 			case ANIMATION_FLEE_CEILING ->
 			{
@@ -241,6 +243,17 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 			if(dataTracker.get(ROPE_CLIMB_TICKS) < 32)
 				dataTracker.set(ROPE_CLIMB_TICKS, dataTracker.get(ROPE_CLIMB_TICKS) + 1);
 		}
+	}
+	
+	@Override
+	protected void mobTick()
+	{
+		super.mobTick();
+		
+		if(isClimbing() && dataTracker.get(CLIMBING_ROTATION) < 1f)
+			dataTracker.set(CLIMBING_ROTATION, Math.min(dataTracker.get(CLIMBING_ROTATION) + 0.1f, 1f));
+		else if (!isClimbing() && dataTracker.get(CLIMBING_ROTATION) > 0f)
+			dataTracker.set(CLIMBING_ROTATION, Math.max(dataTracker.get(CLIMBING_ROTATION) - 0.1f, 0f));
 	}
 	
 	@Override
