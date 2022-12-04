@@ -93,12 +93,17 @@
 					"rotation": {
 						"vector": [0, 0, 90]
 					}
+				},
+				"RopeAttachment": {
+					"position": {
+						"vector": [0, 10, 20]
+					}
 				}
 			}
 		},
 		"flee_ceiling": {
 			"loop": "hold_on_last_frame",
-			"animation_length": 1.4,
+			"animation_length": 1.25,
 			"bones": {
 				"Body": {
 					"rotation": {
@@ -129,7 +134,7 @@
 							"vector": [0, 6, -13]
 						},
 						"1.25": {
-							"vector": [0, 13, 0]
+							"vector": [0, 13, 4]
 						}
 					}
 				},
@@ -339,6 +344,19 @@
 				"LeftLegTip3": {
 					"rotation": {
 						"vector": [0, 0, 90]
+					}
+				},
+				"RopeAttachment": {
+					"position": {
+						"0.85": {
+							"vector": [0, 22, 0]
+						},
+						"1.0": {
+							"vector": [0, 27.86, -1.71]
+						},
+						"1.2": {
+							"vector": [0, 31, 0]
+						}
 					}
 				}
 			}
@@ -666,6 +684,124 @@
 							"vector": [0, 0, 62.5],
 							"easing": "linear"
 						}
+					}
+				}
+			}
+		},
+		"ball": {
+			"loop": true,
+			"bones": {
+				"Body": {
+					"rotation": {
+						"vector": [90, 0, 0]
+					},
+					"position": {
+						"vector": [0, 13, 4]
+					}
+				},
+				"Head": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"RightScape": {
+					"rotation": {
+						"vector": [-30, -12.5, 0]
+					}
+				},
+				"LeftScape": {
+					"rotation": {
+						"vector": [-48.28494, 13.38375, -2.9455]
+					}
+				},
+				"PostPetiole1": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"PostPetiole2": {
+					"rotation": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"RightLeg1": {
+					"rotation": {
+						"vector": [0, 0, -37.5]
+					}
+				},
+				"RightLegTip1": {
+					"rotation": {
+						"vector": [0, 0, -90]
+					},
+					"position": {
+						"vector": [0, -2, 0]
+					}
+				},
+				"LeftLeg1": {
+					"rotation": {
+						"vector": [0, 0, 37.5]
+					}
+				},
+				"LeftLegTip1": {
+					"rotation": {
+						"vector": [0, 0, 90]
+					},
+					"position": {
+						"vector": [0, -2, 0]
+					}
+				},
+				"RightLeg2": {
+					"rotation": {
+						"vector": [0, 0, -30]
+					}
+				},
+				"RightLegTip2": {
+					"rotation": {
+						"vector": [0, 0, -90]
+					},
+					"position": {
+						"vector": [0, -1, 0]
+					}
+				},
+				"LeftLeg2": {
+					"rotation": {
+						"vector": [0, 0, 30]
+					}
+				},
+				"LeftLegTip2": {
+					"rotation": {
+						"vector": [0, 0, 90]
+					},
+					"position": {
+						"vector": [0, -1, 0]
+					}
+				},
+				"RightLeg3": {
+					"rotation": {
+						"vector": [0, 0, -40]
+					}
+				},
+				"RightLegTip3": {
+					"rotation": {
+						"vector": [0, 0, -90]
+					},
+					"position": {
+						"vector": [0, 0, 0]
+					}
+				},
+				"LeftLeg3": {
+					"rotation": {
+						"vector": [0, 0, 40]
+					}
+				},
+				"LeftLegTip3": {
+					"rotation": {
+						"vector": [0, 0, 90]
+					}
+				},
+				"RopeAttachment": {
+					"position": {
+						"vector": [0, 31, 0]
 					}
 				}
 			}

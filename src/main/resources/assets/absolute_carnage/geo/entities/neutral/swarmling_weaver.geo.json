@@ -153,6 +153,10 @@
 					"cubes": [
 						{"origin": [17, 1, 3], "size": [17, 2, 2], "uv": [31, 0], "mirror": true}
 					]
+				},
+				{
+					"name": "RopeAttachment",
+					"pivot": [0, 0, 0]
 				}
 			]
 		}

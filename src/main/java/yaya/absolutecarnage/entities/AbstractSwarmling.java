@@ -118,6 +118,11 @@ public abstract class AbstractSwarmling extends HostileEntity implements DualMot
 		super.tickMovement();
 		Vec3d vec3d = this.getVelocity();
 		if (!this.onGround && vec3d.y < 0.0)
-			this.setVelocity(vec3d.multiply(1.0, 0.8, 1.0));
+			this.setVelocity(vec3d.multiply(1.0, getGravityScale(), 1.0));
+	}
+	
+	protected double getGravityScale()
+	{
+		return 0.8;
 	}
 }
