@@ -3,7 +3,6 @@ package yaya.absolutecarnage.client.entities.neutral;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.client.util.math.Vector3d;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import software.bernie.geckolib3.geo.render.built.GeoBone;
@@ -21,6 +20,7 @@ public class SwarmlingWeaverRenderer extends GeoEntityRenderer<SwarmlingWeaverEn
 	public SwarmlingWeaverRenderer(EntityRendererFactory.Context ctx)
 	{
 		super(ctx, new SwarmlingWeaverModel());
+		addLayer(new SwarmlingWeaverEyesLayer(this));
 	}
 	
 	@Override
@@ -41,21 +41,22 @@ public class SwarmlingWeaverRenderer extends GeoEntityRenderer<SwarmlingWeaverEn
 		animatable.alpha = MathHelper.lerp(partialTicks / 30, animatable.alpha, animatable.isRopeClimbing() ? 0.25f : 1f);
 		
 		matrixStack.push();
-		float rot = animatable.getDataTracker().get(SwarmlingWeaverEntity.CLIMBING_ROTATION);
+		float rot = MathHelper.lerp(partialTicks, animatable.lastClimbingRot, animatable.getDataTracker().get(SwarmlingWeaverEntity.CLIMBING_ROTATION));
 		if(rot > 0f)
 		{
 			matrixStack.multiply(Quaternion.fromEulerXyzDegrees(new Vec3f(90f * rot, 0f, 0f)));
 			matrixStack.translate(0f, -rot * 0.75f, 0f);
+			animatable.lastClimbingRot = rot;
 		}
 		super.render(model, animatable, partialTicks, type, matrixStack, renderTypeBuffer, vertexBuilder, packedLightIn,
 				packedOverlayIn, red, green, blue, alpha * animatable.alpha);
 		matrixStack.pop();
-		if(animatable.hasRopeAttachmentPos() && model.getBone("RopeAttachment").isPresent())
+		if(animatable.hasRopeAttachmentPos() && animatable.getRopeClimbingTicks() >= 27 && model.getBone("RopeAttachment").isPresent())
 		{
 			GeoBone ropeAttachment = model.getBone("RopeAttachment").get();
 			
 			Vec3d start = new Vec3d(ropeAttachment.getPositionX() / 16f, ropeAttachment.getPositionY() / 16f, ropeAttachment.getPositionZ() / 16f);
-			Vec3d end = Vec3d.ofBottomCenter(animatable.getRopeAttachmentPos().get()).subtract(animatable.getPos());
+			Vec3d end = Vec3d.ofBottomCenter(animatable.getRopeAttachmentPos()).subtract(animatable.getPos());
 			
 			Vec3d dir = end.subtract(start).normalize();
 			Vec3d sideX = dir.withAxis(Direction.Axis.X, 0.5).multiply(1, 0, 1);

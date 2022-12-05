@@ -36,7 +36,7 @@ public class WebProjectile extends AbstractStatusEffectProjectile
 	@Override
 	StatusEffectInstance getEffect()
 	{
-		return new StatusEffectInstance(StatusEffectRegistry.WEBBED, 600, 1);
+		return new StatusEffectInstance(StatusEffectRegistry.WEBBED, 600, 0);
 	}
 	
 	@Override

@@ -44,10 +44,11 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		EntityRendererRegistry.register(EntityRegistry.CHOMPY, ChompyRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.CHOMPER, ChomperRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.TOXIC_SPIT, FlyingItemEntityRenderer::new);
+		EntityRendererRegistry.register(EntityRegistry.FLAME_PROJECTILE, FlyingItemEntityRenderer::new);
+		EntityRendererRegistry.register(EntityRegistry.WEB_PROJECTILE, FlyingItemEntityRenderer::new);
+		EntityRendererRegistry.register(EntityRegistry.WATERSTRIDER, WaterstriderRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARM_CLUSTER, SwarmClusterRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARMLING_SPAWN, SwarmlingSpawnRenderer::new);
-		EntityRendererRegistry.register(EntityRegistry.FLAME_PROJECTILE, FlyingItemEntityRenderer::new);
-		EntityRendererRegistry.register(EntityRegistry.WATERSTRIDER, WaterstriderRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARMLING_WARRIOR, SwarmlingWarriorRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.SWARMLING_WEAVER, SwarmlingWeaverRenderer::new);
 		EntityRendererRegistry.register(EntityRegistry.CARNAGE_PAINTING, CarnagePaintingRenderer::new);
@@ -57,10 +58,8 @@ public class AbsoluteCarnageClient implements ClientModInitializer
 		BlockEntityRendererRegistry.register(BlockEntityRegistry.ORNATE_SANDSTONE_CHEST, AbstractChestRenderer::new);
 		GeoItemRenderer.registerItemRenderer(ItemRegistry.ORNATE_SANDSTONE_CHEST, new AnimatedBlockItemRenderer());
 		//Block render layers
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.HANGING_WEB);
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.FLOOR_WEB_DECAL);
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.WALL_WEB_DECAL);
-		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.DANGLING_EGG);
+		BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BlockRegistry.HANGING_WEB, BlockRegistry.FLOOR_WEB_DECAL,
+				BlockRegistry.WALL_WEB_DECAL, BlockRegistry.DANGLING_EGG);
 		//Entity model layers
 		EntityModelLayerRegistry.registerModelLayer(COCOON_LAYER, CocoonModel::getTexturedModelData);
 		//Particles
