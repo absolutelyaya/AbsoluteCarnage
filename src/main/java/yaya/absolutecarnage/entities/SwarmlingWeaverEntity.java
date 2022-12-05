@@ -148,6 +148,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		return new SpiderNavigation(this, world);
 	}
 	
+	///TODO: ignore webs
 	///TODO: Falling and impact animations
 	///TODO: Spin reinforced webs inbetween sticky nest blocks
 	///TODO: randomly go up to/come down from ceiling behavior
@@ -295,6 +296,8 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 			
 			if(dataTracker.get(ROPE_CLIMB_TICKS) < 32)
 				dataTracker.set(ROPE_CLIMB_TICKS, dataTracker.get(ROPE_CLIMB_TICKS) + 1);
+			if(dataTracker.get(CLIMBING_ROTATION) != 0f)
+				dataTracker.set(CLIMBING_ROTATION, 0f);
 		}
 	}
 	
@@ -389,6 +392,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		@Override
 		public boolean canStart()
 		{
+			///TODO: only if hasn't webbed recently (counter resets after climbing)
 			target = mob.world.getClosestEntity(this.mob.world.getEntitiesByClass(fleeFromClass,
 					this.mob.getBoundingBox().expand(range, 3.0, range), (ignored) -> true), withinRangePredicate,
 					this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
