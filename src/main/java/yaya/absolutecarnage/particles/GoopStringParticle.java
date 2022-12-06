@@ -31,6 +31,7 @@ public class GoopStringParticle extends SpriteAAParticle
 	@Override
 	public void move(double dx, double dy, double dz)
 	{
+		///TODO: fix jiterring somehow. maybe using last y delta instead would already fix it?
 		super.move(dx, dy, dz);
 		if (!onGround)
 		{

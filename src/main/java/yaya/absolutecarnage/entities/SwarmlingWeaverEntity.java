@@ -1,6 +1,7 @@
 package yaya.absolutecarnage.entities;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -25,6 +26,7 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
@@ -34,6 +36,7 @@ import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
 import software.bernie.geckolib3.core.manager.AnimationData;
 import software.bernie.geckolib3.core.manager.AnimationFactory;
 import yaya.absolutecarnage.entities.projectile.WebProjectile;
+import yaya.absolutecarnage.particles.GoopStringParticleEffect;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -48,7 +51,9 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	private static final AnimationBuilder BALL_ANIM = new AnimationBuilder().addAnimation("ball", true);
 	protected static final TrackedData<Byte> ANIMATION = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.BYTE);
 	protected static final TrackedData<BlockPos> ROPE_ATTACHMENT_POS = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.BLOCK_POS);
+	protected static final TrackedData<BlockPos> ROPE_CLIMB_DEST = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.BLOCK_POS);
 	protected static final TrackedData<Integer> ROPE_CLIMB_TICKS = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	protected static final TrackedData<Integer> WEB_COOLDOWN = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Float> CLIMBING_ROTATION = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	private static final byte ANIMATION_IDLE = 0;
 	private static final byte ANIMATION_FLEE_CEILING = 1;
@@ -58,7 +63,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	
 	public float alpha = 1f, lastClimbingRot;
 	
-	BlockPos cachedRopeAttachment = null, ropeClimbDestination = null;
+	BlockPos cachedRopeAttachment = null;
 	boolean shootingWebs, shouldClimbToCeiling;
 	
 	public SwarmlingWeaverEntity(EntityType<? extends HostileEntity> entityType, World world)
@@ -89,7 +94,9 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		super.initDataTracker();
 		this.dataTracker.startTracking(ANIMATION, ANIMATION_IDLE);
 		this.dataTracker.startTracking(ROPE_ATTACHMENT_POS, null);
+		this.dataTracker.startTracking(ROPE_CLIMB_DEST, null);
 		this.dataTracker.startTracking(ROPE_CLIMB_TICKS, 0);
+		this.dataTracker.startTracking(WEB_COOLDOWN, 0);
 		this.dataTracker.startTracking(CLIMBING_ROTATION, 0f);
 	}
 	
@@ -137,9 +144,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 				dataTracker.set(ROPE_ATTACHMENT_POS, new BlockPos(pos[0], pos[1], pos[2]));
 		}
 		if(nbt.contains("RopeClimbingTicks"))
-		{
 			dataTracker.set(ROPE_CLIMB_TICKS, nbt.getInt("RopeClimbingTicks"));
-		}
 	}
 	
 	@Override
@@ -148,7 +153,6 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		return new SpiderNavigation(this, world);
 	}
 	
-	///TODO: ignore webs
 	///TODO: Falling and impact animations
 	///TODO: Spin reinforced webs inbetween sticky nest blocks
 	///TODO: randomly go up to/come down from ceiling behavior
@@ -156,10 +160,12 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	
 	public void startClimbingToCeiling(BlockPos pos)
 	{
-		getDataTracker().set(ANIMATION, ANIMATION_FLEE_CEILING);
-		getDataTracker().set(ROPE_ATTACHMENT_POS, pos);
+		dataTracker.set(ANIMATION, ANIMATION_FLEE_CEILING);
+		dataTracker.set(ROPE_ATTACHMENT_POS, pos);
+		dataTracker.set(ROPE_CLIMB_DEST, pos.down(4 + random.nextInt(4)));
+		dataTracker.set(WEB_COOLDOWN, 0);
 		setNoGravity(true);
-		ropeClimbDestination = pos.down(4 + random.nextInt(4));
+		
 		setAiDisabled(true);
 	}
 	
@@ -278,16 +284,18 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 				{
 					world.addParticle(ParticleTypes.SPLASH,
 							getX() + random.nextDouble() - 0.5 * getWidth(),
-							getY() + getHeight() + random.nextDouble() * 0.1, getZ() + random.nextDouble() - 0.5 * getWidth(),
+							getY() + getHeight() + random.nextDouble() * 0.1,
+							getZ() + random.nextDouble() - 0.5 * getWidth(),
 							random.nextDouble() - 0.5, 0.5, random.nextDouble() - 0.5);
 				}
 			}
 		}
 		
+		BlockPos ropeClimbDestination = dataTracker.get(ROPE_CLIMB_DEST);
 		if(ropeClimbDestination != null)
 		{
 			if(!hasNoGravity())
-				ropeClimbDestination = null;
+				dataTracker.set(ROPE_CLIMB_DEST, null);
 			else if(getPos().squaredDistanceTo(Vec3d.ofCenter(ropeClimbDestination)) > 0.1f && getRopeClimbingTicks() >= 27)
 			{
 				Vec3d dir = Vec3d.ofCenter(ropeClimbDestination).subtract(getPos()).normalize();
@@ -298,11 +306,18 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 				dataTracker.set(ROPE_CLIMB_TICKS, dataTracker.get(ROPE_CLIMB_TICKS) + 1);
 			if(dataTracker.get(CLIMBING_ROTATION) != 0f)
 				dataTracker.set(CLIMBING_ROTATION, 0f);
+			
+			if(getRopeClimbingTicks() == 32 && random.nextInt(32) == 0)
+			{
+				Vec3d pos = new Vec3d(getX() + random.nextFloat() * 0.5 - 0.25, getY(), getZ() + random.nextFloat() * 0.5 - 0.25);
+				world.addParticle(new GoopStringParticleEffect(new Vec3f(0.83f, 0.76f, 0.58f), 0.25f),
+						pos.x, pos.y, pos.z, 0f, 0f, 0f);
+			}
 		}
 	}
 	
 	@Override
-	protected void mobTick()
+	protected void mobTick() //NOTE this doesn't get executed while NoAI is true.
 	{
 		super.mobTick();
 		
@@ -310,6 +325,16 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 			dataTracker.set(CLIMBING_ROTATION, Math.min(dataTracker.get(CLIMBING_ROTATION) + 0.1f, 1f));
 		else if (!isClimbing() && dataTracker.get(CLIMBING_ROTATION) > 0f)
 			dataTracker.set(CLIMBING_ROTATION, Math.max(dataTracker.get(CLIMBING_ROTATION) - 0.1f, 0f));
+		
+		if(dataTracker.get(WEB_COOLDOWN) > 0)
+			dataTracker.set(WEB_COOLDOWN, Math.max(dataTracker.get(WEB_COOLDOWN) - 1, 0));
+	}
+	
+	@Override
+	public void slowMovement(BlockState state, Vec3d multiplier)
+	{
+		if (!state.isOf(Blocks.COBWEB))
+			super.slowMovement(state, multiplier);
 	}
 	
 	@Override
@@ -392,11 +417,12 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		@Override
 		public boolean canStart()
 		{
-			///TODO: only if hasn't webbed recently (counter resets after climbing)
+			if (mob.dataTracker.get(WEB_COOLDOWN) > 0 || mob.random.nextInt(8) > 0)
+				return false; //fail fast! If these conditions aren't met, don't waste time finding a target.
 			target = mob.world.getClosestEntity(this.mob.world.getEntitiesByClass(fleeFromClass,
 					this.mob.getBoundingBox().expand(range, 3.0, range), (ignored) -> true), withinRangePredicate,
 					this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
-			return target != null && mob.canSee(target) && mob.random.nextInt(8) == 0;
+			return target != null && mob.canSee(target);
 		}
 		
 		@Override
@@ -426,8 +452,10 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 			if(target == null)
 				return;
 			this.mob.getLookControl().lookAt(target);
-			if(mob.squaredDistanceTo(target) < 3f * 3f)
-				this.mob.getMoveControl().strafeTo(-0.75f, 0f);
+			///TODO: figure out a way to back away from the target. Thing below doesn't work due to body rotation.
+			this.mob.getMoveControl().moveTo(mob.getX(), mob.getY(), mob.getZ(), 0f);
+			//if(mob.squaredDistanceTo(target) < 3f * 3f)
+			//	this.mob.getMoveControl().strafeTo(-0.75f, 0f);
 			
 			if (time == 7) ///TODO: add animation and match timing
 			{
@@ -435,6 +463,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 					mob.shootWeb(target);
 				///TODO: replace shooting sound
 				mob.playSound(SoundEvents.ENTITY_LLAMA_SPIT, 1.0F, 0.6F / (mob.getRandom().nextFloat() * 0.4F + 0.8F));
+				mob.dataTracker.set(WEB_COOLDOWN, 200); //10 second cooldown
 			}
 		}
 		

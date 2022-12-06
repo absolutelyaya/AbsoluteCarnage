@@ -15,8 +15,6 @@ public class SwarmlingWeaverRenderer extends GeoEntityRenderer<SwarmlingWeaverEn
 {
 	private static final Identifier ROPE_TEXTURE = new Identifier(AbsoluteCarnage.MOD_ID, "textures/block/dangling_egg2.png");
 	
-	///TODO: add glowing eyes Feature
-	
 	public SwarmlingWeaverRenderer(EntityRendererFactory.Context ctx)
 	{
 		super(ctx, new SwarmlingWeaverModel());
@@ -51,12 +49,12 @@ public class SwarmlingWeaverRenderer extends GeoEntityRenderer<SwarmlingWeaverEn
 		super.render(model, animatable, partialTicks, type, matrixStack, renderTypeBuffer, vertexBuilder, packedLightIn,
 				packedOverlayIn, red, green, blue, alpha * animatable.alpha);
 		matrixStack.pop();
-		if(animatable.hasRopeAttachmentPos() && animatable.getRopeClimbingTicks() >= 27 && model.getBone("RopeAttachment").isPresent())
+		if(animatable.hasRopeAttachmentPos() && animatable.getRopeClimbingTicks() >= 16 && model.getBone("RopeAttachment").isPresent())
 		{
 			GeoBone ropeAttachment = model.getBone("RopeAttachment").get();
 			
 			Vec3d start = new Vec3d(ropeAttachment.getPositionX() / 16f, ropeAttachment.getPositionY() / 16f, ropeAttachment.getPositionZ() / 16f);
-			Vec3d end = Vec3d.ofBottomCenter(animatable.getRopeAttachmentPos()).subtract(animatable.getPos());
+			Vec3d end = new Vec3d(start.x, animatable.getRopeAttachmentPos().getY() - animatable.getY(), start.z);
 			
 			Vec3d dir = end.subtract(start).normalize();
 			Vec3d sideX = dir.withAxis(Direction.Axis.X, 0.5).multiply(1, 0, 1);
