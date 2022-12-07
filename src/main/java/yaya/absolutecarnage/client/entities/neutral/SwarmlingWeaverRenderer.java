@@ -49,7 +49,7 @@ public class SwarmlingWeaverRenderer extends GeoEntityRenderer<SwarmlingWeaverEn
 		super.render(model, animatable, partialTicks, type, matrixStack, renderTypeBuffer, vertexBuilder, packedLightIn,
 				packedOverlayIn, red, green, blue, alpha * animatable.alpha);
 		matrixStack.pop();
-		if(animatable.hasRopeAttachmentPos() && animatable.getRopeClimbingTicks() >= 16 && model.getBone("RopeAttachment").isPresent())
+		if(animatable.hasRopeAttachmentPos() && animatable.getAnimationTicks() >= 16 && model.getBone("RopeAttachment").isPresent())
 		{
 			GeoBone ropeAttachment = model.getBone("RopeAttachment").get();
 			
@@ -86,5 +86,12 @@ public class SwarmlingWeaverRenderer extends GeoEntityRenderer<SwarmlingWeaverEn
 				.texture(u, v).overlay(OverlayTexture.DEFAULT_UV)
 				.light(light)
 				.normal(normalMatrix, 0.0F, 1.0F, 0.0F).next();
+	}
+	
+	@Override
+	protected void applyRotations(SwarmlingWeaverEntity entityLiving, MatrixStack matrixStackIn, float ageInTicks, float rotationYaw, float partialTicks)
+	{
+		//if(entityLiving.getAnimation() != 3) //do not rotate during web attack animation
+			super.applyRotations(entityLiving, matrixStackIn, ageInTicks, rotationYaw, partialTicks);
 	}
 }

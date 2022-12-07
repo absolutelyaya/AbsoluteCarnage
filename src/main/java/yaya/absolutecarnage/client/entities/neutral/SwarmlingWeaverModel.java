@@ -41,7 +41,7 @@ public class SwarmlingWeaverModel extends AnimatedGeoModel<SwarmlingWeaverEntity
 			return;
 		
 		EntityModelData extraData = (EntityModelData)customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
-		if(head != null)
+		if(head != null && entity.getAnimation() != 3)
 		{
 			head.setRotationX(head.getRotationX() + extraData.headPitch * f);
 			head.setRotationY(extraData.netHeadYaw * f);
