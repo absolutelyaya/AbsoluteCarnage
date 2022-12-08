@@ -31,7 +31,6 @@ import net.minecraft.world.World;
 import software.bernie.geckolib3.core.AnimationState;
 import software.bernie.geckolib3.core.IAnimatable;
 import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.Animation;
 import software.bernie.geckolib3.core.builder.AnimationBuilder;
 import software.bernie.geckolib3.core.controller.AnimationController;
 import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
@@ -42,6 +41,7 @@ import yaya.absolutecarnage.particles.GoopStringParticleEffect;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEntity, IAnimatable
@@ -58,6 +58,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	protected static final TrackedData<Integer> ANIM_TICKS = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	protected static final TrackedData<Integer> WEB_COOLDOWN = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Float> CLIMBING_ROTATION = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.FLOAT);
+	public static final TrackedData<Float> SYNCED_YAW = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	private static final byte ANIMATION_IDLE = 0;
 	private static final byte ANIMATION_FLEE_CEILING = 1;
 	private static final byte ANIMATION_BALL = 2;
@@ -102,6 +103,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		this.dataTracker.startTracking(ANIM_TICKS, 0);
 		this.dataTracker.startTracking(WEB_COOLDOWN, 0);
 		this.dataTracker.startTracking(CLIMBING_ROTATION, 0f);
+		this.dataTracker.startTracking(SYNCED_YAW, 0f);
 	}
 	
 	public static DefaultAttributeContainer.Builder setAttributes()
@@ -176,12 +178,14 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	public void shootWeb(LivingEntity target)
 	{
 		WebProjectile projectile = WebProjectile.spawn(this, world);
-		double d = target.getEyeY() - 2;
-		double e = target.getX() - this.getX();
-		double f = d - projectile.getY();
-		double g = target.getZ() - this.getZ();
-		double h = Math.sqrt(e * e + g * g) * 0.2;
-		projectile.setVelocity(e, f + h, g, 0.75f, 6.0f);
+		Vec3d forward = Vec3d.fromPolar(0, headYaw);
+		Vec3d right = Vec3d.fromPolar(0, headYaw + 90f);
+		Vec3d pos = getPos().subtract(forward.multiply(0.3)).add(right);
+		projectile.setPos(pos.x, pos.y + 0.3, pos.z);
+		double targetHeight = target.getEyeY() - 2;
+		Vec3d vel = new Vec3d(target.getX() - pos.x, targetHeight - projectile.getY(), target.getZ() - pos.z);
+		double dist = vel.horizontalLength() * 0.2;
+		projectile.setVelocity(vel.x, vel.y + dist, vel.z, 0.75f, 6.0f);
 		this.world.spawnEntity(projectile);
 	}
 	
@@ -207,7 +211,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 			case ANIMATION_BALL -> controller.setAnimation(BALL_ANIM);
 			case ANIMATION_WEB_ATTACK ->
 			{
-				controller.setAnimation(IDLE_ANIM);
+				controller.setAnimation(WEB_ATTACK_ANIM);
 				if(controller.getAnimationState() == AnimationState.Stopped)
 					dataTracker.set(ANIMATION, ANIMATION_IDLE);
 			}
@@ -237,7 +241,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	
 	public boolean isRopeClimbing()
 	{
-		return getAnimation() == ANIMATION_FLEE_CEILING && getAnimationTicks() >= 27;
+		return (getAnimation() == ANIMATION_FLEE_CEILING  && getAnimationTicks() >= 27) || getAnimation() == ANIMATION_BALL;
 	}
 	
 	public boolean hasRopeAttachmentPos()
@@ -332,19 +336,13 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		
 		if(getAnimation() == ANIMATION_WEB_ATTACK)
 		{
-			dataTracker.set(ANIM_TICKS, dataTracker.get(ANIM_TICKS) + 1);
-			
-			if(getTarget() != null)
-			{
-				if (dataTracker.get(ANIM_TICKS) == 37)
-				{
-					for (int i = 0; i < world.getDifficulty().getId(); i++)
-						shootWeb(getTarget());
-					///TODO: replace shooting sound
-					playSound(SoundEvents.ENTITY_LLAMA_SPIT, 1.0F, 0.6F / (getRandom().nextFloat() * 0.4F + 0.8F));
-					dataTracker.set(WEB_COOLDOWN, 200); //10 second cooldown
-				}
-			}
+			navigation.stop();
+			setVelocity(0f, getVelocity().y < 0f ? getVelocity().y : 0f, 0f);
+			Optional<Float> rot = lookControl.getTargetYaw();
+			if(!world.isClient && rot.isPresent())
+				dataTracker.set(SYNCED_YAW, rot.get());
+			setHeadYaw(dataTracker.get(SYNCED_YAW));
+			setBodyYaw(dataTracker.get(SYNCED_YAW));
 		}
 	}
 	
@@ -406,6 +404,12 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		}
 		
 		@Override
+		public boolean shouldContinue()
+		{
+			return super.shouldContinue() && mob.getDataTracker().get(ANIMATION) == ANIMATION_IDLE;
+		}
+		
+		@Override
 		public void stop()
 		{
 			super.stop();
@@ -431,6 +435,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	{
 		private final SwarmlingWeaverEntity mob;
 		private LivingEntity target;
+		int time;
 		float range;
 		Class<T> fleeFromClass;
 		TargetPredicate withinRangePredicate;
@@ -458,7 +463,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		@Override
 		public boolean shouldContinue()
 		{
-			return mob.dataTracker.get(ANIMATION) == ANIMATION_WEB_ATTACK && mob.dataTracker.get(ANIM_TICKS) <= 54 &&
+			return mob.dataTracker.get(ANIMATION) == ANIMATION_WEB_ATTACK && time <= 54 &&
 						   target != null && target.isAlive();
 		}
 		
@@ -472,17 +477,33 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		@Override
 		public void start()
 		{
+			time = 0;
 			mob.setTarget(target);
 			mob.shootingWebs = true;
 			mob.dataTracker.set(ANIMATION, ANIMATION_WEB_ATTACK);
 		}
 		
 		@Override
+		public boolean shouldRunEveryTick()
+		{
+			return true;
+		}
+		
+		@Override
 		public void tick()
 		{
-			mob.navigation.stop(); //why doesn't this stop the entity???
 			this.mob.getLookControl().lookAt(target);
-			this.mob.setBodyYaw(mob.headYaw);
+			
+			time++;
+			
+			if (time == 37 && target != null)
+			{
+				for (int i = 0; i < mob.world.getDifficulty().getId(); i++)
+					mob.shootWeb(target);
+				///TODO: replace shooting sound
+				mob.playSound(SoundEvents.ENTITY_LLAMA_SPIT, 1.0F, 0.6F / (mob.getRandom().nextFloat() * 0.4F + 0.8F));
+				mob.dataTracker.set(WEB_COOLDOWN, 200); //10 second cooldown
+			}
 		}
 		
 		@Override
