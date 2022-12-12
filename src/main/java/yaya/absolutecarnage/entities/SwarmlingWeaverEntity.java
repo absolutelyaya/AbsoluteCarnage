@@ -2,7 +2,6 @@ package yaya.absolutecarnage.entities;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -25,6 +24,7 @@ import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
@@ -64,7 +64,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	private static final byte ANIMATION_FLEE_CEILING = 1;
 	private static final byte ANIMATION_BALL = 2;
 	private static final byte ANIMATION_WEB_ATTACK = 3;
-	private static final EntityDimensions BALL_DIMENSIONS = new EntityDimensions(1, 2, true);
+	private static final Box BALL_HITBOX = new Box(-0.5, 0.0, -0.5, 0.5, 2.0, 0.5);
 	private static final float WALKSPEED = 0.3f;
 	
 	public float alpha = 1f, lastClimbingRot;
@@ -165,7 +165,6 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	///TODO: Falling and impact animations
 	///TODO: Spin reinforced webs inbetween sticky nest blocks
 	///TODO: interact with clusters behavior
-	///TODO: stop climbing if colliding with a block
 	
 	public void startClimbingToCeiling(BlockPos pos)
 	{
@@ -326,11 +325,12 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		BlockPos ropeClimbDestination = dataTracker.get(ROPE_CLIMB_DEST);
 		if(ropeClimbDestination != null)
 		{
+			Vec3d dest = new Vec3d(getX(), ropeClimbDestination.getY(), getZ());
 			if(!hasNoGravity())
 				dataTracker.set(ROPE_CLIMB_DEST, null);
-			else if(getPos().squaredDistanceTo(Vec3d.ofCenter(ropeClimbDestination)) > 0.1f && getAnimationTicks() >= 27)
+			else if(getPos().squaredDistanceTo(dest) > 0.1f && getAnimationTicks() >= 27)
 			{
-				Vec3d dir = Vec3d.ofCenter(ropeClimbDestination).subtract(getPos()).normalize();
+				Vec3d dir = dest.subtract(getPos()).normalize();
 				setPosition(getPos().add(dir.multiply(WALKSPEED / 2)));
 			}
 			
@@ -395,7 +395,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	@Override
 	public boolean damage(DamageSource source, float amount)
 	{
-		if(hasRopeAttachmentPos() || hasNoGravity())
+		if((hasRopeAttachmentPos() || hasNoGravity()) && source != DamageSource.IN_WALL)
 		{
 			stopClimbingToCeiling();
 			return super.damage(source, amount * 1.5f);
@@ -404,11 +404,19 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	}
 	
 	@Override
-	public EntityDimensions getDimensions(EntityPose pose)
+	public Box getBoundingBox(EntityPose pose)
 	{
 		if(isRopeClimbing())
-			return BALL_DIMENSIONS;
-		return super.getDimensions(pose);
+			return BALL_HITBOX;
+		return super.getBoundingBox(pose);
+	}
+	
+	@Override
+	protected Box calculateBoundingBox()
+	{
+		if(isRopeClimbing())
+			return BALL_HITBOX.offset(getPos());
+		return super.calculateBoundingBox();
 	}
 	
 	@Override
@@ -571,7 +579,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		public void tick()
 		{
 			ticksHanging++;
-			if(!descending && ticksHanging > 300 && ticksHanging % 20 == 0 && mob.random.nextInt(10) == 0)
+			if((!descending && ticksHanging > 300 && ticksHanging % 20 == 0 && mob.random.nextInt(10) == 0) || mob.isInsideWall())
 			{
 				mob.getDataTracker().set(ROPE_CLIMB_DEST, startPos);
 				descending = true;
