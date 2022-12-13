@@ -58,6 +58,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	protected static final TrackedData<Integer> ANIM_TICKS = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	protected static final TrackedData<Integer> WEB_COOLDOWN = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	protected static final TrackedData<Integer> CLIMB_COOLDOWN = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
+	protected static final TrackedData<Integer> REINFORCE_COOLDOWN = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public static final TrackedData<Float> CLIMBING_ROTATION = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	public static final TrackedData<Float> SYNCED_YAW = DataTracker.registerData(SwarmlingWeaverEntity.class, TrackedDataHandlerRegistry.FLOAT);
 	private static final byte ANIMATION_IDLE = 0;
@@ -90,7 +91,8 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		goalSelector.add(3, new WanderAroundGoal(this, 1.0));
 		goalSelector.add(4, new LookAtEntityGoal(this, LivingEntity.class, 5));
 		goalSelector.add(5, new LookAroundGoal(this));
-		goalSelector.add(6, new WanderAroundFarGoal(this, 1.0));
+		goalSelector.add(6, new ReinforceClusterGoal(this, 10.0));
+		goalSelector.add(7, new WanderAroundFarGoal(this, 1.0));
 		
 		//targetSelector.add(1, new ActiveTargetGoal<>(this, PlayerEntity.class, true));
 	}
@@ -105,6 +107,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		this.dataTracker.startTracking(ANIM_TICKS, 0);
 		this.dataTracker.startTracking(WEB_COOLDOWN, 0);
 		this.dataTracker.startTracking(CLIMB_COOLDOWN, (30 + random.nextInt(300)) * 20);
+		this.dataTracker.startTracking(REINFORCE_COOLDOWN, 0);
 		this.dataTracker.startTracking(CLIMBING_ROTATION, 0f);
 		this.dataTracker.startTracking(SYNCED_YAW, 0f);
 	}
@@ -164,7 +167,6 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 	
 	///TODO: Falling and impact animations
 	///TODO: Spin reinforced webs inbetween sticky nest blocks
-	///TODO: interact with clusters behavior
 	
 	public void startClimbingToCeiling(BlockPos pos)
 	{
@@ -371,6 +373,7 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		
 		cooldownTick(WEB_COOLDOWN);
 		cooldownTick(CLIMB_COOLDOWN);
+		cooldownTick(REINFORCE_COOLDOWN);
 	}
 	
 	void cooldownTick(TrackedData<Integer> data)
@@ -603,6 +606,80 @@ public class SwarmlingWeaverEntity extends AbstractSwarmling implements SwarmEnt
 		{
 			mob.dataTracker.set(CLIMB_COOLDOWN, (120 + mob.random.nextInt(900)) * 20);
 			mob.stopClimbingToCeiling();
+		}
+	}
+	
+	private static class ReinforceClusterGoal extends Goal
+	{
+		SwarmlingWeaverEntity mob;
+		SwarmClusterEntity target;
+		double range;
+		TargetPredicate targetPredicate;
+		int interactionTime;
+		boolean success;
+		
+		public ReinforceClusterGoal(SwarmlingWeaverEntity mob, double range)
+		{
+			this.mob = mob;
+			this.range = range;
+			targetPredicate = TargetPredicate.createNonAttackable().setBaseMaxDistance(range)
+									  .setPredicate((entity) -> !entity.hasStatusEffect(StatusEffects.RESISTANCE));
+			setControls(EnumSet.of(Control.LOOK, Control.MOVE));
+		}
+		
+		@Override
+		public boolean canStart()
+		{
+			if (mob.random.nextInt(32) > 0 || mob.dataTracker.get(REINFORCE_COOLDOWN) > 0)
+				return false;
+			target = mob.world.getClosestEntity(this.mob.world.getEntitiesByClass(SwarmClusterEntity.class,
+							this.mob.getBoundingBox().expand(range, 3.0, range), (ignored) -> true), targetPredicate,
+					this.mob, this.mob.getX(), this.mob.getY(), this.mob.getZ());
+			return target != null;
+		}
+		
+		@Override
+		public void start()
+		{
+			interactionTime = 0;
+			success = false;
+		}
+		
+		@Override
+		public void tick()
+		{
+			mob.getLookControl().lookAt(target, 30f, 30f);
+			mob.getNavigation().startMovingTo(target, 1f);
+			
+			double range = Math.pow(mob.getWidth() * 2, 2);
+			double distance = mob.squaredDistanceTo(target);
+			int difficulty = mob.world.getDifficulty().getId();
+			if(distance < range)
+			{
+				interactionTime++;
+				if(interactionTime > 32 - (difficulty * 6))
+					target.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, (30 * 20) * difficulty), mob);
+			}
+			else if(interactionTime > 0)
+				interactionTime = 0;
+		}
+		
+		@Override
+		public boolean canStop()
+		{
+			return !shouldContinue();
+		}
+		
+		@Override
+		public boolean shouldContinue()
+		{
+			return target != null && targetPredicate.test(mob, target);
+		}
+		
+		@Override
+		public void stop()
+		{
+			mob.dataTracker.set(REINFORCE_COOLDOWN, (60 * 20) * (4 - mob.world.getDifficulty().getId()));
 		}
 	}
 }
